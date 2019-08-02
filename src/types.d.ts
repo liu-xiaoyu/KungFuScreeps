@@ -95,6 +95,8 @@ declare const ROLE_ZEALOT = "zealot";
 declare const ROLE_STALKER = "stalker";
 declare const ROLE_MEDIC = "medic";
 declare const ROLE_DOMESTIC_DEFENDER = "domesticDefender";
+declare const ROLE_TOWER_MEDIC = "towerMedic";
+declare const ROLE_TOWER_TANK = "towerTank";
 
 /**
  * role constants
@@ -115,7 +117,9 @@ type RoleConstant =
     | ROLE_ZEALOT
     | ROLE_STALKER
     | ROLE_MEDIC
-    | ROLE_DOMESTIC_DEFENDER;
+    | ROLE_DOMESTIC_DEFENDER
+    | ROLE_TOWER_MEDIC
+    | ROLE_TOWER_TANK;
 
 /**
  * sits on the source and mines energy full-time
@@ -181,6 +185,14 @@ type ROLE_MEDIC = "medic"; //
  * Military Creep - Defends the home room
  */
 type ROLE_DOMESTIC_DEFENDER = "domesticDefender"; //
+/**
+ * Military Creep - tower drainer tank
+ */
+type ROLE_TOWER_TANK = "towerTank"; //
+/**
+ * Military Creep - tower drainer medic
+ */
+type ROLE_TOWER_MEDIC = "towerMedic";
 
 // Role Interfaces to be implemented  -------------
 /**

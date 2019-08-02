@@ -24,6 +24,8 @@ export const ROLE_ZEALOT = "zealot";
 export const ROLE_STALKER = "stalker";
 export const ROLE_MEDIC = "medic";
 export const ROLE_DOMESTIC_DEFENDER = "domesticDefender";
+export const ROLE_TOWER_TANK = "towerTank";
+export const ROLE_TOWER_MEDIC = "towerMedic";
 
 // Tier Constants
 export const TIER_1 = 300;

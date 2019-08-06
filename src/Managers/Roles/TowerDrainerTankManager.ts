@@ -6,6 +6,7 @@ import {
 import RoomHelper from "Helpers/RoomHelper";
 import CreepHelper from "Helpers/CreepHelper";
 import CreepApi from "Api/Creep.Api";
+import MemoryApi from "Api/Memory.Api";
 
 // Manager for the miner creep role
 export default class TowerDrainerTankCreepManager implements ICreepRoleManager {
@@ -52,7 +53,16 @@ export default class TowerDrainerTankCreepManager implements ICreepRoleManager {
      * @returns boolean representing if the creep needed to retreat
      */
     private retreatTowerCreep(creep: Creep): boolean {
-        if (creep.hits <= creep.hitsMax * .25) {
+        if (!Memory.rooms[creep.memory.targetRoom]) {
+            return false;
+        }
+
+        const enemyTowers: StructureTower[] | null = creep.room.memory.structures.data[STRUCTURE_TOWER] as StructureTower[];
+        if (!enemyTowers) {
+            return false;
+        }
+
+        if ((this.calculateTowerDamage(enemyTowers, creep.pos) * 3) >= creep.hits) {
 
             // Skip if we're in the enemy room
             if (creep.room.name === creep.memory.targetRoom) {
@@ -79,7 +89,10 @@ export default class TowerDrainerTankCreepManager implements ICreepRoleManager {
      * @returns boolean represetnting if the creep is rallied iwth the healer
      */
     private rallyWithHealer(creep: Creep): boolean {
-        const squadHealers: Creep[] = this.getTowerMedicsInSquad(creep);
+        const squadHealers: Creep[] | null = this.getTowerMedicsInSquad(creep);
+        if (!squadHealers) {
+            return true;
+        }
         if (!_.every(squadHealers, (c: Creep) => creep.pos.isNearTo(c.pos.x, c.pos.y))) {
             const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadHealers);
             if (closestSquadMember) {
@@ -91,12 +104,27 @@ export default class TowerDrainerTankCreepManager implements ICreepRoleManager {
     }
 
     /**
+     * Calculate the amount of damage the towers in the room will do this tick
+     * @param enemyTowers an array of the towers in the enemies' room
+     * @param creepPos the creep pos we are comparing against
+     * @returns the amount of damage the towers will do this tick
+     */
+    private calculateTowerDamage(enemyTowers: StructureTower[], creepPos: RoomPosition): number {
+        let damage: number = 0;
+        for (const tower of enemyTowers) {
+            damage += RoomHelper.getTowerDamageAtRange(tower.pos.getRangeTo(creepPos));
+        }
+        return damage;
+    }
+
+    /**
      * Get the healers in the squad
      * @param creep the tower tank creep
      * @param creepOptions the creep's squad options
      */
-    private getTowerMedicsInSquad(creep: Creep): Creep[] {
-        return [creep];
+    private getTowerMedicsInSquad(creep: Creep): Creep[] | null {
+        const creepOptions: CreepOptionsMili = creep.memory.options as CreepOptionsMili;
+        return MemoryApi.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
     }
 
     /**

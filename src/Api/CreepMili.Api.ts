@@ -277,7 +277,7 @@ export default class CreepMili {
         const pathFinderOptions: PathFinderOpts = { flee: true }
         path = PathFinder.search(creep.pos, hostileCreep.pos, pathFinderOptions);
         if (path.path.length > 0) {
-            creep.moveTo(path.path[0], DEFAULT_MOVE_OPTS);
+            creep.moveTo(path.path[0]);
             return true;
         }
         return false;

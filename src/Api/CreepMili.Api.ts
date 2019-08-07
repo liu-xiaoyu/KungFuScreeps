@@ -283,6 +283,7 @@ export default class CreepMili {
         return false;
     }
 
+    // new line right here
     /**
      * perform the basic operations for military creeps
      * This includes: Fleeing, Rallying, moving into target room, and moving off exit tile

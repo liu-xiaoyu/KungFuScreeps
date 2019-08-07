@@ -23,12 +23,6 @@ export default class TowerDrainerTankCreepManager implements ICreepRoleManager {
      * @param creep the creep we are running
      */
     public runCreepRole(creep: Creep): void {
-
-        // Check basics for tower drainer before moving on to logic
-        if (this.checkTowerTankBasics(creep)) {
-            return;
-        }
-
         // Check first if we need to retreat, then (if we're rallied with healer + NOT on an exit tile)
         // Move to the exit tile until these are true, everything is handled within the functions from here
         if (!this.retreatTowerCreep(creep)) {
@@ -36,15 +30,6 @@ export default class TowerDrainerTankCreepManager implements ICreepRoleManager {
                 creep.moveTo(new RoomPosition(25, 25, creep.memory.targetRoom));
             }
         }
-    }
-
-    /**
-     * Check the basics for tower drainer tank
-     * @param creep the tower drainer tank creep
-     * @returns boolean representing if the basics need to be handled
-     */
-    private checkTowerTankBasics(creep: Creep): boolean {
-        return false;
     }
 
     /**

@@ -531,7 +531,19 @@ export class SpawnHelper {
             room.memory.roomState !== undefined &&
             room.memory.roomState > ROOM_STATE_INTRO // Never a priority in intro state
         ) {
+<<<<<<< HEAD
             return !_.some(MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER && c.carryCapacity > 200));
+=======
+            const harvester: Creep | undefined = _.find(
+                MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER)
+            );
+
+            // If theres no harvester, and we are outside of ROOM_STATE_INTRO, we need one
+            if (!harvester) {
+                return true;
+            }
+            return harvester.ticksToLive !== undefined && harvester.ticksToLive <= harvester.body.length * 3;
+>>>>>>> Fixed harvester spawning first in roomStateIntro
         }
         return false;
     }

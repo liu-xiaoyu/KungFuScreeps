@@ -19,7 +19,8 @@ import {
     TIER_3_MILITARY_PRIORITY,
     ALL_MILITARY_ROLES,
     ALL_DEFENSIVE_ROLES,
-    RESERVER_MIN_TTL
+    RESERVER_MIN_TTL,
+    ROOM_STATE_INTRO
 } from "utils/internals";
 
 /**
@@ -526,13 +527,15 @@ export class SpawnHelper {
         if (
             room.memory.creepLimit !== undefined &&
             room.memory.creepLimit.domesticLimits !== undefined &&
-            room.memory.creepLimit.domesticLimits.harvester === 1
+            room.memory.creepLimit.domesticLimits.harvester === 1 &&
+            room.memory.roomState !== undefined &&
+            room.memory.roomState > ROOM_STATE_INTRO // Never a priority in intro state
         ) {
             const harvester: Creep | undefined = _.find(
                 MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER)
             );
 
-            // If theres no harvester then we def need one
+            // If theres no harvester, and we are outside of ROOM_STATE_INTRO, we need one
             if (!harvester) {
                 return true;
             }

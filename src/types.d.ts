@@ -202,6 +202,17 @@ interface ICreepRoleManager {
     name: RoleConstant;
     runCreepRole: (creep: Creep) => void;
 }
+/*
+    Generally idea here is to split this into two different interfaces.
+    Manager and civilian
+    Civilian will have getnewjob and handlenewjob
+    military will keep runcreeprole
+    we will split creep manager into two functions, one for military one for civilians
+    military one will run it as they normally do by calling run creep role
+    civilian one will just be the normal civilian run creep role but calls the sepcific implementation
+    of handlenewjob and getnewjob from the interfaces
+    goodluck!!!!!
+*/
 
 /**
  * Interface for Creep Role Helpers (for body and options)

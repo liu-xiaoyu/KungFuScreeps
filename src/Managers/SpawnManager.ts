@@ -30,7 +30,7 @@ export class SpawnManager {
         SpawnApi.setCreepLimits(room);
 
         // add method to generate the over ride values from flags for the military creeps
-        const nextCreepRole: RoleConstant | null = SpawnApi.getNextCreep(room);
+        const nextCreepRole: RoleConstant | null = SpawnApi.getNextCreep(room, openSpawn!);
 
         // If we are spawning a creep this tick, continue from here
         if (nextCreepRole) {

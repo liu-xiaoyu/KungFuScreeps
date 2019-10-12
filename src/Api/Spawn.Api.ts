@@ -7,6 +7,7 @@ import {
     ROLE_REMOTE_RESERVER,
     ROLE_LORRY,
     ROLE_HARVESTER,
+    ROLE_MANAGER,
     ROLE_MEDIC,
     ROLE_MINER,
     ROLE_POWER_UPGRADER,
@@ -180,11 +181,17 @@ export class SpawnApi {
      * get next creep to spawn
      * @param room the room we want to spawn them in
      */
-    public static getNextCreep(room: Room): RoleConstant | null {
+    public static getNextCreep(room: Room, openSpawn: StructureSpawn): RoleConstant | null {
         // Get Limits for each creep department
         const creepLimits: CreepLimits = MemoryApi.getCreepLimits(room);
         let militaryRole: RoleConstant | null;
         const creepCount: AllCreepCount = MemoryApi.getAllCreepCount(room);
+        const spawns: StructureSpawn[] = _.filter(
+            Game.spawns,
+            (spawn: StructureSpawn) => spawn.room.name === room.name
+        );
+        const centerSpawn: StructureSpawn | null = MemoryHelper_Room.getCenterSpawn(room, spawns);
+        const isCenterSpawn = centerSpawn !== null && centerSpawn.id === openSpawn.id;
 
         // Check for a priority harvester
         if (SpawnHelper.needPriorityHarvester(room)) {
@@ -196,8 +203,13 @@ export class SpawnApi {
         if (militaryRole !== null) {
             return militaryRole;
         }
+
         // Check if we need a domestic creep -- Return role if one is found
         for (const role of domesticRolePriority) {
+            // Skip the manager if we aren't on the center spawn
+            if (!isCenterSpawn && role === ROLE_MANAGER) {
+                continue;
+            }
             if (creepCount[role] < creepLimits.domesticLimits[role]) {
                 return role;
             }
@@ -208,6 +220,7 @@ export class SpawnApi {
         if (militaryRole !== null) {
             return militaryRole;
         }
+
         // Check if we need a remote creep -- Return role if one is found
         for (const role of remoteRolePriority) {
             if (creepCount[role] < creepLimits.remoteLimits[role]) {

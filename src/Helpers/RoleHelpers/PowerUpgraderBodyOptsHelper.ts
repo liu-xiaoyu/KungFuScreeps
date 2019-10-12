@@ -8,7 +8,8 @@ import {
     TIER_8,
     ROLE_POWER_UPGRADER,
     SpawnHelper,
-    SpawnApi
+    SpawnApi,
+    MemoryApi
 } from "utils/internals";
 
 export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
@@ -102,6 +103,9 @@ export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
      * @param room the room we are in
      */
     public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
-
+        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
+        return _.filter(directions, (d: DirectionConstant) => d !== managerDirection);
     }
 }

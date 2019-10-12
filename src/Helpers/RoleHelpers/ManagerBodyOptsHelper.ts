@@ -12,7 +12,8 @@ import {
     TIER_8,
     ROLE_MANAGER,
     SpawnHelper,
-    SpawnApi
+    SpawnApi,
+    MemoryApi
 } from "utils/internals";
 
 export class ManagerBodyOptsHelper implements ICreepBodyOptsHelper {
@@ -102,6 +103,10 @@ export class ManagerBodyOptsHelper implements ICreepBodyOptsHelper {
      * @param room the room we are in
      */
     public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
-
+        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [];
+        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
+        directions.push(managerDirection);
+        return directions;
     }
 }

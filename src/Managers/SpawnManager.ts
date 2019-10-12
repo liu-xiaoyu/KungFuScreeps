@@ -41,6 +41,7 @@ export class SpawnManager {
             // Check if we even have enough energy to even spawn this potential monstrosity
             if (room.energyAvailable >= bodyEnergyCost) {
                 // Get all the information we will need to spawn the next creep
+                const spawnDirection: DirectionConstant[] = SpawnApi.getSpawnDirection(nextCreepRole, room);
                 const roomState: RoomStateConstant = room.memory.roomState!;
                 const name: string = SpawnHelper.generateCreepName(nextCreepRole, roomTier, room);
                 const targetRoom: string = SpawnApi.getCreepTargetRoom(room, nextCreepRole, creepBody, name);
@@ -57,17 +58,17 @@ export class SpawnManager {
                     throw new UserException(
                         "Failure in Spawn Manager for [ " + name + " ]",
                         "Role: [ " +
-                            nextCreepRole +
-                            " ]\n" +
-                            "homeRoom: [ " +
-                            homeRoom +
-                            " ]\n" +
-                            "targetRoom: [ " +
-                            targetRoom +
-                            " ]\n" +
-                            "creepOptions: [ " +
-                            JSON.stringify(creepOptions) +
-                            " ]\n",
+                        nextCreepRole +
+                        " ]\n" +
+                        "homeRoom: [ " +
+                        homeRoom +
+                        " ]\n" +
+                        "targetRoom: [ " +
+                        targetRoom +
+                        " ]\n" +
+                        "creepOptions: [ " +
+                        JSON.stringify(creepOptions) +
+                        " ]\n",
                         ERROR_ERROR
                     );
                 }
@@ -82,7 +83,8 @@ export class SpawnManager {
                         openSpawn!,
                         homeRoom,
                         targetRoom,
-                        name
+                        name,
+                        spawnDirection
                     ) === OK
                 ) {
                     // On successful creep spawn of a military creep, remove that role from the military spawn queue

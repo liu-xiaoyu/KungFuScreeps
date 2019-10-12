@@ -149,4 +149,13 @@ export class StalkerBodyOptsHelper implements ICreepBodyOptsHelper {
             ERROR_ERROR
         );
     }
+
+    /**
+     * Get the spawn direction for the creep
+     * @param centerSpawn the center spawn for the room
+     * @param room the room we are in
+     */
+    public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
+
+    }
 }

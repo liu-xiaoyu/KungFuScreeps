@@ -11,10 +11,6 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
     }
 
     // Need to figure out what jobs we're looking for
-    // Need to remove those options at lvl 6 from harvesters and workers
-    // Need to add basic repairing to towers at lvl 6
-    // The only real job getting removed from harvester is ability to fill terminal
-    // Only real job getting removed from workers is regular repairing (wall repairing will be their full time job now)
     // On spawning this role, need to add something to spawn system to make sure we can choose a direction on 'spawn creep' then add a 'get creep direction'
     // function in spawn manager that makes ssure we ddon't spawn anything non manager in the middle, and only allow manager to spawn in the middle
     // Probably just add this function

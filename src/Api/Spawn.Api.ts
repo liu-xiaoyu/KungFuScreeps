@@ -36,7 +36,8 @@ import {
     RoomHelper,
     MemoryApi,
     UserException,
-    EventHelper
+    EventHelper,
+    RoomApi
 } from "utils/internals";
 
 /**
@@ -238,7 +239,8 @@ export class SpawnApi {
         spawn: StructureSpawn,
         homeRoom: string,
         targetRoom: string,
-        name: string
+        name: string,
+        spawnDirection: DirectionConstant[]
     ): number {
         // Throw error if we don't have enough energy to spawn this creep
         if (this.getEnergyCostOfBody(body) > room.energyAvailable) {
@@ -250,7 +252,7 @@ export class SpawnApi {
         }
 
         const creepMemory = SpawnHelper.generateDefaultCreepMemory(role, homeRoom, targetRoom, creepOptions);
-        return spawn.spawnCreep(body, name, { memory: creepMemory });
+        return spawn.spawnCreep(body, name, { memory: creepMemory, directions: spawnDirection });
     }
 
     /**
@@ -573,5 +575,35 @@ export class SpawnApi {
                 }
             }
         }
+    }
+
+    /**
+     * Get the direction the creep needs to be spawned in
+     */
+    public static getSpawnDirection(nextCreepRole: RoleConstant, room: Room): DirectionConstant[] {
+        const spawns: StructureSpawn[] = _.filter(
+            Game.spawns,
+            (spawn: StructureSpawn) => spawn.room.name === room.name
+        );
+        const centerSpawn: StructureSpawn | null = MemoryHelper_Room.getCenterSpawn(room, spawns);
+
+        if (!centerSpawn) {
+            throw new UserException(
+                "Couldn't find center spawn for the room",
+                "role: " + nextCreepRole + "\nCreep Home Room",
+                ERROR_ERROR
+            );
+        }
+
+        for (const index in CREEP_BODY_OPT_HELPERS) {
+            if (CREEP_BODY_OPT_HELPERS[index].name === nextCreepRole) {
+                return CREEP_BODY_OPT_HELPERS[index].getSpawnDirection(centerSpawn!, room);
+            }
+        }
+        throw new UserException(
+            "Couldn't find ICreepBodyOptsHelper implementation for the role",
+            "role: " + nextCreepRole + "\nCreep Home Room",
+            ERROR_ERROR
+        );
     }
 }

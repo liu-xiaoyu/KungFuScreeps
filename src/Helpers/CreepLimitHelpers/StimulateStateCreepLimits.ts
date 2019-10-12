@@ -47,6 +47,7 @@ export class StimulateStateCreepLimits implements ICreepSpawnLimits {
         domesticLimits[ROLE_WORKER] = 2;
         domesticLimits[ROLE_POWER_UPGRADER] = 1;
         domesticLimits[ROLE_LORRY] = numLorries;
+        domesticLimits[ROLE_MANAGER] = 1;
 
         return domesticLimits;
     }

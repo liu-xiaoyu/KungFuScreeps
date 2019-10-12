@@ -123,15 +123,10 @@ export class WorkerBodyOptsHelper implements ICreepBodyOptsHelper {
                 creepOptions = {
                     // Options marked with // are overriding the defaults
                     build: true, //
-                    upgrade: true, //
-                    repair: true, //
                     wallRepair: true, //
                     fillTower: true, //
-                    fillStorage: true, //
-                    fillLink: true, //
                     getFromStorage: true, //
                     getDroppedEnergy: true, //
-                    getFromTerminal: true //
                 };
 
                 break;
@@ -162,5 +157,14 @@ export class WorkerBodyOptsHelper implements ICreepBodyOptsHelper {
         creepName: string
     ): string {
         return room.name;
+    }
+
+    /**
+     * Get the spawn direction for the creep
+     * @param centerSpawn the center spawn for the room
+     * @param room the room we are in
+     */
+    public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
+
     }
 }

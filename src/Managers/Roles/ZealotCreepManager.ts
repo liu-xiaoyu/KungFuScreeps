@@ -1,7 +1,7 @@
 import { ROLE_ZEALOT, MiliApi } from "utils/internals";
 
 // Manager for the miner creep role
-export class ZealotCreepManager implements ICreepRoleManager {
+export class ZealotCreepManager implements IMiliCreepRoleManager {
     public name: RoleConstant = ROLE_ZEALOT;
 
     constructor() {

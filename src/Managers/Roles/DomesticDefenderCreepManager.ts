@@ -1,7 +1,7 @@
 import { ROLE_DOMESTIC_DEFENDER, MiliApi, RoomApi } from "utils/internals";
 
 // Manager for the Domestic Defender Creep Role
-export class DomesticDefenderCreepManager implements ICreepRoleManager {
+export class DomesticDefenderCreepManager implements IMiliCreepRoleManager {
     public name: RoleConstant = ROLE_DOMESTIC_DEFENDER;
 
     constructor() {

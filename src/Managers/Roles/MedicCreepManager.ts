@@ -1,7 +1,7 @@
 import { ROLE_MEDIC, MemoryApi, MiliApi, PathfindingApi } from "utils/internals";
 
 // Manager for the miner creep role
-export class MedicCreepManager implements ICreepRoleManager {
+export class MedicCreepManager implements IMiliCreepRoleManager {
     public name: RoleConstant = ROLE_MEDIC;
 
     constructor() {

@@ -17,7 +17,18 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
      * @returns BaseJob of the new job we recieved (undefined if none)
      */
     public getNewJob(creep: Creep, room: Room): BaseJob | undefined {
-        // get a new job
+
+        // Consider methods for getting energy, since we will want an idea of what the next job is
+        // Before we decide where we're pulling energy from
+        // Buy adderal before next refactor
+
+        // Look for spawns to fill
+        // Look for towers to fill
+        // Look for terminal to fill
+        // Look for storage to fill
+        // (All in range)
+        // Need to think on this
+
         // TODO
         return {
             jobType: "workPartJob",

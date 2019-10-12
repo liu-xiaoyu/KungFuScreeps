@@ -6,7 +6,8 @@ export class RemoteMinerCreepManager implements ICivCreepRoleManager {
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**

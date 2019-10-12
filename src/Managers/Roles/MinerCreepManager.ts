@@ -6,35 +6,8 @@ export class MinerCreepManager implements ICivCreepRoleManager {
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
-    }
-
-    /**
-     * Run the miner creep
-     * @param creep The creep to run
-     */
-    public runCreepRole(creep: Creep): void {
-        const homeRoom: Room = Game.rooms[creep.memory.homeRoom];
-
-        if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewJob(creep, homeRoom);
-
-            if (creep.memory.job === undefined) {
-                return; // idle for a tick
-            }
-
-            // Set supplementary.moveTarget to container if one exists and isn't already taken
-            this.handleNewJob(creep, homeRoom);
-        }
-
-        if (creep.memory.job) {
-            if (creep.memory.working) {
-                CreepApi.doWork(creep, creep.memory.job);
-                return;
-            }
-
-            CreepApi.travelTo(creep, creep.memory.job);
-        }
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**

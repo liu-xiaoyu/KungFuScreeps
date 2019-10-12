@@ -5,23 +5,8 @@ export class ScoutCreepManager implements ICivCreepRoleManager {
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
-    }
-
-    /**
-     * Run the scout creep
-     * @param creep the creep we are running
-     */
-    public runCreepRole(creep: Creep): void {
-        if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewJob(creep);
-        }
-
-        if (creep.memory.working) {
-            return;
-        }
-
-        CreepApi.travelTo(creep, creep.memory.job);
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**

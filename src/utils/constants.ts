@@ -181,3 +181,10 @@ export const ALL_CIVILIAN_ROLES: RoleConstant[] = [
     ROLE_SCOUT,
     ROLE_WORKER
 ];
+
+// All Remote roles we have
+export const ALL_REMOTE_ROLES: RoleConstant[] = [
+    ROLE_REMOTE_HARVESTER,
+    ROLE_REMOTE_MINER,
+    ROLE_REMOTE_RESERVER
+];

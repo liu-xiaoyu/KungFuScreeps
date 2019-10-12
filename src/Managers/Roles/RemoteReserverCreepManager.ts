@@ -6,38 +6,8 @@ export class RemoteReserverCreepManager implements ICivCreepRoleManager {
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
-    }
-
-    /**
-     * run the remote reserver creep
-     * @param creep the creep we are running
-     */
-    public runCreepRole(creep: Creep): void {
-        const homeRoom = Game.rooms[creep.memory.homeRoom];
-
-        if (CreepApi.creepShouldFlee(creep)) {
-            CreepApi.fleeRemoteRoom(creep, homeRoom);
-            return;
-        }
-
-        if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewJob(creep, homeRoom);
-
-            if (creep.memory.job === undefined) {
-                return;
-            }
-
-            this.handleNewJob(creep, homeRoom);
-        }
-
-        if (creep.memory.working === true) {
-            CreepApi.doWork(creep, creep.memory.job);
-            return;
-        }
-
-        CreepApi.travelTo(creep, creep.memory.job);
-        return;
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**

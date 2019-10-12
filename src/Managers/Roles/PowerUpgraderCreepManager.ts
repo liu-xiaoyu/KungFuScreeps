@@ -6,34 +6,8 @@ export class PowerUpgraderCreepManager implements ICivCreepRoleManager {
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
-    }
-
-    /**
-     * run the power upgrader creep
-     * @param creep the creep we are running
-     */
-    public runCreepRole(creep: Creep): void {
-        const homeRoom: Room = Game.rooms[creep.memory.homeRoom];
-
-        if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewJob(creep, homeRoom);
-
-            if (creep.memory.job === undefined) {
-                return; // idle for a tick
-            }
-
-            this.handleNewJob(creep, homeRoom);
-        }
-
-        if (creep.memory.job) {
-            if (creep.memory.working) {
-                CreepApi.doWork(creep, creep.memory.job);
-                return;
-            }
-
-            CreepApi.travelTo(creep, creep.memory.job);
-        }
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**

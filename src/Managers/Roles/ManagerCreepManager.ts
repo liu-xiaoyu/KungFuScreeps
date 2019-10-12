@@ -6,7 +6,8 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     // Need to figure out what jobs we're looking for
@@ -20,34 +21,6 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
 
     // Need to adjust getNextCreep to make sure to only check for a manager if we're on one of the center spawns, and allow the above function to handle direction still
     // Add spawn limits for manager creep, and we're done with the project
-
-    // Will finish getNextCreep refactor and logging before respawning in so we can make sure things are streamlined a'f before moving onto auto construction
-
-    /**
-     * Run the miner creep
-     * @param creep The creep to run
-     */
-    public runCreepRole(creep: Creep): void {
-        const homeRoom: Room = Game.rooms[creep.memory.homeRoom];
-
-        if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewJob(creep, homeRoom);
-
-            if (creep.memory.job === undefined) {
-                return; // idle for a tick
-            }
-
-            // Set supplementary.moveTarget to container if one exists and isn't already taken
-            this.handleNewJob(creep, homeRoom);
-        }
-
-        if (creep.memory.job) {
-            if (creep.memory.working) {
-                CreepApi.doWork(creep, creep.memory.job);
-                return;
-            }
-        }
-    }
 
     /**
      * Decides which kind of job to get and calls the appropriate function

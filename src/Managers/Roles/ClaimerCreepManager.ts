@@ -6,35 +6,8 @@ export class ClaimerCreepManager implements ICivCreepRoleManager {
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
-    }
-
-    /**
-     * run the claimer creep
-     * @param creep the creep we are running
-     */
-    public runCreepRole(creep: Creep): void {
-        if (creep.room.memory.defcon > 0) {
-            // flee code here
-        }
-
-        const homeRoom = Game.rooms[creep.memory.homeRoom];
-
-        if (creep.memory.job === undefined) {
-            this.getNewJob(creep, homeRoom);
-
-            if (creep.memory.job === undefined) {
-                return;
-            }
-
-            this.handleNewJob(creep, homeRoom, creep.memory.job as ClaimPartJob);
-        }
-
-        if (creep.memory.working) {
-            CreepApi.doWork(creep, creep.memory.job);
-        }
-
-        CreepApi.travelTo(creep, creep.memory.job);
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     public getNewJob(creep: Creep, room: Room): ClaimPartJob | undefined {

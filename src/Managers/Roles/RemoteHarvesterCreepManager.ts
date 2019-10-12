@@ -6,48 +6,18 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
-    }
-
-    /**
-     * run the remote harvester creep
-     * @param creep the creep we are running
-     */
-    public runCreepRole(creep: Creep): void {
-        const homeRoom = Game.rooms[creep.memory.homeRoom];
-        const targetRoom = Game.rooms[creep.memory.targetRoom];
-
-        if (CreepApi.creepShouldFlee(creep)) {
-            CreepApi.fleeRemoteRoom(creep, homeRoom);
-            return;
-        }
-
-        if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewJob(creep, homeRoom, targetRoom);
-
-            if (creep.memory.job === undefined) {
-                return;
-            }
-
-            this.handleNewJob(creep, homeRoom);
-        }
-
-        if (creep.memory.working) {
-            CreepApi.doWork(creep, creep.memory.job);
-            return;
-        }
-
-        CreepApi.travelTo(creep, creep.memory.job);
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**
      * Decides which kind of job to get and calls the appropriate function
      */
-    public getNewJob(creep: Creep, homeRoom: Room, targetRoom: Room): BaseJob | undefined {
+    public getNewJob(creep: Creep, homeRoom: Room, targetRoom: Room | undefined): BaseJob | undefined {
         if (creep.carry.energy === 0 && creep.room.name === creep.memory.targetRoom) {
 
             // If creep is empty and in targetRoom - get energy
-            return CreepApi.newGetEnergyJob(creep, targetRoom);
+            return CreepApi.newGetEnergyJob(creep, targetRoom!);
         }
         else if (creep.carry.energy === 0 && creep.room.name !== creep.memory.targetRoom) {
 
@@ -57,7 +27,7 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
         else if (creep.carry.energy > 0 && creep.room.name === creep.memory.targetRoom) {
 
             // If creep has energy and is in targetRoom - Get workpartJob
-            let job = CreepApi.newWorkPartJob(creep, targetRoom) as BaseJob;
+            let job = CreepApi.newWorkPartJob(creep, targetRoom!) as BaseJob;
 
             // if no work part job - Go to homeRoom
             if (job === undefined) {

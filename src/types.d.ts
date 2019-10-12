@@ -228,6 +228,7 @@ interface ICreepBodyOptsHelper {
         creepName: string
     ) => string;
     getHomeRoom: (room: Room) => string;
+    getSpawnDirection: (centerSpawn: StructureSpawn, room: Room) => DirectionConstant[];
 }
 
 /**

@@ -7,6 +7,7 @@ import {
     ROLE_REMOTE_RESERVER,
     ROLE_LORRY,
     ROLE_HARVESTER,
+    ROLE_MANAGER,
     ROLE_MEDIC,
     ROLE_MINER,
     ROLE_POWER_UPGRADER,
@@ -36,7 +37,8 @@ import {
     RoomHelper,
     MemoryApi,
     UserException,
-    EventHelper
+    EventHelper,
+    RoomApi
 } from "utils/internals";
 
 /**
@@ -179,11 +181,17 @@ export class SpawnApi {
      * get next creep to spawn
      * @param room the room we want to spawn them in
      */
-    public static getNextCreep(room: Room): RoleConstant | null {
+    public static getNextCreep(room: Room, openSpawn: StructureSpawn): RoleConstant | null {
         // Get Limits for each creep department
         const creepLimits: CreepLimits = MemoryApi.getCreepLimits(room);
         let militaryRole: RoleConstant | null;
         const creepCount: AllCreepCount = MemoryApi.getAllCreepCount(room);
+        const spawns: StructureSpawn[] = _.filter(
+            Game.spawns,
+            (spawn: StructureSpawn) => spawn.room.name === room.name
+        );
+        const centerSpawn: StructureSpawn | null = MemoryHelper_Room.getCenterSpawn(room, spawns);
+        const isCenterSpawn = centerSpawn !== null && centerSpawn.id === openSpawn.id;
 
         // Check for a priority harvester
         if (SpawnHelper.needPriorityHarvester(room)) {
@@ -195,8 +203,13 @@ export class SpawnApi {
         if (militaryRole !== null) {
             return militaryRole;
         }
+
         // Check if we need a domestic creep -- Return role if one is found
         for (const role of domesticRolePriority) {
+            // Skip the manager if we aren't on the center spawn
+            if (!isCenterSpawn && role === ROLE_MANAGER) {
+                continue;
+            }
             if (creepCount[role] < creepLimits.domesticLimits[role]) {
                 return role;
             }
@@ -207,6 +220,7 @@ export class SpawnApi {
         if (militaryRole !== null) {
             return militaryRole;
         }
+
         // Check if we need a remote creep -- Return role if one is found
         for (const role of remoteRolePriority) {
             if (creepCount[role] < creepLimits.remoteLimits[role]) {
@@ -238,7 +252,8 @@ export class SpawnApi {
         spawn: StructureSpawn,
         homeRoom: string,
         targetRoom: string,
-        name: string
+        name: string,
+        spawnDirection: DirectionConstant[]
     ): number {
         // Throw error if we don't have enough energy to spawn this creep
         if (this.getEnergyCostOfBody(body) > room.energyAvailable) {
@@ -250,7 +265,7 @@ export class SpawnApi {
         }
 
         const creepMemory = SpawnHelper.generateDefaultCreepMemory(role, homeRoom, targetRoom, creepOptions);
-        return spawn.spawnCreep(body, name, { memory: creepMemory });
+        return spawn.spawnCreep(body, name, { memory: creepMemory, directions: spawnDirection });
     }
 
     /**
@@ -573,5 +588,35 @@ export class SpawnApi {
                 }
             }
         }
+    }
+
+    /**
+     * Get the direction the creep needs to be spawned in
+     */
+    public static getSpawnDirection(nextCreepRole: RoleConstant, room: Room): DirectionConstant[] {
+        const spawns: StructureSpawn[] = _.filter(
+            Game.spawns,
+            (spawn: StructureSpawn) => spawn.room.name === room.name
+        );
+        const centerSpawn: StructureSpawn | null = MemoryHelper_Room.getCenterSpawn(room, spawns);
+
+        if (!centerSpawn) {
+            throw new UserException(
+                "Couldn't find center spawn for the room",
+                "role: " + nextCreepRole + "\nCreep Home Room",
+                ERROR_ERROR
+            );
+        }
+
+        for (const index in CREEP_BODY_OPT_HELPERS) {
+            if (CREEP_BODY_OPT_HELPERS[index].name === nextCreepRole) {
+                return CREEP_BODY_OPT_HELPERS[index].getSpawnDirection(centerSpawn!, room);
+            }
+        }
+        throw new UserException(
+            "Couldn't find ICreepBodyOptsHelper implementation for the role",
+            "role: " + nextCreepRole + "\nCreep Home Room",
+            ERROR_ERROR
+        );
     }
 }

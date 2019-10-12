@@ -17,7 +17,8 @@ import {
     TIER_8,
     ROLE_HARVESTER,
     SpawnHelper,
-    SpawnApi
+    SpawnApi,
+    MemoryApi
 } from "utils/internals";
 
 export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
@@ -138,12 +139,10 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                 creepOptions = {
                     // Options marked with // are overriding the defaults
                     fillStorage: true, //
-                    fillTerminal: true,
                     fillExtension: true,
                     fillSpawn: true,
                     getFromStorage: true, //
                     getDroppedEnergy: true, //
-                    getFromTerminal: true //
                 };
 
                 break;
@@ -174,5 +173,17 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
         creepName: string
     ): string {
         return room.name;
+    }
+
+    /**
+     * Get the spawn direction for the creep
+     * @param centerSpawn the center spawn for the room
+     * @param room the room we are in
+     */
+    public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
+        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
+        return _.filter(directions, (d: DirectionConstant) => d !== managerDirection);
     }
 }

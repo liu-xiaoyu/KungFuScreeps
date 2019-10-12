@@ -1,7 +1,7 @@
 import { ROLE_REMOTE_RESERVER, MemoryApi, CreepApi } from "utils/internals";
 
 // Manager for the miner creep role
-export class RemoteReserverCreepManager implements ICreepRoleManager {
+export class RemoteReserverCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_REMOTE_RESERVER;
 
     constructor() {
@@ -15,7 +15,6 @@ export class RemoteReserverCreepManager implements ICreepRoleManager {
      */
     public runCreepRole(creep: Creep): void {
         const homeRoom = Game.rooms[creep.memory.homeRoom];
-        const targetRoom = Game.rooms[creep.memory.targetRoom];
 
         if (CreepApi.creepShouldFlee(creep)) {
             CreepApi.fleeRemoteRoom(creep, homeRoom);
@@ -23,7 +22,7 @@ export class RemoteReserverCreepManager implements ICreepRoleManager {
         }
 
         if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewReserveJob(creep, homeRoom);
+            creep.memory.job = this.getNewJob(creep, homeRoom);
 
             if (creep.memory.job === undefined) {
                 return;
@@ -43,8 +42,10 @@ export class RemoteReserverCreepManager implements ICreepRoleManager {
 
     /**
      * Find a job for the creep
+     * @param creep the creep we are finding the job for
+     * @param room the home room of the creep
      */
-    public getNewReserveJob(creep: Creep, room: Room): ClaimPartJob | undefined {
+    public getNewJob(creep: Creep, room: Room): ClaimPartJob | undefined {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
 
         if (creepOptions.claim) {

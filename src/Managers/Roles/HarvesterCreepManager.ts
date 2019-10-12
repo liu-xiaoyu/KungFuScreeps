@@ -1,7 +1,7 @@
 import { ROLE_HARVESTER, MemoryApi, CreepApi, MemoryHelper, CreepHelper } from "utils/internals";
 
 // Manager for the miner creep role
-export class HarvesterCreepManager implements ICreepRoleManager {
+export class HarvesterCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_HARVESTER;
 
     constructor() {

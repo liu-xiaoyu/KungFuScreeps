@@ -1,7 +1,7 @@
 import { ROLE_WORKER, MemoryApi, CreepApi } from "utils/internals";
 
 // Manager for the miner creep role
-export class WorkerCreepManager implements ICreepRoleManager {
+export class WorkerCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_WORKER;
 
     constructor() {

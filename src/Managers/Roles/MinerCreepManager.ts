@@ -1,7 +1,7 @@
 import { ROLE_MINER, CreepHelper, CreepApi, MemoryApi } from "utils/internals";
 
 // Manager for the miner creep role
-export class MinerCreepManager implements ICreepRoleManager {
+export class MinerCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_MINER;
 
     constructor() {
@@ -17,7 +17,7 @@ export class MinerCreepManager implements ICreepRoleManager {
         const homeRoom: Room = Game.rooms[creep.memory.homeRoom];
 
         if (creep.memory.job === undefined) {
-            creep.memory.job = CreepApi.getNewSourceJob(creep, homeRoom);
+            creep.memory.job = this.getNewJob(creep, homeRoom);
 
             if (creep.memory.job === undefined) {
                 return; // idle for a tick
@@ -35,6 +35,15 @@ export class MinerCreepManager implements ICreepRoleManager {
 
             CreepApi.travelTo(creep, creep.memory.job);
         }
+    }
+
+    /**
+     * get a job for the miner creep
+     * @param creep
+     * @param room
+     */
+    public getNewJob(creep: Creep, room: Room): BaseJob | undefined {
+        return CreepApi.getNewSourceJob(creep, room);
     }
 
     /**

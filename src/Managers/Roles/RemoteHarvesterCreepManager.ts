@@ -1,7 +1,7 @@
 import { ROLE_REMOTE_HARVESTER, MemoryApi, CreepApi, MemoryHelper, PathfindingApi } from "utils/internals";
 
 // Manager for the miner creep role
-export class RemoteHarvesterCreepManager implements ICreepRoleManager {
+export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_REMOTE_HARVESTER;
 
     constructor() {
@@ -45,23 +45,32 @@ export class RemoteHarvesterCreepManager implements ICreepRoleManager {
      */
     public getNewJob(creep: Creep, homeRoom: Room, targetRoom: Room): BaseJob | undefined {
         if (creep.carry.energy === 0 && creep.room.name === creep.memory.targetRoom) {
+
             // If creep is empty and in targetRoom - get energy
             return CreepApi.newGetEnergyJob(creep, targetRoom);
-        } else if (creep.carry.energy === 0 && creep.room.name !== creep.memory.targetRoom) {
+        }
+        else if (creep.carry.energy === 0 && creep.room.name !== creep.memory.targetRoom) {
+
             // If creep is empty and not in targetRoom - Go to targetRoom
             return CreepApi.newMovePartJob(creep, creep.memory.targetRoom);
-        } else if (creep.carry.energy > 0 && creep.room.name === creep.memory.targetRoom) {
+        }
+        else if (creep.carry.energy > 0 && creep.room.name === creep.memory.targetRoom) {
+
             // If creep has energy and is in targetRoom - Get workpartJob
             let job = CreepApi.newWorkPartJob(creep, targetRoom) as BaseJob;
+
             // if no work part job - Go to homeRoom
             if (job === undefined) {
                 job = CreepApi.newMovePartJob(creep, creep.memory.homeRoom) as BaseJob;
             }
 
             return job;
-        } else if (creep.carry.energy > 0 && creep.room.name === creep.memory.homeRoom) {
+        }
+        else if (creep.carry.energy > 0 && creep.room.name === creep.memory.homeRoom) {
+
             // If creep has energy and is in homeRoom - Get a carry job to use energy
             let job: BaseJob | undefined = this.newCarryPartJob(creep, homeRoom);
+
             // If no carryJob, get a workPartJob in homeroom
             if (job === undefined) {
                 job = CreepApi.newWorkPartJob(creep, homeRoom);

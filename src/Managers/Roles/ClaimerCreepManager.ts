@@ -1,7 +1,7 @@
 import { CreepApi, MemoryApi, UserException, ROLE_CLAIMER } from "utils/internals";
 
 // Manager for the miner creep role
-export class ClaimerCreepManager implements ICreepRoleManager {
+export class ClaimerCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_CLAIMER;
 
     constructor() {
@@ -21,7 +21,7 @@ export class ClaimerCreepManager implements ICreepRoleManager {
         const homeRoom = Game.rooms[creep.memory.homeRoom];
 
         if (creep.memory.job === undefined) {
-            this.getClaimJob(creep, homeRoom);
+            this.getNewJob(creep, homeRoom);
 
             if (creep.memory.job === undefined) {
                 return;
@@ -37,7 +37,7 @@ export class ClaimerCreepManager implements ICreepRoleManager {
         CreepApi.travelTo(creep, creep.memory.job);
     }
 
-    public getClaimJob(creep: Creep, room: Room): ClaimPartJob | undefined {
+    public getNewJob(creep: Creep, room: Room): ClaimPartJob | undefined {
         const creepOptions = creep.memory.options as CreepOptionsCiv;
 
         if (creepOptions.claim) {
@@ -51,8 +51,8 @@ export class ClaimerCreepManager implements ICreepRoleManager {
         return undefined;
     }
 
-    public handleNewJob(creep: Creep, room: Room, job: ClaimPartJob): void {
-        const newJob = MemoryApi.searchClaimPartJobs(job, room);
+    public handleNewJob(creep: Creep, room: Room, job?: BaseJob): void {
+        const newJob = MemoryApi.searchClaimPartJobs(job as ClaimPartJob, room);
 
         if (newJob === undefined) {
             const exception = new UserException(

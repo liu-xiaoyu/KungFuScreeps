@@ -40,9 +40,11 @@ export class CreepManager {
         // Of the helper functions within the creep manager files
         if (ALL_CIVILIAN_ROLES.includes(role)) {
             this.runSingleCivCreepManager(creep, role);
+            return;
         }
         else if (ALL_MILITARY_ROLES.includes(role)) {
             this.runSingleMiliCreepManager(creep, role);
+            return;
         }
 
         throw new UserException(

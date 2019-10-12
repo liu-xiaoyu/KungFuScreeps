@@ -205,7 +205,7 @@ interface IMiliCreepRoleManager {
 
 interface ICivCreepRoleManager {
     name: RoleConstant;
-    getNewJob: (creep: Creep, room: Room, targetRoom: Room) => BaseJob | undefined;
+    getNewJob: (creep: Creep, room: Room, targetRoom?: Room) => BaseJob | undefined;
     handleNewJob: (creep: Creep, room: Room, job?: BaseJob) => void;
 }
 

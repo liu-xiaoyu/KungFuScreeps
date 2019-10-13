@@ -9,6 +9,7 @@ import {
     MemoryApi,
     MINERS_GET_CLOSEST_SOURCE,
     RAMPART_HITS_THRESHOLD,
+    ROLE_MINER,
     STUCK_COUNT_LIMIT,
     USE_STUCK_VISUAL,
     MemoryHelper,
@@ -32,8 +33,8 @@ export class CreepApi {
         throw new UserException(
             "Bad jobType in CreepApi.doWork",
             "The jobtype of the job passed to CreepApi.doWork was invalid, or there is no implementation of that job type." +
-                "\n Job Type: " +
-                job.jobType,
+            "\n Job Type: " +
+            job.jobType,
             ERROR_FATAL
         );
     }
@@ -61,8 +62,8 @@ export class CreepApi {
         throw new UserException(
             "Bad jobType in CreepApi.travelTo",
             "The jobtype of the job passed to CreepApi.travelTo was invalid, or there is no implementation of this job type" +
-                "\n Job Type: " +
-                job.jobType,
+            "\n Job Type: " +
+            job.jobType,
             ERROR_FATAL
         );
     }
@@ -142,10 +143,10 @@ export class CreepApi {
         return new UserException(
             "Invalid Job actionType or targetType",
             "An invalid actionType or structureType has been provided by creep [" +
-                creep.name +
-                "]" +
-                "\n Job: " +
-                JSON.stringify(job),
+            creep.name +
+            "]" +
+            "\n Job: " +
+            JSON.stringify(job),
             ERROR_ERROR
         );
     }
@@ -251,7 +252,7 @@ export class CreepApi {
         if (creepOptions.repair) {
             const defenseRepairJobs: WorkPartJob[] = MemoryApi.getRepairJobs(room, (job: WorkPartJob) => {
                 const target = Game.getObjectById(job.targetID) as Structure;
-                if (target.structureType === STRUCTURE_RAMPART) {
+                if (target && target.structureType === STRUCTURE_RAMPART) {
                     return target.hits <= RAMPART_HITS_THRESHOLD;
                 }
                 return false;
@@ -403,10 +404,10 @@ export class CreepApi {
     public static newGetEnergyJob(creep: Creep, room: Room): GetEnergyJob | undefined {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
         if (creepOptions.getFromContainer) {
-            // All container jobs with enough energy to fill creep.carry, and not taken
+            // get a container job based on the filter function returned from the helper
             const containerJobs = MemoryApi.getContainerJobs(
                 room,
-                (cJob: GetEnergyJob) => !cJob.isTaken && cJob.resources!.energy >= creep.carryCapacity
+                CreepHelper.getContainerJobFilterFunction(room, creep)
             );
 
             if (containerJobs.length > 0) {

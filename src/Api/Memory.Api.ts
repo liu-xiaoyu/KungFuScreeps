@@ -841,7 +841,7 @@ export class MemoryApi {
      * @returns Flag[] an array of all flags
      */
     public static getAllFlags(filterFunction?: (flag: Flag) => boolean): Flag[] {
-        const allFlags: Flag[] = Object.keys(Game.flags).map(function(flagIndex) {
+        const allFlags: Flag[] = Object.keys(Game.flags).map(function (flagIndex) {
             return Game.flags[flagIndex];
         });
 
@@ -1494,10 +1494,10 @@ export class MemoryApi {
             throw new UserException(
                 "Error in updateJobMemory",
                 "Could not find the job in room memory to update." +
-                    "\nCreep: " +
-                    creep.name +
-                    "\nJob: " +
-                    JSON.stringify(creep.memory.job),
+                "\nCreep: " +
+                creep.name +
+                "\nJob: " +
+                JSON.stringify(creep.memory.job),
                 ERROR_ERROR
             );
         }
@@ -1870,6 +1870,9 @@ export class MemoryApi {
 
         // sum up the number of each role we come across
         for (const creep of creepsInRoom) {
+            if (creep.ticksToLive && (creep.ticksToLive < (creep.body.length * 3))) {
+                continue;
+            }
             allCreepCount[creep.memory.role] = allCreepCount[creep.memory.role] + 1;
         }
         return allCreepCount;

@@ -168,6 +168,20 @@ export class RoomApi {
     }
 
     /**
+     * Check for emergecy ramparts for the tower to heal to help build mass ramparts
+     * @param rampart the rampart we are targeting
+     */
+    public static runTowersEmergecyRampartRepair(rampart: StructureRampart): void {
+        const towers: StructureTower[] = MemoryApi.getStructureOfType(rampart.room.name, STRUCTURE_TOWER) as StructureTower[];
+        // have each tower attack this target
+        towers.forEach((t: StructureTower) => {
+            if (t) {
+                t.repair(rampart);
+            }
+        });
+    }
+
+    /**
      * set the rooms defcon level
      * @param room the room we are setting defcon for
      */

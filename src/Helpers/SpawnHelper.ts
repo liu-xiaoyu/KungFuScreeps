@@ -531,7 +531,7 @@ export class SpawnHelper {
             room.memory.roomState !== undefined &&
             room.memory.roomState > ROOM_STATE_INTRO // Never a priority in intro state
         ) {
-            return !_.some(MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER));
+            return !_.some(MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER && c.carryCapacity > 200));
         }
         return false;
     }

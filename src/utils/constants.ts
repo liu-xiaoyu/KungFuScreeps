@@ -98,13 +98,13 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
 // The Wall/Rampart HP Limit for each Controller level
 export const WALL_LIMIT: number[] = [
     0, // RCL 0
-    25000, // RCL 1
-    50000, // RCL 2
-    100000, // RCL 3
-    250000, // RCL 4
-    500000, // RCL 5
-    1000000, // RCL 6
-    1500000, // RCL 7
+    12500, // RCL 1
+    25000, // RCL 2
+    50000, // RCL 3
+    125000, // RCL 4
+    250000, // RCL 5
+    500000, // RCL 6
+    1000000, // RCL 7
     5000000 // RCL 8
 ];
 

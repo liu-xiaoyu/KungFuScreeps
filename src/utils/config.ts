@@ -144,4 +144,12 @@ export const ALLY_LIST: string[] = ["jakesboy2", "Uhmbrock"];
  */
 export const TOWER_ALLOWED_TO_REPAIR: StructureConstant[] = [STRUCTURE_CONTAINER, STRUCTURE_ROAD];
 
+/**
+ * The % energy a tower must have before we fill it up
+ */
 export const TOWER_THRESHOLD: number = 0.85;
+
+/**
+ * The storage threshold we want to hit before spawning another worker
+ */
+export const STORAGE_ADDITIONAL_WORKER_THRESHOLD: number = 100000;

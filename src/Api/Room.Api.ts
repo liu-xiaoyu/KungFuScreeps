@@ -517,10 +517,12 @@ export class RoomApi {
             room.name,
             STRUCTURE_RAMPART
         ) as StructureRampart[];
-        const isPublic: boolean = MemoryApi.getDefconLevel(room) > 0;
+        const shouldBePublic: boolean = !(MemoryApi.getDefconLevel(room) > 0);
         for (const i in rampartsInRoom) {
             const rampart: StructureRampart = rampartsInRoom[i];
-            rampart.setPublic(!isPublic);
+            if (rampart.isPublic !== shouldBePublic) {
+                rampart.setPublic(shouldBePublic);
+            }
         }
     }
 

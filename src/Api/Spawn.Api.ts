@@ -303,7 +303,11 @@ export class SpawnApi {
      * @param RoleConstant the role of the creep
      */
     public static getTier(room: Room, roleConst: RoleConstant | null): TierConstant {
-        const energyAvailable: number = room.energyCapacityAvailable;
+        let energyAvailable: number = room.energyCapacityAvailable;
+
+        if (roleConst === ROLE_HARVESTER && SpawnHelper.needPriorityHarvester(room)) {
+            energyAvailable = room.energyAvailable;
+        }
 
         // Check what tier we are in based on the amount of energy the room has
         if (room.memory.roomState === ROOM_STATE_INTRO) {

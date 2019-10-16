@@ -1,4 +1,4 @@
-import { ERROR_WARN, UserException, MemoryApi, CONTROLLER_SIGNING_TEXT, Normalize } from "utils/internals";
+import { ERROR_WARN, UserException, MemoryApi, CONTROLLER_SIGNING_TEXT, Normalize, ROLE_MINER, ROLE_HARVESTER } from "utils/internals";
 
 // helper function for creeps
 export class CreepHelper {
@@ -80,10 +80,10 @@ export class CreepHelper {
             throw new UserException(
                 "Error in targetIsCurrentDestination",
                 "Creep [" +
-                    creep.name +
-                    "] tried to check if targetIsCurrentDestination on a target with no pos property. \n Target: [" +
-                    JSON.stringify(target) +
-                    "]",
+                creep.name +
+                "] tried to check if targetIsCurrentDestination on a target with no pos property. \n Target: [" +
+                JSON.stringify(target) +
+                "]",
                 ERROR_ERROR
             );
         }
@@ -134,5 +134,22 @@ export class CreepHelper {
      */
     public static bodyPartExists(creep: Creep, bodyPart: BodyPartConstant): boolean {
         return _.some(creep.body, (part: BodyPartDefinition) => part.type === bodyPart);
+    }
+
+    /**
+     * Get the function to pass to decide on what allows us to get a container job
+     * @param room the room we are in
+     * @param creep the creep we are deciding for
+     */
+    public static getContainerJobFilterFunction(room: Room, creep: Creep): (job: GetEnergyJob) => boolean {
+        const normalCaseContainerQualifier: (job: GetEnergyJob) => boolean = (cJob: GetEnergyJob) => !cJob.isTaken && cJob.resources!.energy >= creep.carryCapacity;
+        const harvesterNeedsEnergyNowQualifier: (job: GetEnergyJob) => boolean = (cJob: GetEnergyJob) => !cJob.isTaken;
+        // Only applies in the case of a harvester, so break early if we can
+        if (creep.memory.role !== ROLE_HARVESTER) {
+            return normalCaseContainerQualifier;
+        }
+        const numMiners: number = MemoryApi.getCreepCount(room, ROLE_MINER);
+        const minerLimit: number = room.memory.creepLimit!['domesticLimits'].miner;
+        return numMiners < minerLimit ? harvesterNeedsEnergyNowQualifier : normalCaseContainerQualifier;
     }
 }

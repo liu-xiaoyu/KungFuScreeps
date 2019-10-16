@@ -40,9 +40,11 @@ export class CreepManager {
         // Of the helper functions within the creep manager files
         if (ALL_CIVILIAN_ROLES.includes(role)) {
             this.runSingleCivCreepManager(creep, role);
+            return;
         }
         else if (ALL_MILITARY_ROLES.includes(role)) {
             this.runSingleMiliCreepManager(creep, role);
+            return;
         }
 
         throw new UserException(
@@ -60,6 +62,7 @@ export class CreepManager {
 
         // Attempt to find a manager implementation of the support functions we need
         const homeRoom: Room = Game.rooms[creep.memory.homeRoom];
+        const targetRoom: Room | undefined = Game.rooms[creep.memory.targetRoom];
         let managerImplementation: ICivCreepRoleManager | undefined;
         for (const i in CREEP_CIV_MANAGERS) {
             if (CREEP_CIV_MANAGERS[i].name === role) {
@@ -85,7 +88,7 @@ export class CreepManager {
 
 
         if (creep.memory.job === undefined) {
-            creep.memory.job = managerImplementation!.getNewJob(creep, homeRoom);
+            creep.memory.job = managerImplementation!.getNewJob(creep, homeRoom, targetRoom);
 
             if (creep.memory.job === undefined) {
                 return; // idle for a tick

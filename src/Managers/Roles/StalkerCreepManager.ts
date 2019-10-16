@@ -1,7 +1,7 @@
 import { ROLE_STALKER, MiliApi } from "utils/internals";
 
 // Manager for the miner creep role
-export class StalkerCreepManager implements ICreepRoleManager {
+export class StalkerCreepManager implements IMiliCreepRoleManager {
     public name: RoleConstant = ROLE_STALKER;
 
     constructor() {

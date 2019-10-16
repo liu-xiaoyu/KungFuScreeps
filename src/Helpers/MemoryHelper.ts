@@ -92,6 +92,7 @@ export class MemoryHelper {
      * Generate default memory for the "AllCreepCount" type
      */
     public static generateDefaultAllCreepCountObject(): AllCreepCount {
+        // Update here upon creating new role, can't generate dynamically due to typescript requiring explicit definition
         return {
             claimer: 0,
             domesticDefender: 0,

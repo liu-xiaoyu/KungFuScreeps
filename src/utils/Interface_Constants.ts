@@ -62,7 +62,7 @@ export const JobTypes: IJobTypeHelper[] = [
 ];
 
 // Constant containing the manager for each role, which all implement runRole
-export const CREEP_MANAGERS: ICreepRoleManager[] = [
+export const CREEP_CIV_MANAGERS: ICivCreepRoleManager[] = [
     new MinerCreepManager(),
     new HarvesterCreepManager(),
     new WorkerCreepManager(),
@@ -72,15 +72,18 @@ export const CREEP_MANAGERS: ICreepRoleManager[] = [
     new RemoteMinerCreepManager(),
     new RemoteHarvesterCreepManager(),
     new RemoteReserverCreepManager(),
-    new RemoteDefenderCreepManager(),
     new RemoteColonizerCreepManager(),
     new ClaimerCreepManager(),
+    new ScoutCreepManager()
+];
+
+export const CREEP_MILI_MANAGERS: IMiliCreepRoleManager[] = [
     new ZealotCreepManager(),
     new StalkerCreepManager(),
     new MedicCreepManager(),
     new DomesticDefenderCreepManager(),
-    new ScoutCreepManager()
-];
+    new RemoteDefenderCreepManager(),
+]
 
 // Constant containing the body and options helper for a creep, which implement these helper functions
 export const CREEP_BODY_OPT_HELPERS: ICreepBodyOptsHelper[] = [

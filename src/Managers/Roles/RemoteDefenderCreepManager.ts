@@ -1,7 +1,7 @@
 import { ROLE_REMOTE_DEFENDER, MiliApi } from "utils/internals";
 
 // Manager for the miner creep role
-export class RemoteDefenderCreepManager implements ICreepRoleManager {
+export class RemoteDefenderCreepManager implements IMiliCreepRoleManager {
     public name: RoleConstant = ROLE_REMOTE_DEFENDER;
 
     constructor() {

@@ -1,12 +1,13 @@
 import { ROLE_REMOTE_MINER, MemoryApi, CreepApi, CreepHelper } from "utils/internals";
 
 // Manager for the miner creep role
-export class RemoteMinerCreepManager implements ICreepRoleManager {
+export class RemoteMinerCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_REMOTE_MINER;
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**

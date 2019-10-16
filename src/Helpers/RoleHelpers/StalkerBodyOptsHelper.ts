@@ -20,7 +20,8 @@ import {
     SpawnHelper,
     SpawnApi,
     UserException,
-    EventHelper
+    EventHelper,
+    MemoryApi
 } from "utils/internals";
 
 export class StalkerBodyOptsHelper implements ICreepBodyOptsHelper {
@@ -148,5 +149,17 @@ export class StalkerBodyOptsHelper implements ICreepBodyOptsHelper {
             "room: [ " + room.name + " ]",
             ERROR_ERROR
         );
+    }
+
+    /**
+     * Get the spawn direction for the creep
+     * @param centerSpawn the center spawn for the room
+     * @param room the room we are in
+     */
+    public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
+        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
+        return _.filter(directions, (d: DirectionConstant) => d !== managerDirection);
     }
 }

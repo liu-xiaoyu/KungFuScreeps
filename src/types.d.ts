@@ -198,9 +198,15 @@ type ROLE_MANAGER = "manager"; //
 /**
  * Interface for Creep Role Managers
  */
-interface ICreepRoleManager {
+interface IMiliCreepRoleManager {
     name: RoleConstant;
     runCreepRole: (creep: Creep) => void;
+}
+
+interface ICivCreepRoleManager {
+    name: RoleConstant;
+    getNewJob: (creep: Creep, room: Room, targetRoom?: Room) => BaseJob | undefined;
+    handleNewJob: (creep: Creep, room: Room, job?: BaseJob) => void;
 }
 
 /**
@@ -222,6 +228,7 @@ interface ICreepBodyOptsHelper {
         creepName: string
     ) => string;
     getHomeRoom: (room: Room) => string;
+    getSpawnDirection: (centerSpawn: StructureSpawn, room: Room) => DirectionConstant[];
 }
 
 /**

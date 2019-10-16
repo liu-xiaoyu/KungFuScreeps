@@ -164,3 +164,27 @@ export const ROOM_STATUS_UNKNOWN = "unknown";
 
 // Custom Event Type Constants
 export const C_EVENT_CREEP_SPAWNED = 1;
+
+// All civilian roles we have
+export const ALL_CIVILIAN_ROLES: RoleConstant[] = [
+    ROLE_CLAIMER,
+    ROLE_COLONIZER,
+    ROLE_HARVESTER,
+    ROLE_LORRY,
+    ROLE_MANAGER,
+    ROLE_MINER,
+    ROLE_MINERAL_MINER,
+    ROLE_POWER_UPGRADER,
+    ROLE_REMOTE_HARVESTER,
+    ROLE_REMOTE_MINER,
+    ROLE_REMOTE_RESERVER,
+    ROLE_SCOUT,
+    ROLE_WORKER
+];
+
+// All Remote roles we have
+export const ALL_REMOTE_ROLES: RoleConstant[] = [
+    ROLE_REMOTE_HARVESTER,
+    ROLE_REMOTE_MINER,
+    ROLE_REMOTE_RESERVER
+];

@@ -168,6 +168,20 @@ export class RoomApi {
     }
 
     /**
+     * Check for emergecy ramparts for the tower to heal to help build mass ramparts
+     * @param rampart the rampart we are targeting
+     */
+    public static runTowersEmergecyRampartRepair(rampart: StructureRampart): void {
+        const towers: StructureTower[] = MemoryApi.getStructureOfType(rampart.room.name, STRUCTURE_TOWER) as StructureTower[];
+        // have each tower attack this target
+        towers.forEach((t: StructureTower) => {
+            if (t) {
+                t.repair(rampart);
+            }
+        });
+    }
+
+    /**
      * set the rooms defcon level
      * @param room the room we are setting defcon for
      */
@@ -503,10 +517,12 @@ export class RoomApi {
             room.name,
             STRUCTURE_RAMPART
         ) as StructureRampart[];
-        const isPublic: boolean = MemoryApi.getDefconLevel(room) > 0;
+        const shouldBePublic: boolean = !(MemoryApi.getDefconLevel(room) > 0);
         for (const i in rampartsInRoom) {
             const rampart: StructureRampart = rampartsInRoom[i];
-            rampart.setPublic(!isPublic);
+            if (rampart.isPublic !== shouldBePublic) {
+                rampart.setPublic(shouldBePublic);
+            }
         }
     }
 

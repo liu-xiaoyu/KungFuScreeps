@@ -1,4 +1,4 @@
-import { ROLE_REMOTE_HARVESTER, MemoryApi, CreepApi, MemoryHelper, PathfindingApi } from "utils/internals";
+import { ROLE_REMOTE_HARVESTER, MemoryApi, CreepApi, MemoryHelper, PathfindingApi, UserException, ERROR_ERROR } from "utils/internals";
 
 // Manager for the miner creep role
 export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
@@ -14,6 +14,15 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
      * Decides which kind of job to get and calls the appropriate function
      */
     public getNewJob(creep: Creep, homeRoom: Room, targetRoom: Room | undefined): BaseJob | undefined {
+
+        if (!targetRoom) {
+            throw new UserException(
+                "Remote harvester target room was not set",
+                "creep: " + creep.name + ", room: " + homeRoom.name,
+                ERROR_ERROR
+            );
+        }
+
         if (creep.carry.energy === 0 && creep.room.name === creep.memory.targetRoom) {
 
             // If creep is empty and in targetRoom - get energy

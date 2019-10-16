@@ -1,12 +1,7 @@
-import {
-    DEFAULT_MOVE_OPTS,
-    ROLE_REMOTE_DEFENDER,
-} from "utils/constants";
-import MiliApi from "Api/CreepMili.Api";
+import { ROLE_REMOTE_DEFENDER, MiliApi } from "utils/internals";
 
 // Manager for the miner creep role
-export default class RemoteDefenderCreepManager implements ICreepRoleManager {
-
+export class RemoteDefenderCreepManager implements IMiliCreepRoleManager {
     public name: RoleConstant = ROLE_REMOTE_DEFENDER;
 
     constructor() {
@@ -19,24 +14,28 @@ export default class RemoteDefenderCreepManager implements ICreepRoleManager {
      * @param creep the creep we are running
      */
     public runCreepRole(creep: Creep): void {
-
         const creepOptions: CreepOptionsMili = creep.memory.options as CreepOptionsMili;
         const CREEP_RANGE: number = 3;
-
         // Carry out the basics of a military creep before moving on to specific logic
         if (MiliApi.checkMilitaryCreepBasics(creep, creepOptions)) {
-            if (creep.hits < creep.hitsMax) {
+            if (creep.hits < creep.hitsMax && _.some(creep.body, (b: BodyPartDefinition) => b.type === "heal")) {
                 creep.heal(creep);
             }
             return;
         }
 
         // Find a target for the creep
-        const target: Creep | Structure<StructureConstant> | undefined = MiliApi.getAttackTarget(
+        let target: Creep | Structure<StructureConstant> | undefined = MiliApi.getAttackTarget(
             creep,
             creepOptions,
             CREEP_RANGE
         );
+
+        // Temp fix for making remote defenders ignore roads and stuff
+        if (!(target instanceof Creep)) {
+            target = undefined;
+        }
+
         const isMelee: boolean = false;
         if (!target) {
             if (creep.hits < creep.hitsMax) {

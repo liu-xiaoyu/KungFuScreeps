@@ -1,14 +1,7 @@
-import MemoryApi from "../../Api/Memory.Api";
-import {
-    DEFAULT_MOVE_OPTS,
-    ROLE_MEDIC,
-} from "utils/constants";
-import MiliApi from "Api/CreepMili.Api";
-
+import { ROLE_MEDIC, MemoryApi, MiliApi, PathfindingApi } from "utils/internals";
 
 // Manager for the miner creep role
-export default class MedicCreepManager implements ICreepRoleManager {
-
+export class MedicCreepManager implements IMiliCreepRoleManager {
     public name: RoleConstant = ROLE_MEDIC;
 
     constructor() {
@@ -21,7 +14,6 @@ export default class MedicCreepManager implements ICreepRoleManager {
      * @param creep the creep we are running
      */
     public runCreepRole(creep: Creep): void {
-
         const creepOptions: CreepOptionsMili = creep.memory.options as CreepOptionsMili;
         const CREEP_RANGE: number = 3;
 
@@ -37,7 +29,7 @@ export default class MedicCreepManager implements ICreepRoleManager {
             if (!healingTarget && squadMembers) {
                 const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadMembers);
                 if (closestSquadMember && !creep.pos.isNearTo(closestSquadMember)) {
-                    creep.moveTo(closestSquadMember, DEFAULT_MOVE_OPTS);
+                    creep.moveTo(closestSquadMember);
                 }
                 MiliApi.fleeCreep(creep, creep.memory.homeRoom);
                 return;
@@ -48,7 +40,7 @@ export default class MedicCreepManager implements ICreepRoleManager {
         if (!healingTarget) {
             const closestFriendlyCreep: Creep | null = creep.pos.findClosestByRange(FIND_MY_CREEPS);
             if (closestFriendlyCreep) {
-                creep.moveTo(closestFriendlyCreep, DEFAULT_MOVE_OPTS);
+                creep.moveTo(closestFriendlyCreep, PathfindingApi.GetDefaultMoveOpts());
             }
             // Heal self if missing any health
             if (creep.hits < creep.hitsMax) {
@@ -64,14 +56,12 @@ export default class MedicCreepManager implements ICreepRoleManager {
                 creep.heal(healingTarget);
             }
             if (creep.hits < creep.hitsMax) {
-                creep.heal(creep);  // heal self first if we need to
-            }
-            else {
+                creep.heal(creep); // heal self first if we need to
+            } else {
                 creep.heal(healingTarget);
             }
-        }
-        else {
-            creep.moveTo(healingTarget, DEFAULT_MOVE_OPTS);
+        } else {
+            creep.moveTo(healingTarget);
         }
     }
 }

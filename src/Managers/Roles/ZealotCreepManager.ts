@@ -1,12 +1,7 @@
-import MiliApi from "Api/CreepMili.Api";
-import {
-    DEFAULT_MOVE_OPTS,
-    ROLE_ZEALOT,
-} from "utils/constants";
+import { ROLE_ZEALOT, MiliApi } from "utils/internals";
 
 // Manager for the miner creep role
-export default class ZealotCreepManager implements ICreepRoleManager {
-
+export class ZealotCreepManager implements IMiliCreepRoleManager {
     public name: RoleConstant = ROLE_ZEALOT;
 
     constructor() {
@@ -19,7 +14,6 @@ export default class ZealotCreepManager implements ICreepRoleManager {
      * @param creep the creep we are running
      */
     public runCreepRole(creep: Creep): void {
-
         const creepOptions: CreepOptionsMili = creep.memory.options as CreepOptionsMili;
         const CREEP_RANGE: number = 1;
 
@@ -47,7 +41,6 @@ export default class ZealotCreepManager implements ICreepRoleManager {
 
         // We are in attack range and healthy, attack the target
         creep.attack(target);
-
         // Reset creep's target
         MiliApi.resetOffensiveTarget(creep);
     }

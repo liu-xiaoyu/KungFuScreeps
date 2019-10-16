@@ -16,9 +16,9 @@ import {
     TIER_7,
     TIER_8,
     ROLE_TOWER_MEDIC,
+    ERROR_ERROR
 } from "utils/Constants";
-import { SpawnHelper } from "Helpers/SpawnHelper";
-import SpawnApi from "Api/Spawn.Api"
+import { SpawnHelper, EventHelper, UserException, SpawnApi, MemoryApi } from "utils/internals";
 
 export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
 
@@ -104,5 +104,50 @@ export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
         }
 
         return creepOptions;
+    }
+
+    /**
+     * get the target room for the tower drainer tank
+     * @param room the room we are spawning in
+     * @param roleConst the role of the creep spawning
+     * @param creepBody the body of the creep
+     * @param creepName the name of the creep spawning
+     */
+    public getTargetRoom(room: Room, roleConst: RoleConstant, creepBody: BodyPartConstant[], creepName: string): string {
+        const requestingFlag: AttackFlagMemory | undefined = EventHelper.getMiliRequestingFlag(
+            room,
+            roleConst,
+            creepName
+        );
+        if (requestingFlag) {
+            return Game.flags[requestingFlag!.flagName].pos.roomName;
+        }
+
+        // Throw exception if we couldn't find a definite room memory
+        throw new UserException(
+            "Couldn't get target room for [" + roleConst + " ]",
+            "room: [ " + room.name + " ]",
+            ERROR_ERROR
+        );
+    }
+
+    /**
+     * get the home room for the tower drainer tank
+     * @param room the room the creep is spawning in
+     */
+    public getHomeRoom(room: Room): string {
+        return room.name;
+    }
+
+    /**
+     * get the direction of the spawn the drainer should use
+     * @param centerSpawn the center spawn of the bunker
+     * @param room the room we are spawning in
+     */
+    public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
+        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
+        return _.filter(directions, (d: DirectionConstant) => d !== managerDirection);
     }
 }

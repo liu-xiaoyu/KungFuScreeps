@@ -1,8 +1,9 @@
-import MemoryHelper from "Helpers/MemoryHelper";
-import MemoryHelper_Room from "Helpers/MemoryHelper_Room";
-import RoomHelper from "Helpers/RoomHelper";
-import { NO_CACHING_MEMORY, PRIORITY_REPAIR_THRESHOLD } from "utils/config";
 import {
+    MemoryHelper,
+    MemoryHelper_Room,
+    RoomHelper,
+    NO_CACHING_MEMORY,
+    PRIORITY_REPAIR_THRESHOLD,
     BACKUP_JOB_CACHE_TTL,
     CONSTR_CACHE_TTL,
     CONTAINER_JOB_CACHE_TTL,
@@ -27,13 +28,13 @@ import {
     PICKUP_JOB_CACHE_TTL,
     ALL_STRUCTURE_TYPES,
     ERROR_ERROR,
-    MINERAL_CACHE_TTL
-} from "utils/Constants";
-import UserException from "utils/UserException";
-import RoomApi from "./Room.Api";
+    MINERAL_CACHE_TTL,
+    UserException,
+    RoomApi
+} from "utils/internals";
 
 // the api for the memory class
-export default class MemoryApi {
+export class MemoryApi {
     /**
      * Remove all memory objects that are dead
      */
@@ -190,7 +191,7 @@ export default class MemoryApi {
                 jobs: {},
                 structures: { data: null, cache: null },
                 upgradeLink: "",
-                events: [],
+                events: []
             };
         } else {
             Memory.rooms[roomName] = {
@@ -202,7 +203,7 @@ export default class MemoryApi {
                 constructionSites: { data: null, cache: null },
                 defcon: -1,
                 hostiles: { data: null, cache: null },
-                events: [],
+                events: []
             };
         }
 
@@ -230,6 +231,7 @@ export default class MemoryApi {
         this.getAllGetEnergyJobs(room, undefined, forceUpdate);
         this.getAllClaimPartJobs(room, undefined, forceUpdate);
         this.getAllWorkPartJobs(room, undefined, forceUpdate);
+        this.getBunkerCenter(room, forceUpdate);
     }
 
     /**
@@ -1817,7 +1819,7 @@ export default class MemoryApi {
         for (const hustler of creepsInRoomWhoAreHustling) {
             const job: BaseJob = hustler.memory.job!;
             if (!RoomHelper.verifyObjectByID(job.targetID)) {
-                delete hustler.memory.job
+                delete hustler.memory.job;
             }
         }
     }
@@ -1842,5 +1844,37 @@ export default class MemoryApi {
             }
         }
         return attackRoomFlags;
+    }
+
+    /**
+     * Get the center of the bunker
+     * @param room the room we are in
+     * @param forceUpdate boolean representing if we need to update this
+     * @returns the room position of the center of the room
+     */
+    public static getBunkerCenter(room: Room, forceUpdate?: boolean): RoomPosition {
+        if (forceUpdate || !room.memory.bunkerCenter) {
+            MemoryHelper_Room.updateBunkerCenter(room);
+        }
+
+        return room.memory.bunkerCenter!;
+    }
+
+    /**
+     * Get the creep count split up by role : count pairs
+     * @param room the room we are in
+     */
+    public static getAllCreepCount(room: Room): AllCreepCount {
+        const creepsInRoom: Creep[] = this.getMyCreeps(room.name);
+        const allCreepCount: AllCreepCount = MemoryHelper.generateDefaultAllCreepCountObject();
+
+        // sum up the number of each role we come across
+        for (const creep of creepsInRoom) {
+            if (creep.ticksToLive && (creep.ticksToLive < (creep.body.length * 3))) {
+                continue;
+            }
+            allCreepCount[creep.memory.role] = allCreepCount[creep.memory.role] + 1;
+        }
+        return allCreepCount;
     }
 }

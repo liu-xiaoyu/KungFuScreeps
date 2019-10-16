@@ -16,12 +16,12 @@ import {
     TIER_7,
     TIER_8,
     ROLE_HARVESTER,
-} from "utils/Constants";
-import { SpawnHelper } from "Helpers/SpawnHelper";
-import SpawnApi from "Api/Spawn.Api";
+    SpawnHelper,
+    SpawnApi,
+    MemoryApi
+} from "utils/internals";
 
 export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
-
     public name: RoleConstant = ROLE_HARVESTER;
 
     constructor() {
@@ -54,13 +54,13 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
 
             case TIER_6:
             case TIER_5:
-            case TIER_4: // 16 Carry, 8 Move - Total Cost: 1200
-                body = { carry: 16, move: 8 };
+            case TIER_4: // 10 Carry, 10 Move - Total Cost: 1000
+                body = { carry: 10, move: 10 };
                 break;
 
             case TIER_8:
-            case TIER_7: // 20 Carry, 20 Move - Total Cost: 1500
-                body = { carry: 20, move: 10 };
+            case TIER_7: // 15 Carry, 15 Move - Total Cost: 1500
+                body = { carry: 15, move: 15 };
                 break;
         }
 
@@ -83,7 +83,7 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                     fillStorage: true,
                     fillTerminal: true,
                     getDroppedEnergy: true,
-                    getFromContainer: true, //
+                    getFromContainer: true //
                 };
                 break;
 
@@ -97,7 +97,7 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                     fillTerminal: true,
                     fillStorage: true,
                     getDroppedEnergy: true, //
-                    getFromContainer: true, //
+                    getFromContainer: true //
                 };
 
                 break;
@@ -139,17 +139,51 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                 creepOptions = {
                     // Options marked with // are overriding the defaults
                     fillStorage: true, //
-                    fillTerminal: true,
                     fillExtension: true,
                     fillSpawn: true,
                     getFromStorage: true, //
                     getDroppedEnergy: true, //
-                    getFromTerminal: true //
                 };
 
                 break;
         }
 
         return creepOptions;
+    }
+
+    /**
+     * Get the home room for the creep
+     * @param room the room we are spawning the creep from
+     */
+    public getHomeRoom(room: Room): string {
+        return room.name;
+    }
+
+    /**
+     * Get the target room for the creep
+     * @param room the room we are spawning the creep in
+     * @param roleConst the role we are getting room for
+     * @param creepBody the body of the creep we are checking, so we know who to exclude from creep counts
+     * @param creepName the name of the creep we are checking for
+     */
+    public getTargetRoom(
+        room: Room,
+        roleConst: RoleConstant,
+        creepBody: BodyPartConstant[],
+        creepName: string
+    ): string {
+        return room.name;
+    }
+
+    /**
+     * Get the spawn direction for the creep
+     * @param centerSpawn the center spawn for the room
+     * @param room the room we are in
+     */
+    public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
+        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
+        return _.filter(directions, (d: DirectionConstant) => d !== managerDirection);
     }
 }

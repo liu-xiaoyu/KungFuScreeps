@@ -1,51 +1,16 @@
-import MemoryApi from "../../Api/Memory.Api";
-import CreepApi from "Api/Creep.Api";
-import {
-    ERROR_WARN,
-    ROLE_CLAIMER,
-} from "utils/constants";
-import UserException from "utils/UserException";
+import { CreepApi, MemoryApi, UserException, ROLE_CLAIMER } from "utils/internals";
 
 // Manager for the miner creep role
-export default class ClaimerCreepManager implements ICreepRoleManager {
-
+export class ClaimerCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_CLAIMER;
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
-    /**
-     * run the claimer creep
-     * @param creep the creep we are running
-     */
-    public runCreepRole(creep: Creep): void {
-
-        if (creep.room.memory.defcon > 0) {
-            // flee code here
-        }
-
-        const homeRoom = Game.rooms[creep.memory.homeRoom];
-
-        if (creep.memory.job === undefined) {
-            this.getClaimJob(creep, homeRoom);
-
-            if (creep.memory.job === undefined) {
-                return;
-            }
-
-            this.handleNewJob(creep, homeRoom, creep.memory.job as ClaimPartJob);
-        }
-
-        if (creep.memory.working) {
-            CreepApi.doWork(creep, creep.memory.job);
-        }
-
-        CreepApi.travelTo(creep, creep.memory.job);
-    }
-
-    public getClaimJob(creep: Creep, room: Room): ClaimPartJob | undefined {
+    public getNewJob(creep: Creep, room: Room): ClaimPartJob | undefined {
         const creepOptions = creep.memory.options as CreepOptionsCiv;
 
         if (creepOptions.claim) {
@@ -59,8 +24,8 @@ export default class ClaimerCreepManager implements ICreepRoleManager {
         return undefined;
     }
 
-    public handleNewJob(creep: Creep, room: Room, job: ClaimPartJob): void {
-        const newJob = MemoryApi.searchClaimPartJobs(job, room);
+    public handleNewJob(creep: Creep, room: Room, job?: BaseJob): void {
+        const newJob = MemoryApi.searchClaimPartJobs(job as ClaimPartJob, room);
 
         if (newJob === undefined) {
             const exception = new UserException(

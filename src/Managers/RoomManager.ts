@@ -1,6 +1,3 @@
-import RoomApi from "../Api/Room.Api";
-import MemoryApi from "../Api/Memory.Api";
-import RoomHelper from "Helpers/RoomHelper";
 import {
     RUN_TOWER_TIMER,
     RUN_LAB_TIMER,
@@ -9,11 +6,17 @@ import {
     RUN_ROOM_STATE_TIMER,
     RUN_DEFCON_TIMER,
     RUN_RESERVE_TTL_TIMER,
-    RUN_RAMPART_STATUS_UPDATE
-} from "utils/config";
+    RUN_RAMPART_STATUS_UPDATE,
+    ROOM_STATE_UPGRADER,
+    ROOM_STATE_NUKE_INBOUND,
+    MemoryHelper_Room,
+    RoomHelper,
+    MemoryApi,
+    RoomApi
+} from "utils/internals";
 
 // room-wide manager
-export default class RoomManager {
+export class RoomManager {
     /**
      * run the room for every room
      */
@@ -46,31 +49,28 @@ export default class RoomManager {
         }
 
         const defcon: number = MemoryApi.getDefconLevel(room);
-
-        // TODO move these safe mode triggers into a function
-        // if(room..controller!.safeModeAvailable) {
-        //      RoomApi.runSafeMode(room);
-        // }
-
-        // If we are under attack before we have a tower, trigger a safe mode
-        if (defcon >= 2 && !RoomHelper.isExistInRoom(room, STRUCTURE_TOWER)) {
-            if (room.controller!.safeModeAvailable) {
-                room.controller!.activateSafeMode();
-            }
-        }
-
-        // If we are under attack and our towers have no energy, trigger a safe mode
-        const towerEnergy = _.sum(MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER), 'energy');
-        if (defcon >= 3 && towerEnergy === 0) {
-            if (room.controller!.safeModeAvailable) {
-                room.controller!.activateSafeMode();
-            }
+        if (room.controller!.safeModeAvailable) {
+            RoomApi.runSafeMode(room, defcon);
         }
 
         // Run all structures in the room if they exist
         // Run Towers
-        if (defcon >= 1 && RoomHelper.excecuteEveryTicks(RUN_TOWER_TIMER)) {
-            RoomApi.runTowers(room);
+        const roomState = room.memory.roomState;
+        if (RoomHelper.excecuteEveryTicks(RUN_TOWER_TIMER) && RoomHelper.isExistInRoom(room, STRUCTURE_TOWER)) {
+
+            // Check first if we have EMERGECY ramparts to heal up
+            // I just got this to work while it was bug testable, so feel free to refactor into something thats NOT this (maybe pull into a function either way idc)
+            const rampart: Structure<StructureConstant> = <Structure<StructureConstant>>_.first(room.find(FIND_MY_STRUCTURES,
+                { filter: (s: any) => s.structureType === STRUCTURE_RAMPART && s.hits < 1000 }
+            ));
+            if (rampart) {
+                RoomApi.runTowersEmergecyRampartRepair(rampart as StructureRampart);
+            }
+            else if (defcon >= 1) {
+                RoomApi.runTowersDefense(room);
+            } else if (roomState === ROOM_STATE_UPGRADER || roomState === ROOM_STATE_NUKE_INBOUND) {
+                RoomApi.runTowersRepair(room);
+            }
         }
 
         // Run Labs

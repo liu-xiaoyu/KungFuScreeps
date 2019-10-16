@@ -26,6 +26,8 @@ export const ROLE_MEDIC = "medic";
 export const ROLE_DOMESTIC_DEFENDER = "domesticDefender";
 export const ROLE_TOWER_TANK = "towerTank";
 export const ROLE_TOWER_MEDIC = "towerMedic";
+export const ROLE_SCOUT = "scout";
+export const ROLE_MANAGER = "manager";
 
 // Tier Constants
 export const TIER_1 = 300;
@@ -55,10 +57,12 @@ export const COLLATED = "collated";
 export const domesticRolePriority: RoleConstant[] = [
     ROLE_MINER,
     ROLE_HARVESTER,
+    ROLE_MANAGER,
     ROLE_WORKER,
     ROLE_POWER_UPGRADER,
     ROLE_LORRY,
     ROLE_MINERAL_MINER,
+    ROLE_SCOUT
 ];
 
 // * Keep this list ordered by spawn priority
@@ -96,20 +100,20 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
 // The Wall/Rampart HP Limit for each Controller level
 export const WALL_LIMIT: number[] = [
     0, // RCL 0
-    25000, // RCL 1
-    50000, // RCL 2
-    100000, // RCL 3
-    250000, // RCL 4
-    500000, // RCL 5
-    1000000, // RCL 6
-    1500000, // RCL 7
+    12500, // RCL 1
+    25000, // RCL 2
+    50000, // RCL 3
+    125000, // RCL 4
+    250000, // RCL 5
+    500000, // RCL 6
+    1000000, // RCL 7
     5000000 // RCL 8
 ];
 
 // Cache Tick Limits
 export const STRUCT_CACHE_TTL = 50; // Structures
 export const SOURCE_CACHE_TTL = -1; // Sources
-export const MINERAL_CACHE_TTL = -1 // Minerals
+export const MINERAL_CACHE_TTL = -1; // Minerals
 export const CONSTR_CACHE_TTL = 50; // Construction Sites
 export const TOMBSTONE_CACHE_TTL = 50; // Tombstones
 export const DROPS_CACHE_TTL = 50; // Dropped Resources
@@ -150,51 +154,39 @@ COLORS[ERROR_ERROR] = "#E300FF";
 COLORS[ERROR_WARN] = "#F0FF00";
 COLORS[ERROR_INFO] = "#0045FF";
 
-// Our default moveOpts object. Assign this to a new object and then adjust the values for the situation
-export const DEFAULT_MOVE_OPTS: MoveToOpts = {
-    heuristicWeight: 1.5, // TODO Test this to see if we can afford to raise it ( higher number = less CPU use, lower number = more likely to get best path each time)
-    range: 0, // Assume we want to go to the location, if not told otherwise
-    ignoreCreeps: true, // ! Might need to change this back to false if we have issues with enemy creeps
-    reusePath: 999, 
-    // swampCost: 5, // Putting this here as a reminder that we can make bigger creeps that can move on swamps
-    visualizePathStyle: {}, // Empty object for now, just uses default visualization
-    costCallback(roomName: string, costMatrix: CostMatrix) {
-        _.forEach(Game.creeps, (creep: Creep) => {
-            
-            // If not in the room, do nothing
-            if(creep.pos.roomName !== roomName){
-                return;
-            }
-            
-            let matrixValue;
-
-            if (creep.my) {
-                // ! Testing to see if walking around fatigued creeps is optimal or not
-                if (creep.memory.working === true || creep.memory.job === undefined || creep.fatigue > 0) {
-                    // Walk around working creeps or idling creeps
-                    matrixValue = 255;
-                } else {
-                    // Walk through creeps with a job, but not working (AKA traveling)
-                    const terrainValue = new Room.Terrain(roomName).get(creep.pos.x, creep.pos.y);
-                    // Match the terrain underneath the creep to avoid preferring going under creeps
-                    matrixValue = terrainValue > 0 ? 5 : 1;
-                }
-            } else {
-                // If creep is not ours, we can only walk on it if we are in safe mode
-                if(creep.room.controller && creep.room.controller.safeMode !== undefined) {
-                    const terrainValue = new Room.Terrain(roomName).get(creep.pos.x, creep.pos.y);
-                    matrixValue = terrainValue > 0 ? 5 : 1;
-                } else {
-                    matrixValue = 255;
-                }
-            }
-            
-            costMatrix.set(creep.pos.x, creep.pos.y, matrixValue);
-        });
-
-        return costMatrix;
-    }
-};
+// Movement API Data Types
+export const ROOM_STATUS_ALLY = "ally";
+export const ROOM_STATUS_ALLY_REMOTE = "allyRemote";
+export const ROOM_STATUS_NEUTRAL = "neutral";
+export const ROOM_STATUS_HIGHWAY = "highway";
+export const ROOM_STATUS_SOURCE_KEEPER = "sourceKeeper";
+export const ROOM_STATUS_HOSTILE = "hostile";
+export const ROOM_STATUS_HOSTILE_REMOTE = "hostileRemote";
+export const ROOM_STATUS_UNKNOWN = "unknown";
 
 // Custom Event Type Constants
 export const C_EVENT_CREEP_SPAWNED = 1;
+
+// All civilian roles we have
+export const ALL_CIVILIAN_ROLES: RoleConstant[] = [
+    ROLE_CLAIMER,
+    ROLE_COLONIZER,
+    ROLE_HARVESTER,
+    ROLE_LORRY,
+    ROLE_MANAGER,
+    ROLE_MINER,
+    ROLE_MINERAL_MINER,
+    ROLE_POWER_UPGRADER,
+    ROLE_REMOTE_HARVESTER,
+    ROLE_REMOTE_MINER,
+    ROLE_REMOTE_RESERVER,
+    ROLE_SCOUT,
+    ROLE_WORKER
+];
+
+// All Remote roles we have
+export const ALL_REMOTE_ROLES: RoleConstant[] = [
+    ROLE_REMOTE_HARVESTER,
+    ROLE_REMOTE_MINER,
+    ROLE_REMOTE_RESERVER
+];

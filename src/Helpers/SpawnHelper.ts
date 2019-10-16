@@ -1,17 +1,16 @@
 import {
     ROLE_COLONIZER,
+    ROLE_HARVESTER,
     ROLE_REMOTE_MINER,
     ROLE_REMOTE_HARVESTER,
     ROLE_CLAIMER,
     ERROR_WARN,
     STALKER_SOLO,
     ZEALOT_SOLO,
-    STANDARD_SQUAD
-} from "utils/Constants";
-import UserException from "utils/UserException";
-import MemoryApi from "Api/Memory.Api";
-import RoomHelper from "Helpers/RoomHelper";
-import {
+    STANDARD_SQUAD,
+    UserException,
+    MemoryApi,
+    RoomHelper,
     ZEALOT_SOLO_ARRAY,
     STANDARD_SQUAD_ARRAY,
     STALKER_SOLO_ARRAY,
@@ -19,9 +18,10 @@ import {
     TIER_2_MILITARY_PRIORITY,
     TIER_3_MILITARY_PRIORITY,
     ALL_MILITARY_ROLES,
-    ALL_DEFENSIVE_ROLES
-} from "utils/militaryConfig";
-import { RESERVER_MIN_TTL } from "utils/config";
+    ALL_DEFENSIVE_ROLES,
+    RESERVER_MIN_TTL,
+    ROOM_STATE_INTRO
+} from "utils/internals";
 
 /**
  * Functions to help keep Spawn.Api clean go here
@@ -104,7 +104,7 @@ export class SpawnHelper {
      */
     public static generateCreepName(role: RoleConstant, tier: TierConstant, room: Room): string {
         const modifier: string = Game.time.toString().slice(-4);
-        const name = role + "_" + tier + "_" + room.name + "_" + modifier;
+        const name = role + "_" + tier + "_" + room.name + "_" + modifier + "_" + Math.random() * 99;
         return name;
     }
 
@@ -331,7 +331,7 @@ export class SpawnHelper {
 
         switch (roleConst) {
             case ROLE_REMOTE_HARVESTER:
-                creepNum = 1 * numSources;
+                creepNum = Math.ceil(1.5 * numSources);
                 break;
             case ROLE_REMOTE_MINER:
                 creepNum = 1 * numSources;
@@ -516,5 +516,23 @@ export class SpawnHelper {
                 return false;
             })
         );
+    }
+
+    /**
+     * check if we need a harvester as the highest priority
+     * @param room the room we are in
+     * @returns boolean that represents if we need a harvester as priority
+     */
+    public static needPriorityHarvester(room: Room): boolean {
+        if (
+            room.memory.creepLimit !== undefined &&
+            room.memory.creepLimit.domesticLimits !== undefined &&
+            room.memory.creepLimit.domesticLimits.harvester === 1 &&
+            room.memory.roomState !== undefined &&
+            room.memory.roomState > ROOM_STATE_INTRO // Never a priority in intro state
+        ) {
+            return !_.some(MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER && c.carryCapacity > 200));
+        }
+        return false;
     }
 }

@@ -1,12 +1,5 @@
 // Config file for memory related actions
-import {
-    ROLE_MEDIC,
-    ROLE_STALKER,
-    ROLE_ZEALOT,
-    ROLE_DOMESTIC_DEFENDER,
-    ROLE_TOWER_MEDIC,
-    ROLE_TOWER_TANK
-} from "./constants";
+import { ROLE_MEDIC, ROLE_STALKER, ROLE_ZEALOT, ROLE_DOMESTIC_DEFENDER, ROLE_REMOTE_DEFENDER, ROLE_TOWER_MEDIC, ROLE_TOWER_TANK } from "utils/internals";
 
 // -----
 /* Arrays for military flags */
@@ -46,7 +39,7 @@ export const TIER_3_MILITARY_PRIORITY: RoleConstant[] = [ROLE_STALKER, ROLE_MEDI
 /**
  * config for all military roles
  */
-export const ALL_MILITARY_ROLES: RoleConstant[] = [ROLE_STALKER, ROLE_MEDIC, ROLE_ZEALOT, ROLE_DOMESTIC_DEFENDER, ROLE_TOWER_MEDIC, ROLE_TOWER_TANK];
+export const ALL_MILITARY_ROLES: RoleConstant[] = [ROLE_STALKER, ROLE_MEDIC, ROLE_ZEALOT, ROLE_DOMESTIC_DEFENDER, ROLE_REMOTE_DEFENDER, ROLE_TOWER_MEDIC, ROLE_TOWER_TANK];
 
 /**
  * config for all defensive roles (no requesting flag)

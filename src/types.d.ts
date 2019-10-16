@@ -85,6 +85,7 @@ declare const ROLE_WORKER = "worker";
 declare const ROLE_POWER_UPGRADER = "powerUpgrader";
 declare const ROLE_LORRY = "lorry";
 declare const ROLE_MINERAL_MINER = "mineralMiner";
+declare const ROLE_SCOUT = "scout";
 declare const ROLE_REMOTE_MINER = "remoteMiner";
 declare const ROLE_REMOTE_HARVESTER = "remoteHarvester";
 declare const ROLE_REMOTE_RESERVER = "remoteReserver";
@@ -97,6 +98,7 @@ declare const ROLE_MEDIC = "medic";
 declare const ROLE_DOMESTIC_DEFENDER = "domesticDefender";
 declare const ROLE_TOWER_MEDIC = "towerMedic";
 declare const ROLE_TOWER_TANK = "towerTank";
+declare const ROLE_MANAGER = "manager";
 
 /**
  * role constants
@@ -108,6 +110,7 @@ type RoleConstant =
     | ROLE_POWER_UPGRADER
     | ROLE_LORRY
     | ROLE_MINERAL_MINER
+    | ROLE_SCOUT
     | ROLE_REMOTE_MINER
     | ROLE_REMOTE_HARVESTER
     | ROLE_REMOTE_RESERVER
@@ -119,7 +122,8 @@ type RoleConstant =
     | ROLE_MEDIC
     | ROLE_DOMESTIC_DEFENDER
     | ROLE_TOWER_MEDIC
-    | ROLE_TOWER_TANK;
+    | ROLE_TOWER_TANK
+    | ROLE_MANAGER;
 
 /**
  * sits on the source and mines energy full-time
@@ -145,6 +149,10 @@ type ROLE_LORRY = "lorry";
  * static miner for minerals
  */
 type ROLE_MINERAL_MINER = "mineralMiner";
+/**
+ * scout used to populate empire movement data
+ */
+type ROLE_SCOUT = "scout";
 /**
  * goes into remote room and sits on source to mine full-time
  */
@@ -193,14 +201,24 @@ type ROLE_TOWER_TANK = "towerTank"; //
  * Military Creep - tower drainer medic
  */
 type ROLE_TOWER_MEDIC = "towerMedic";
+/*
+ * Domestic Creep, manages energy flow in the room
+ */
+type ROLE_MANAGER = "manager"; //
 
 // Role Interfaces to be implemented  -------------
 /**
  * Interface for Creep Role Managers
  */
-interface ICreepRoleManager {
+interface IMiliCreepRoleManager {
     name: RoleConstant;
     runCreepRole: (creep: Creep) => void;
+}
+
+interface ICivCreepRoleManager {
+    name: RoleConstant;
+    getNewJob: (creep: Creep, room: Room, targetRoom?: Room) => BaseJob | undefined;
+    handleNewJob: (creep: Creep, room: Room, job?: BaseJob) => void;
 }
 
 /**
@@ -212,11 +230,37 @@ interface ICreepBodyOptsHelper {
         roomState: RoomStateConstant,
         squadSizeParam: number,
         squadUUIDParam: number | null,
-        rallyLocationParam: RoomPosition | null) => (CreepOptionsCiv | undefined) | (CreepOptionsMili | undefined);
+        rallyLocationParam: RoomPosition | null
+    ) => (CreepOptionsCiv | undefined) | (CreepOptionsMili | undefined);
     generateCreepBody: (tier: TierConstant) => BodyPartConstant[];
+    getTargetRoom: (
+        room: Room,
+        roleConst: RoleConstant,
+        creepBody: BodyPartConstant[],
+        creepName: string
+    ) => string;
+    getHomeRoom: (room: Room) => string;
+    getSpawnDirection: (centerSpawn: StructureSpawn, room: Room) => DirectionConstant[];
+}
+
+/**
+ * Interface for Job Type
+ */
+interface IJobTypeHelper {
+    travelTo: (creep: Creep, job: BaseJob) => void;
+    doWork: (creep: Creep, job: BaseJob) => void;
+    jobType: Valid_JobTypes;
+}
+
+/**
+ * Interface for Flag Types
+ */
+interface IFlagProcesser {
+    primaryColor: ColorConstant;
+    secondaryColor: ColorConstant | undefined;
+    processFlag: (flag: Flag) => void;
 }
 // --------------------------------------------------------------------
-
 /**
  * global console functions
  */
@@ -294,7 +338,7 @@ interface Structure {
 
 // Define the structure memory
 interface StructureMemory {
-    processed: boolean
+    processed: boolean;
 }
 
 // main memory modules --------------
@@ -417,7 +461,7 @@ type MovePart_ValidTargets = "roomPosition" | "roomName";
 /**
  * Valid actions for MovePartJob actionType
  */
-type MovePart_ValidActions = "move"
+type MovePart_ValidActions = "move";
 
 /**
  * Acceptable ValidTargets Lists for BaseJob
@@ -645,8 +689,7 @@ interface CarryPartJobListing {
  * types of custom events
  */
 type C_EVENT_CREEP_SPAWNED = 1;
-type CustomEventConstant =
-    C_EVENT_CREEP_SPAWNED;
+type CustomEventConstant = C_EVENT_CREEP_SPAWNED;
 
 /**
  * a custom event that signals something notable that occured in a room
@@ -702,6 +745,10 @@ interface RoomMemory {
      */
     upgradeLink?: string;
     /**
+     * the center of the bunker for auto construction and spawn referencing
+     */
+    bunkerCenter?: RoomPosition;
+    /**
      * Cache of all creeps
      */
     creeps?: Cache;
@@ -752,7 +799,52 @@ interface EmpireMemory {
      * messages to display in each room's alert box
      */
     alertMessages?: AlertMessageNode[];
+    /**
+     * PathfindingApi empire-wide memory
+     */
+    movementData?: RoomMovementData[];
 }
+
+/**
+ * Contains pathfinding information about a room
+ */
+interface RoomMovementData {
+    /**
+     * Name of the room
+     */
+    roomName: string;
+    /**
+     * Status of the room
+     */
+    roomStatus: RoomStatusType;
+    /**
+     * Last tick this room was scouted
+     */
+    lastSeen: number;
+    /**
+     * Optional SERIALIZED costMatrix data to be used with PathFinder.CostMatrix.deserialize()
+     * -- Useful for storing data to be shared between multiple creeps
+     */
+    costMatrix?: number[];
+}
+
+type ROOM_STATUS_ALLY = "ally";
+type ROOM_STATUS_ALLY_REMOTE = "allyRemote";
+type ROOM_STATUS_NEUTRAL = "neutral";
+type ROOM_STATUS_HIGHWAY = "highway";
+type ROOM_STATUS_SOURCE_KEEPER = "sourceKeeper";
+type ROOM_STATUS_HOSTILE = "hostile";
+type ROOM_STATUS_HOSTILE_REMOTE = "hostileRemote";
+type ROOM_STATUS_UNKNOWN = "unknown";
+type RoomStatusType =
+    | ROOM_STATUS_ALLY
+    | ROOM_STATUS_ALLY_REMOTE
+    | ROOM_STATUS_NEUTRAL
+    | ROOM_STATUS_HIGHWAY
+    | ROOM_STATUS_SOURCE_KEEPER
+    | ROOM_STATUS_HOSTILE
+    | ROOM_STATUS_HOSTILE_REMOTE
+    | ROOM_STATUS_UNKNOWN;
 
 /**
  * override structure type
@@ -1242,3 +1334,12 @@ interface ETAMemory {
     avgPointsPerTick: number;
     ticksMeasured: number;
 }
+
+/**
+ * object containing the count of each creep by role
+ * key = role
+ * value = number representing value
+ */
+type AllCreepCount = {
+    [key in RoleConstant]: number;
+};

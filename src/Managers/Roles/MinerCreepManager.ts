@@ -1,51 +1,28 @@
-import MemoryApi from "../../Api/Memory.Api";
-import CreepApi from "Api/Creep.Api";
-import {
-    ROLE_MINER,
-} from "utils/constants";
-import CreepHelper from "Helpers/CreepHelper";
+import { ROLE_MINER, CreepHelper, CreepApi, MemoryApi } from "utils/internals";
 
 // Manager for the miner creep role
-export default class MinerCreepManager implements ICreepRoleManager {
-
+export class MinerCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_MINER;
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**
-     * Run the miner creep
-     * @param creep The creep to run
+     * get a job for the miner creep
+     * @param creep
+     * @param room
      */
-    public runCreepRole(creep: Creep): void {
-
-        const homeRoom: Room = Game.rooms[creep.memory.homeRoom];
-
-        if (creep.memory.job === undefined) {
-            creep.memory.job = CreepApi.getNewSourceJob(creep, homeRoom);
-
-            if (creep.memory.job === undefined) {
-                return; // idle for a tick
-            }
-
-            // Set supplementary.moveTarget to container if one exists and isn't already taken
-            this.handleNewJob(creep, homeRoom);
-        }
-
-        if (creep.memory.job) {
-            if (creep.memory.working) {
-                CreepApi.doWork(creep, creep.memory.job);
-                return;
-            }
-
-            CreepApi.travelTo(creep, creep.memory.job);
-        }
+    public getNewJob(creep: Creep, room: Room): BaseJob | undefined {
+        return CreepApi.getNewSourceJob(creep, room);
     }
 
     /**
      * Handle initalizing a new job
+     * @param creep the creep we are using
+     * @param room the room we are in
      */
     public handleNewJob(creep: Creep, room: Room): void {
         // Update room memory to reflect the new job

@@ -1,74 +1,55 @@
-import MemoryApi from "../../Api/Memory.Api";
-import CreepApi from "Api/Creep.Api";
-import MemoryHelper from "Helpers/MemoryHelper";
-import {
-    ROLE_REMOTE_HARVESTER,
-} from "utils/constants";
+import { ROLE_REMOTE_HARVESTER, MemoryApi, CreepApi, MemoryHelper, PathfindingApi, UserException, ERROR_ERROR } from "utils/internals";
 
 // Manager for the miner creep role
-export default class RemoteHarvesterCreepManager implements ICreepRoleManager {
-
+export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_REMOTE_HARVESTER;
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
-    }
-
-    /**
-     * run the remote harvester creep
-     * @param creep the creep we are running
-     */
-    public runCreepRole(creep: Creep): void {
-
-        const homeRoom = Game.rooms[creep.memory.homeRoom];
-        const targetRoom = Game.rooms[creep.memory.targetRoom];
-
-        if (CreepApi.creepShouldFlee(creep)) {
-            CreepApi.fleeRemoteRoom(creep, homeRoom);
-            return;
-        }
-
-        if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewJob(creep, homeRoom, targetRoom);
-
-            if (creep.memory.job === undefined) {
-                return;
-            }
-
-            this.handleNewJob(creep, homeRoom);
-        }
-
-        if (creep.memory.working) {
-            CreepApi.doWork(creep, creep.memory.job);
-            return;
-        }
-
-        CreepApi.travelTo(creep, creep.memory.job);
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**
      * Decides which kind of job to get and calls the appropriate function
      */
-    public getNewJob(creep: Creep, homeRoom: Room, targetRoom: Room): BaseJob | undefined {
+    public getNewJob(creep: Creep, homeRoom: Room, targetRoom: Room | undefined): BaseJob | undefined {
+
+        if (!targetRoom) {
+            throw new UserException(
+                "Remote harvester target room was not set",
+                "creep: " + creep.name + ", room: " + homeRoom.name,
+                ERROR_ERROR
+            );
+        }
+
         if (creep.carry.energy === 0 && creep.room.name === creep.memory.targetRoom) {
+
             // If creep is empty and in targetRoom - get energy
-            return CreepApi.newGetEnergyJob(creep, targetRoom);
-        } else if (creep.carry.energy === 0 && creep.room.name !== creep.memory.targetRoom) {
+            return CreepApi.newGetEnergyJob(creep, targetRoom!);
+        }
+        else if (creep.carry.energy === 0 && creep.room.name !== creep.memory.targetRoom) {
+
             // If creep is empty and not in targetRoom - Go to targetRoom
             return CreepApi.newMovePartJob(creep, creep.memory.targetRoom);
-        } else if (creep.carry.energy > 0 && creep.room.name === creep.memory.targetRoom) {
+        }
+        else if (creep.carry.energy > 0 && creep.room.name === creep.memory.targetRoom) {
+
             // If creep has energy and is in targetRoom - Get workpartJob
-            let job = CreepApi.newWorkPartJob(creep, targetRoom) as BaseJob;
+            let job = CreepApi.newWorkPartJob(creep, targetRoom!) as BaseJob;
+
             // if no work part job - Go to homeRoom
             if (job === undefined) {
                 job = CreepApi.newMovePartJob(creep, creep.memory.homeRoom) as BaseJob;
             }
 
             return job;
-        } else if (creep.carry.energy > 0 && creep.room.name === creep.memory.homeRoom) {
+        }
+        else if (creep.carry.energy > 0 && creep.room.name === creep.memory.homeRoom) {
+
             // If creep has energy and is in homeRoom - Get a carry job to use energy
             let job: BaseJob | undefined = this.newCarryPartJob(creep, homeRoom);
+
             // If no carryJob, get a workPartJob in homeroom
             if (job === undefined) {
                 job = CreepApi.newWorkPartJob(creep, homeRoom);

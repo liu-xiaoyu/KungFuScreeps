@@ -1,56 +1,72 @@
-// Creep Managers' Implementations
-import MinerCreepManager from "../Managers/Roles/MinerCreepManager";
-import HarvesterCreepManager from "../Managers/Roles/HarvesterCreepManager";
-import WorkerCreepManager from "../Managers/Roles/WorkerCreepManager";
-import LorryCreepManager from "../Managers/Roles/LorryCreepManager";
-import MineralMinerCreepManager from "Managers/Roles/MineralMinerManager";
-import PowerUpgraderCreepManager from "../Managers/Roles/PowerUpgraderCreepManager";
-import RemoteMinerCreepManager from "../Managers/Roles/RemoteMinerCreepManager";
-import RemoteHarvesterCreepManager from "../Managers/Roles/RemoteHarvesterCreepManager";
-import RemoteColonizerCreepManager from "../Managers/Roles/RemoteColonizerCreepManager";
-import ClaimerCreepManager from "../Managers/Roles/ClaimerCreepManager";
-import RemoteDefenderCreepManager from "../Managers/Roles/RemoteDefenderCreepManager";
-import RemoteReserverCreepManager from "../Managers/Roles/RemoteReserverCreepManager";
-import ZealotCreepManager from "../Managers/Roles/ZealotCreepManager";
-import MedicCreepManager from "../Managers/Roles/MedicCreepManager";
-import StalkerCreepManager from "../Managers/Roles/StalkerCreepManager";
-import DomesticDefenderCreepManager from "../Managers/Roles/DomesticDefenderCreepManager";
-import TowerDrainerMedicCreepManager from "../Managers/Roles/TowerDrainerMedicManager";
-import TowerDrainerTankCreepManager from "../Managers/Roles/TowerDrainerTankManager";
-// ---------------------------
-// Body/Option Helper Implementations
-import { MinerBodyOptsHelper } from "../Helpers/RoleHelpers/MinerBodyOptsHelper";
-import { HarvesterBodyOptsHelper } from "../Helpers/RoleHelpers/HarvesterBodyOptsHelper";
-import { WorkerBodyOptsHelper } from "../Helpers/RoleHelpers/WorkerBodyOptsHelper";
-import { LorryBodyOptsHelper } from "../Helpers/RoleHelpers/LorryBodyOptsHelper";
-import { MineralMinerBodyOptsHelper } from "../Helpers/RoleHelpers/MineralMinerBodyOptsHelper";
-import { PowerUpgraderBodyOptsHelper } from "../Helpers/RoleHelpers/PowerUpgraderBodyOptsHelper";
-import { ZealotBodyOptsHelper } from "../Helpers/RoleHelpers/ZealotBodyOptsHelper";
-import { StalkerBodyOptsHelper } from "../Helpers/RoleHelpers/StalkerBodyOptsHelper";
-import { MedicBodyOptsHelper } from "../Helpers/RoleHelpers/MedicBodyOptsHelper";
-import { DomesticDefenderBodyOptsHelper } from "../Helpers/RoleHelpers/DomesticDefenderBodyOptsHelper";
-import { RemoteColonizerBodyOptsHelper } from "../Helpers/RoleHelpers/RemoteColonizerBodyOptsHelper";
-import { RemoteDefenderBodyOptsHelper } from "../Helpers/RoleHelpers/RemoteDefenderOptsHelper";
-import { RemoteMinerBodyOptsHelper } from "../Helpers/RoleHelpers/RemoteMinerBodyOptsHelper";
-import { RemoteHarvesterBodyOptsHelper } from "../Helpers/RoleHelpers/RemoteHarvesterBodyOptsHelper";
-import { ClaimerBodyOptsHelper } from "../Helpers/RoleHelpers/ClaimerBodyOptsHelper";
-import { RemoteReserverBodyOptsHelper } from "../Helpers/RoleHelpers/RemoteReserverBodyOptsHelper";
-import { TowerDrainerTankBodyOptsHelper } from "../Helpers/RoleHelpers/TowerDrainerTankBodyOptsHelper";
-import { TowerDrainerMedicBodyOptsHelper } from "../Helpers/RoleHelpers/TowerDrainerMedicBodyOptsHelper";
-// ---------------------------
-// Room Spawn Limit Implementations
-import { IntroStateCreepLimits } from "../Helpers/CreepLimitHelpers/IntroStateCreepLimits";
-import { BeginnerStateCreepLimits } from "../Helpers/CreepLimitHelpers/BeginnerStateCreepLimits";
-import { IntermediateStateCreepLimits } from "../Helpers/CreepLimitHelpers/IntermediateStateCreepLimits";
-import { AdvancedStateCreepLimits } from "../Helpers/CreepLimitHelpers/AdvancedStateCreepLimits";
-import { StimulateStateCreepLimits } from "../Helpers/CreepLimitHelpers/StimulateStateCreepLimits";
-import { NukeStateCreepLimits } from "../Helpers/CreepLimitHelpers/NukeStateCreepLimits";
-import { UpgraderStateCreepLimits } from "../Helpers/CreepLimitHelpers/UpgraderStateCreepLimits";
-// ----------------------------
-// ---------- End Imports ----------------------------------------------------------------------------
+import {
+    CarryPartJobs,
+    ClaimPartJobs,
+    GetEnergyJobs,
+    MovePartJobs,
+    WorkPartJobs,
+    MinerCreepManager,
+    HarvesterCreepManager,
+    WorkerCreepManager,
+    LorryCreepManager,
+    MineralMinerCreepManager,
+    PowerUpgraderCreepManager,
+    RemoteMinerCreepManager,
+    RemoteHarvesterCreepManager,
+    RemoteReserverCreepManager,
+    RemoteDefenderCreepManager,
+    RemoteColonizerCreepManager,
+    ClaimerCreepManager,
+    ZealotCreepManager,
+    StalkerCreepManager,
+    MedicCreepManager,
+    DomesticDefenderCreepManager,
+    ScoutCreepManager,
+    MinerBodyOptsHelper,
+    HarvesterBodyOptsHelper,
+    WorkerBodyOptsHelper,
+    LorryBodyOptsHelper,
+    MineralMinerBodyOptsHelper,
+    PowerUpgraderBodyOptsHelper,
+    RemoteMinerBodyOptsHelper,
+    RemoteHarvesterBodyOptsHelper,
+    RemoteReserverBodyOptsHelper,
+    RemoteDefenderBodyOptsHelper,
+    RemoteColonizerBodyOptsHelper,
+    ClaimerBodyOptsHelper,
+    ZealotBodyOptsHelper,
+    StalkerBodyOptsHelper,
+    MedicBodyOptsHelper,
+    DomesticDefenderBodyOptsHelper,
+    ScoutBodyOptsHelper,
+    IntroStateCreepLimits,
+    BeginnerStateCreepLimits,
+    IntermediateStateCreepLimits,
+    AdvancedStateCreepLimits,
+    UpgraderStateCreepLimits,
+    StimulateStateCreepLimits,
+    NukeStateCreepLimits,
+    ProcessDefaultAttackFlag,
+    ProcessDefaultClaimRoom,
+    ProcessDefaultRemoteRoom,
+    ProcessDefaultStimulateFlag,
+    ProcessDependentRoomOverride,
+    TowerDrainerMedicBodyOptsHelper,
+    TowerDrainerTankBodyOptsHelper,
+    TowerDrainerMedicCreepManager,
+    TowerDrainerTankCreepManager
+} from "utils/internals";
+
+// Constant containing the manager for each job, which all implement doWork & travelTo
+export const JobTypes: IJobTypeHelper[] = [
+    new CarryPartJobs(),
+    new ClaimPartJobs(),
+    new GetEnergyJobs(),
+    new MovePartJobs(),
+    new WorkPartJobs()
+];
 
 // Constant containing the manager for each role, which all implement runRole
-export const CREEP_MANAGERS: ICreepRoleManager[] = [
+export const CREEP_CIV_MANAGERS: ICivCreepRoleManager[] = [
     new MinerCreepManager(),
     new HarvesterCreepManager(),
     new WorkerCreepManager(),
@@ -60,15 +76,19 @@ export const CREEP_MANAGERS: ICreepRoleManager[] = [
     new RemoteMinerCreepManager(),
     new RemoteHarvesterCreepManager(),
     new RemoteReserverCreepManager(),
-    new RemoteDefenderCreepManager(),
     new RemoteColonizerCreepManager(),
     new ClaimerCreepManager(),
+    new ScoutCreepManager()
+];
+
+export const CREEP_MILI_MANAGERS: IMiliCreepRoleManager[] = [
     new ZealotCreepManager(),
     new StalkerCreepManager(),
     new MedicCreepManager(),
     new DomesticDefenderCreepManager(),
     new TowerDrainerMedicCreepManager(),
     new TowerDrainerTankCreepManager(),
+    new RemoteDefenderCreepManager(),
 ]
 
 // Constant containing the body and options helper for a creep, which implement these helper functions
@@ -91,6 +111,7 @@ export const CREEP_BODY_OPT_HELPERS: ICreepBodyOptsHelper[] = [
     new DomesticDefenderBodyOptsHelper(),
     new TowerDrainerMedicBodyOptsHelper(),
     new TowerDrainerTankBodyOptsHelper(),
+    new ScoutBodyOptsHelper()
 ];
 
 // This is where each class instance is stored to be searched through so the correct one can be selected
@@ -102,6 +123,14 @@ export const ROOM_STATE_CREEP_LIMITS: ICreepSpawnLimits[] = [
     new AdvancedStateCreepLimits(),
     new UpgraderStateCreepLimits(),
     new StimulateStateCreepLimits(),
-    new NukeStateCreepLimits(),
+    new NukeStateCreepLimits()
 ];
 
+// Constant containing all instances of the class related to processing flags
+export const PROCESS_FLAG_HELPERS: IFlagProcesser[] = [
+    new ProcessDefaultAttackFlag(),
+    new ProcessDefaultClaimRoom(),
+    new ProcessDefaultRemoteRoom(),
+    new ProcessDefaultStimulateFlag(),
+    new ProcessDependentRoomOverride()
+];

@@ -1,47 +1,20 @@
-import MemoryApi from "../../Api/Memory.Api";
-import CreepApi from "Api/Creep.Api";
-import MemoryHelper from "Helpers/MemoryHelper";
-import { ROLE_HARVESTER } from "utils/constants";
-import CreepHelper from "Helpers/CreepHelper";
+import { ROLE_HARVESTER, MemoryApi, CreepApi, MemoryHelper, CreepHelper } from "utils/internals";
 
 // Manager for the miner creep role
-export default class HarvesterCreepManager implements ICreepRoleManager {
+export class HarvesterCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_HARVESTER;
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
-    }
-
-    /**
-     * run the harvester creep
-     * @param creep the creep we are running
-     */
-    public runCreepRole(creep: Creep): void {
-        const homeRoom: Room = Game.rooms[creep.memory.homeRoom];
-
-        if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewJob(creep, homeRoom);
-
-            if (creep.memory.job === undefined) {
-                return; // idle for a tick
-            }
-
-            this.handleNewJob(creep, homeRoom);
-        }
-
-        if (!creep.memory.working) {
-            CreepApi.travelTo(creep, creep.memory.job);
-        }
-
-        if (creep.memory.working) {
-            CreepApi.doWork(creep, creep.memory.job);
-            return;
-        }
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**
      * Decides which kind of job to get and calls the appropriate function
+     * @param creep the creep we are getting the job for
+     * @param room the room we are in
+     * @returns BaseJob of the new job we recieved (undefined if none)
      */
     public getNewJob(creep: Creep, room: Room): BaseJob | undefined {
         // if creep is empty, get a GetEnergyJob

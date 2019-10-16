@@ -16,12 +16,14 @@ import {
     TIER_7,
     TIER_8,
     ROLE_DOMESTIC_DEFENDER,
-} from "utils/Constants";
-import { SpawnHelper } from "Helpers/SpawnHelper";
-import SpawnApi from "Api/Spawn.Api"
+    ERROR_ERROR,
+    SpawnHelper,
+    SpawnApi,
+    UserException,
+    MemoryApi
+} from "utils/internals";
 
 export class DomesticDefenderBodyOptsHelper implements ICreepBodyOptsHelper {
-
     public name: RoleConstant = ROLE_DOMESTIC_DEFENDER;
 
     constructor() {
@@ -40,29 +42,29 @@ export class DomesticDefenderBodyOptsHelper implements ICreepBodyOptsHelper {
         const opts: CreepBodyOptions = { mixType: GROUPED };
 
         switch (tier) {
-            case TIER_1: // 2 Attack, 2 Move - Total Cost: 260
-                body = { ranged_attack: 1, move: 2 };
+            case TIER_1: // Total Cost: 200
+                body = { ranged_attack: 1, move: 1 };
                 break;
 
-            case TIER_2: // 3 Attack, 2 Move - Total Cost: 340
+            case TIER_2: // Total Cost: 550
                 body = { ranged_attack: 3, move: 2 };
                 break;
 
-            case TIER_3: // 5 Attack, 5 Move - Total Cost: 650
+            case TIER_3: // Total Cost: 650
                 body = { ranged_attack: 4, move: 4 };
                 break;
 
-            case TIER_4: // 8 Attack, 8 Move - Total Cost: 880
+            case TIER_4: // Total Cost: 1200
                 body = { ranged_attack: 6, move: 6 };
                 break;
 
             case TIER_6:
-            case TIER_5: // 10 Attack, 10 Move - Total Cost: 1300
-                body = { ranged_attack: 10, move: 10 };
+            case TIER_5: // Total Cost: 1600
+                body = { ranged_attack: 8, move: 8 };
                 break;
 
             case TIER_8:
-            case TIER_7: // 15 Attack, 15 Move - Total Cost: 1950
+            case TIER_7: // Total Cost: 3000
                 body = { ranged_attack: 15, move: 15 };
                 break;
         }
@@ -97,5 +99,41 @@ export class DomesticDefenderBodyOptsHelper implements ICreepBodyOptsHelper {
         }
 
         return creepOptions;
+    }
+
+    /**
+     * Get the home room for the creep
+     * @param room the room we are spawning the creep from
+     */
+    public getHomeRoom(room: Room): string {
+        return room.name;
+    }
+
+    /**
+     * Get the target room for the creep
+     * @param room the room we are spawning the creep in
+     * @param roleConst the role we are getting room for
+     * @param creepBody the body of the creep we are checking, so we know who to exclude from creep counts
+     * @param creepName the name of the creep we are checking for
+     */
+    public getTargetRoom(
+        room: Room,
+        roleConst: RoleConstant,
+        creepBody: BodyPartConstant[],
+        creepName: string
+    ): string {
+        return room.name;
+    }
+
+    /**
+     * Get the spawn direction for the creep
+     * @param centerSpawn the center spawn for the room
+     * @param room the room we are in
+     */
+    public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
+        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
+        return _.filter(directions, (d: DirectionConstant) => d !== managerDirection);
     }
 }

@@ -14,12 +14,14 @@ import {
     TIER_7,
     TIER_8,
     ROLE_REMOTE_HARVESTER,
-} from "utils/Constants";
-import { SpawnHelper } from "Helpers/SpawnHelper";
-import SpawnApi from "Api/Spawn.Api"
+    ERROR_ERROR,
+    SpawnHelper,
+    SpawnApi,
+    UserException,
+    MemoryApi
+} from "utils/internals";
 
 export class RemoteHarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
-
     public name: RoleConstant = ROLE_REMOTE_HARVESTER;
 
     constructor() {
@@ -42,18 +44,18 @@ export class RemoteHarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                 body = { work: 2, carry: 5, move: 7 };
                 break;
 
-            case TIER_4: // Total Cost: 1000
-                body = { work: 2, carry: 7, move: 9 };
+            case TIER_4: // Total Cost: 1300
+                body = { work: 2, carry: 10, move: 12 };
                 break;
 
-            case TIER_5: // Total Cost: 1400
-                body = { work: 2, carry: 12, move: 14 };
+            case TIER_5: // Total Cost: 1600
+                body = { work: 2, carry: 13, move: 15 };
                 break;
 
             case TIER_8:
             case TIER_7:
             case TIER_6: // Total Cost: 2300
-                body = { work: 2, carry: 20, move: 22 };
+                body = { work: 2, carry: 27, move: 15 };
                 break;
         }
 
@@ -92,5 +94,55 @@ export class RemoteHarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
         }
 
         return creepOptions;
+    }
+
+    /**
+     * Get the home room for the creep
+     * @param room the room we are spawning the creep from
+     */
+    public getHomeRoom(room: Room): string {
+        return room.name;
+    }
+
+    /**
+     * Get the target room for the creep
+     * @param room the room we are spawning the creep in
+     * @param roleConst the role we are getting room for
+     * @param creepBody the body of the creep we are checking, so we know who to exclude from creep counts
+     * @param creepName the name of the creep we are checking for
+     */
+    public getTargetRoom(
+        room: Room,
+        roleConst: RoleConstant,
+        creepBody: BodyPartConstant[],
+        creepName: string
+    ): string {
+        const roomMemory: RemoteRoomMemory | undefined = SpawnHelper.getLowestNumRoleAssignedRemoteRoom(
+            room,
+            roleConst,
+            creepBody
+        );
+        if (roomMemory) {
+            return roomMemory.roomName;
+        }
+
+        // Throw error if target room is left unhandled
+        throw new UserException(
+            "Couldn't get target room for [" + roleConst + " ]",
+            "room: [ " + room.name + " ]",
+            ERROR_ERROR
+        );
+    }
+
+    /**
+     * Get the spawn direction for the creep
+     * @param centerSpawn the center spawn for the room
+     * @param room the room we are in
+     */
+    public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
+        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
+        return _.filter(directions, (d: DirectionConstant) => d !== managerDirection);
     }
 }

@@ -1,14 +1,11 @@
-import EmpireHelper from "../Helpers/EmpireHelper";
-import MemoryApi from "./Memory.Api";
+import { EmpireHelper, MemoryApi, PROCESS_FLAG_HELPERS } from "utils/internals";
 
-export default class Empire {
-
+export class EmpireApi {
     /**
      * get new flags that need to be processed
      * @returns Flag[] an array of flags that need to be processed (empty if none)
      */
     public static getUnprocessedFlags(): Flag[] {
-
         // Create an array of all flags
         const allFlags: Flag[] = MemoryApi.getAllFlags();
         const newFlags: Flag[] = [];
@@ -31,58 +28,29 @@ export default class Empire {
      * @param newFlags StringMap of new flags we need to process
      */
     public static processNewFlags(newFlags: Flag[]): void {
-
         // Don't run the function if theres no new flags
         if (newFlags.length === 0) {
             return;
         }
 
-        // Loop over all new flags and call the proper helper
         for (const flag of newFlags) {
-
-            switch (flag.color) {
-
-                // Remote Flags
-                case COLOR_YELLOW:
-
-                    EmpireHelper.processNewRemoteFlag(flag);
-                    break;
-
-                // Attack Flags
-                case COLOR_RED:
-
-                    EmpireHelper.processNewAttackFlag(flag);
-                    break;
-
-                // Claim Flags
-                case COLOR_WHITE:
-
-                    EmpireHelper.processNewClaimFlag(flag);
-                    break;
-
-                // Option flags
-                case COLOR_GREEN:
-
-                    // Dependent Room override flag
-                    if (flag.secondaryColor === COLOR_WHITE) {
-                        EmpireHelper.processNewDependentRoomOverrideFlag(flag);
+            // Find the proper implementation of the flag processer we need
+            for (const i in PROCESS_FLAG_HELPERS) {
+                const currentHelper: IFlagProcesser = PROCESS_FLAG_HELPERS[i];
+                if (currentHelper.primaryColor === flag.color) {
+                    // We've found primary color, search for undefined or matching secondary color
+                    if (!currentHelper.secondaryColor || currentHelper.secondaryColor === flag.secondaryColor) {
+                        currentHelper.processFlag(flag);
+                        break;
                     }
-                    else if (flag.secondaryColor === COLOR_YELLOW) {
-                        EmpireHelper.processNewStimulateFlag(flag);
-                    }
-                    break;
-
-                // Unhandled Flag, print warning to console
-                // Set to processed to prevent the flag from attempting processization every tick
-                default:
-
-                    MemoryApi.createEmpireAlertNode("Attempted to process flag of an unhandled type.", 10);
-                    flag.memory.processed = true;
-                    flag.memory.complete = true;
-                    break;
+                }
+                // If we make it here, we didn't find a match for the flag type, delete the flag and carry on
+                MemoryApi.createEmpireAlertNode("Attempted to process flag of an unhandled type.", 10);
+                flag.memory.processed = true;
+                flag.memory.complete = true;
             }
 
-            // Set up the memory for the room if it doesn't already exist
+            // Create room memory for the dependent room to prevent errors in accessing the rooms memory for spawning and traveling
             const roomName = flag.pos.roomName;
             if (!Memory.rooms[roomName]) {
                 const isOwnedRoom: boolean = false;
@@ -96,7 +64,6 @@ export default class Empire {
      * deletes all flags marked as complete
      */
     public static deleteCompleteFlags(): void {
-
         const completeFlags = MemoryApi.getAllFlags((flag: Flag) => flag.memory.complete);
 
         // Loop over all flags, removing them and their direct memory from the game
@@ -110,16 +77,17 @@ export default class Empire {
      * look for dead flags (memory with no associated flag existing) and remove them
      */
     public static cleanDeadFlags(): void {
-
         // Get all flag based action memory structures (Remote, Claim, and Attack Room Memory)
         const allRooms = MemoryApi.getOwnedRooms();
-        const claimRooms: Array<ClaimRoomMemory | undefined> = _.flatten(_.map(allRooms,
-            room => MemoryApi.getClaimRooms(room)));
-        const remoteRooms: Array<RemoteRoomMemory | undefined> = _.flatten(_.map(allRooms,
-            room => MemoryApi.getRemoteRooms(room)));
-        const attackRooms: Array<AttackRoomMemory | undefined> = _.flatten(_.map(allRooms,
-            room => MemoryApi.getAttackRooms(room)));
-
+        const claimRooms: Array<ClaimRoomMemory | undefined> = _.flatten(
+            _.map(allRooms, room => MemoryApi.getClaimRooms(room))
+        );
+        const remoteRooms: Array<RemoteRoomMemory | undefined> = _.flatten(
+            _.map(allRooms, room => MemoryApi.getRemoteRooms(room))
+        );
+        const attackRooms: Array<AttackRoomMemory | undefined> = _.flatten(
+            _.map(allRooms, room => MemoryApi.getAttackRooms(room))
+        );
 
         // Clean dead flags from memory structures
         EmpireHelper.cleanDeadClaimRoomFlags(claimRooms);
@@ -131,4 +99,4 @@ export default class Empire {
         EmpireHelper.cleanDeadRemoteRooms(remoteRooms);
         EmpireHelper.cleanDeadAttackRooms(attackRooms);
     }
-};
+}

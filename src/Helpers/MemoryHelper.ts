@@ -1,7 +1,7 @@
-import MemoryApi from "Api/Memory.Api";
+import { MemoryApi } from "utils/internals";
 
 // Accessing Memory Helpers
-export default class MemoryHelper {
+export class MemoryHelper {
     /**
      * Returns an array of creeps of a role
      * @param role The role to check for
@@ -24,7 +24,6 @@ export default class MemoryHelper {
 
         // Loop over d-rooms within each room looking for the parameter room name
         for (const room of ownedRooms) {
-
             for (const rr in room.memory.remoteRooms!) {
                 if (room.memory.remoteRooms![rr] && roomName === room.memory.remoteRooms![rr].roomName) {
                     return true;
@@ -87,5 +86,32 @@ export default class MemoryHelper {
         if (Memory.rooms[room.name]) {
             delete room.memory;
         }
+    }
+
+    /**
+     * Generate default memory for the "AllCreepCount" type
+     */
+    public static generateDefaultAllCreepCountObject(): AllCreepCount {
+        // Update here upon creating new role, can't generate dynamically due to typescript requiring explicit definition
+        return {
+            claimer: 0,
+            domesticDefender: 0,
+            harvester: 0,
+            lorry: 0,
+            manager: 0,
+            medic: 0,
+            miner: 0,
+            mineralMiner: 0,
+            powerUpgrader: 0,
+            remoteColonizer: 0,
+            remoteDefender: 0,
+            remoteHarvester: 0,
+            remoteMiner: 0,
+            remoteReserver: 0,
+            scout: 0,
+            stalker: 0,
+            worker: 0,
+            zealot: 0
+        };
     }
 }

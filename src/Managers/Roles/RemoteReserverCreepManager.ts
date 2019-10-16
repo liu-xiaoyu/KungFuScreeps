@@ -1,56 +1,21 @@
-import MemoryApi from "../../Api/Memory.Api";
-import CreepApi from "Api/Creep.Api";
-import {
-    ROLE_REMOTE_RESERVER,
-} from "utils/constants";
+import { ROLE_REMOTE_RESERVER, MemoryApi, CreepApi } from "utils/internals";
 
 // Manager for the miner creep role
-export default class RemoteReserverCreepManager implements ICreepRoleManager {
-
+export class RemoteReserverCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_REMOTE_RESERVER;
 
     constructor() {
         const self = this;
-        self.runCreepRole = self.runCreepRole.bind(this);
-    }
-
-    /**
-     * run the remote reserver creep
-     * @param creep the creep we are running
-     */
-    public runCreepRole(creep: Creep): void {
-
-        const homeRoom = Game.rooms[creep.memory.homeRoom];
-        const targetRoom = Game.rooms[creep.memory.targetRoom];
-
-        if (CreepApi.creepShouldFlee(creep)) {
-            CreepApi.fleeRemoteRoom(creep, homeRoom);
-            return;
-        }
-
-        if (creep.memory.job === undefined) {
-            creep.memory.job = this.getNewReserveJob(creep, homeRoom);
-
-            if (creep.memory.job === undefined) {
-                return;
-            }
-
-            this.handleNewJob(creep, homeRoom);
-        }
-
-        if (creep.memory.working === true) {
-            CreepApi.doWork(creep, creep.memory.job);
-            return;
-        }
-
-        CreepApi.travelTo(creep, creep.memory.job);
-        return;
+        self.getNewJob = self.getNewJob.bind(this);
+        self.handleNewJob = self.handleNewJob.bind(this);
     }
 
     /**
      * Find a job for the creep
+     * @param creep the creep we are finding the job for
+     * @param room the home room of the creep
      */
-    public getNewReserveJob(creep: Creep, room: Room): ClaimPartJob | undefined {
+    public getNewJob(creep: Creep, room: Room): ClaimPartJob | undefined {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
 
         if (creepOptions.claim) {

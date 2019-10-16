@@ -1,11 +1,9 @@
-import MiliApi from "Api/CreepMili.Api";
 import {
-    DEFAULT_MOVE_OPTS,
     ROLE_TOWER_MEDIC,
 } from "utils/constants";
 
 // Manager for the miner creep role
-export default class TowerDrainerMedicCreepManager implements ICreepRoleManager {
+export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
 
     public name: RoleConstant = ROLE_TOWER_MEDIC;
 

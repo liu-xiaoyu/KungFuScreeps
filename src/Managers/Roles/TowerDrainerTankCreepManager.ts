@@ -1,15 +1,10 @@
-import MiliApi from "Api/CreepMili.Api";
 import {
-    DEFAULT_MOVE_OPTS,
     ROLE_TOWER_TANK,
 } from "utils/constants";
-import RoomHelper from "Helpers/RoomHelper";
-import CreepHelper from "Helpers/CreepHelper";
-import CreepApi from "Api/Creep.Api";
-import MemoryApi from "Api/Memory.Api";
+import { RoomHelper, MemoryApi } from "utils/internals";
 
 // Manager for the miner creep role
-export default class TowerDrainerTankCreepManager implements ICreepRoleManager {
+export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
 
     public name: RoleConstant = ROLE_TOWER_TANK;
 

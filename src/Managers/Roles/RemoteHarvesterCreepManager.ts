@@ -15,12 +15,16 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
      */
     public getNewJob(creep: Creep, homeRoom: Room, targetRoom: Room | undefined): BaseJob | undefined {
 
+        // When a creep is fleeing, the target room might be undefined, this is okay so check that the error ACTUALLY occured specifically
         if (!targetRoom && creep.memory.targetRoom === "") {
             throw new UserException(
                 "Remote harvester target room was not set",
                 "creep: " + creep.name + ", room: " + homeRoom.name,
                 ERROR_ERROR
             );
+        }
+        else if (!targetRoom) {
+            return undefined;
         }
 
         if (creep.carry.energy === 0 && creep.room.name === creep.memory.targetRoom) {

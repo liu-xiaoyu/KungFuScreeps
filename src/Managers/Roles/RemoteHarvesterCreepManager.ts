@@ -15,7 +15,7 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
      */
     public getNewJob(creep: Creep, homeRoom: Room, targetRoom: Room | undefined): BaseJob | undefined {
 
-        if (!targetRoom) {
+        if (!targetRoom && creep.memory.targetRoom === "") {
             throw new UserException(
                 "Remote harvester target room was not set",
                 "creep: " + creep.name + ", room: " + homeRoom.name,

@@ -45,5 +45,5 @@ export const ALL_MILITARY_ROLES: RoleConstant[] = [ROLE_STALKER, ROLE_MEDIC, ROL
  * config for all defensive roles (no requesting flag)
  * considering refactoring so defense drops a flag for a defender rather than special case?
  */
-export const ALL_DEFENSIVE_ROLES: RoleConstant[] = [ROLE_DOMESTIC_DEFENDER];
+export const ALL_DEFENSIVE_ROLES: RoleConstant[] = [ROLE_DOMESTIC_DEFENDER, ROLE_REMOTE_DEFENDER];
 // ------------------------------

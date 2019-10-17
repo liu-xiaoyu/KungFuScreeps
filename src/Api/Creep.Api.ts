@@ -197,12 +197,7 @@ export class CreepApi {
      * @param homeRoom The homeRoom of the creep
      */
     public static fleeRemoteRoom(creep: Creep, homeRoom: Room): void {
-        // If we are in home room, idle until we no longer need to flee
-        if (creep.room.name === homeRoom.name) {
-            creep.memory.working = true; // Mark as working for pathing purposes
-            CreepApi.moveCreepOffExit(creep);
-            return;
-        }
+
         // If we are not in homeRoom, but our job is to move to homeRoom, then do so
         if (creep.memory.job && creep.memory.job.targetID === homeRoom.name) {
             this.travelTo(creep, creep.memory.job);
@@ -214,6 +209,13 @@ export class CreepApi {
         creep.memory.working = false;
         if (creep.memory.supplementary) {
             delete creep.memory.supplementary.moveTargetID;
+        }
+
+        // If we are in home room, idle until we no longer need to flee
+        if (creep.room.name === homeRoom.name) {
+            creep.memory.working = true; // Mark as working for pathing purposes
+            CreepApi.moveCreepOffExit(creep);
+            return;
         }
 
         // Set new move job to homeRoom

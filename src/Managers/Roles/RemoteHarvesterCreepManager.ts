@@ -23,9 +23,6 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
                 ERROR_ERROR
             );
         }
-        else if (!targetRoom) {
-            return undefined;
-        }
 
         if (creep.carry.energy === 0 && creep.room.name === creep.memory.targetRoom) {
 

@@ -100,14 +100,14 @@ export const ALL_STRUCTURE_TYPES: StructureConstant[] = [
 // The Wall/Rampart HP Limit for each Controller level
 export const WALL_LIMIT: number[] = [
     0, // RCL 0
-    12500, // RCL 1
-    25000, // RCL 2
-    50000, // RCL 3
-    125000, // RCL 4
-    250000, // RCL 5
-    500000, // RCL 6
-    1000000, // RCL 7
-    5000000 // RCL 8
+    6250, // RCL 1
+    12500, // RCL 2
+    25000, // RCL 3
+    50000, // RCL 4
+    100000, // RCL 5
+    200000, // RCL 6
+    400000, // RCL 7
+    100000 // RCL 8
 ];
 
 // Cache Tick Limits

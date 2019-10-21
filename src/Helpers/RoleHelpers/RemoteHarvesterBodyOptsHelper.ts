@@ -49,12 +49,12 @@ export class RemoteHarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                 break;
 
             case TIER_5: // Total Cost: 1600
+            case TIER_6:
                 body = { work: 2, carry: 13, move: 15 };
                 break;
 
             case TIER_8:
-            case TIER_7:
-            case TIER_6: // Total Cost: 2300
+            case TIER_7: // Total Cost: 2300
                 body = { work: 2, carry: 27, move: 15 };
                 break;
         }

@@ -3,6 +3,7 @@ import {
     ROLE_HARVESTER,
     ROLE_REMOTE_MINER,
     ROLE_REMOTE_HARVESTER,
+    ROLE_REMOTE_RESERVER,
     ROLE_CLAIMER,
     ERROR_WARN,
     STALKER_SOLO,
@@ -20,7 +21,8 @@ import {
     ALL_MILITARY_ROLES,
     ALL_DEFENSIVE_ROLES,
     RESERVER_MIN_TTL,
-    ROOM_STATE_INTRO
+    ROOM_STATE_INTRO,
+    remoteRolePriority
 } from "utils/internals";
 
 /**
@@ -501,7 +503,11 @@ export class SpawnHelper {
      * get a remote room that needs a remote reserver
      */
     public static getRemoteRoomNeedingRemoteReserver(room: Room): RemoteRoomMemory | undefined {
-        return _.first(MemoryApi.getRemoteRooms(room, (rr: RemoteRoomMemory) => rr.reserveTTL < RESERVER_MIN_TTL));
+        const reserversInRoom: Creep[] = MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_REMOTE_RESERVER);
+        return _.first(MemoryApi.getRemoteRooms(room,
+            (rr: RemoteRoomMemory) => rr.reserveTTL < RESERVER_MIN_TTL &&
+                !_.some(reserversInRoom, (c: Creep) => c.memory.targetRoom === rr.roomName)
+        ));
     }
 
     /**

@@ -40,9 +40,9 @@ export class EventHelper {
             throw new UserException(
                 "The event for spawning a military creep was improperly handled.",
                 "The creep couldn't increment the correct flags memory, meaning the attack flag\n" +
-                    "will not be removed properly and must be done manually. [ " +
-                    creep.name +
-                    " ].",
+                "will not be removed properly and must be done manually. [ " +
+                creep.name +
+                " ].",
                 ERROR_ERROR
             );
         }

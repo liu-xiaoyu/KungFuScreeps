@@ -148,7 +148,7 @@ export class RoomHelper {
         return (
             TOWER_POWER_ATTACK -
             (TOWER_POWER_ATTACK * TOWER_FALLOFF * (range - TOWER_OPTIMAL_RANGE)) /
-                (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE)
+            (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE)
         );
     }
 
@@ -212,9 +212,9 @@ export class RoomHelper {
             throw new UserException(
                 "Tried to getUpgraderLink of a room with no controller",
                 "Get Upgrader Link was called for room [" +
-                    room.name +
-                    "]" +
-                    ", but theres no controller in this room.",
+                room.name +
+                "]" +
+                ", but theres no controller in this room.",
                 ERROR_WARN
             );
         }

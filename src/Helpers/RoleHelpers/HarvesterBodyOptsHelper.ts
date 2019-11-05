@@ -59,8 +59,8 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                 break;
 
             case TIER_8:
-            case TIER_7: // 15 Carry, 15 Move - Total Cost: 1500
-                body = { carry: 15, move: 15 };
+            case TIER_7: // 12 Carry, 12 Move - Total Cost: 1200
+                body = { carry: 12, move: 12 };
                 break;
         }
 

@@ -253,7 +253,7 @@ export class RoomVisualHelper {
         etaMemory.ticksMeasured++;
 
         // ! TEMPORARY - NEEDS MOVED TO CONFIG
-        let ticksConsidered = 1000; // should be about 1 hour of activity
+        const ticksConsidered = 1000; // should be about 1 hour of activity
 
         // newAvg = oldAvg + (newValue - oldAvg) / min(counter, FACTOR)
         const oldAvg = etaMemory.avgPointsPerTick;

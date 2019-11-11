@@ -46,10 +46,10 @@ export class ProcessDefaultAttackFlag implements IFlagProcesser {
         if (existingDepedentAttackRoomMem) {
             MemoryApi.createEmpireAlertNode(
                 "Attack Flag [" +
-                    flag.name +
-                    "] processed. Added to existing Host Room: [" +
-                    existingDepedentAttackRoomMem.roomName +
-                    "]",
+                flag.name +
+                "] processed. Added to existing Host Room: [" +
+                existingDepedentAttackRoomMem.roomName +
+                "]",
                 10
             );
             existingDepedentAttackRoomMem.flags.push(attackFlagMemory);

@@ -136,7 +136,8 @@ export class EventHelper {
                 requestingRoleArray = STALKER_SOLO_ARRAY;
                 break;
         }
-
+        console.log(requestingRoleArray);
+        console.log(creepRole);
         return requestingRoleArray.includes(creepRole);
     }
 
@@ -156,7 +157,7 @@ export class EventHelper {
             if (!creep) {
                 continue;
             }
-            EventApi.createCustomEvent(creep.room.name, creep.id, C_EVENT_CREEP_SPAWNED);
+            EventApi.createCustomEvent(creep.room.name, creep.id as string, C_EVENT_CREEP_SPAWNED);
         }
     }
 

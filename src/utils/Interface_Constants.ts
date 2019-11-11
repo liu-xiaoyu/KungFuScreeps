@@ -49,7 +49,11 @@ import {
     ProcessDefaultClaimRoom,
     ProcessDefaultRemoteRoom,
     ProcessDefaultStimulateFlag,
-    ProcessDependentRoomOverride
+    ProcessDependentRoomOverride,
+    TowerDrainerMedicBodyOptsHelper,
+    TowerDrainerTankBodyOptsHelper,
+    TowerDrainerMedicCreepManager,
+    TowerDrainerTankCreepManager
 } from "utils/internals";
 
 // Constant containing the manager for each job, which all implement doWork & travelTo
@@ -82,6 +86,8 @@ export const CREEP_MILI_MANAGERS: IMiliCreepRoleManager[] = [
     new StalkerCreepManager(),
     new MedicCreepManager(),
     new DomesticDefenderCreepManager(),
+    new TowerDrainerMedicCreepManager(),
+    new TowerDrainerTankCreepManager(),
     new RemoteDefenderCreepManager(),
 ]
 
@@ -103,6 +109,8 @@ export const CREEP_BODY_OPT_HELPERS: ICreepBodyOptsHelper[] = [
     new StalkerBodyOptsHelper(),
     new MedicBodyOptsHelper(),
     new DomesticDefenderBodyOptsHelper(),
+    new TowerDrainerMedicBodyOptsHelper(),
+    new TowerDrainerTankBodyOptsHelper(),
     new ScoutBodyOptsHelper()
 ];
 

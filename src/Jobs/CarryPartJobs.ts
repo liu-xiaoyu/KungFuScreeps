@@ -110,7 +110,7 @@ export class CarryPartJobs implements IJobTypeHelper {
 
             const fillJob: CarryPartJob = {
                 jobType: "carryPartJob",
-                targetID: structure.id,
+                targetID: structure.id as string,
                 targetType: structure.structureType,
                 remaining: storageSpace,
                 actionType: "transfer",
@@ -137,7 +137,7 @@ export class CarryPartJobs implements IJobTypeHelper {
 
             const fillJob: CarryPartJob = {
                 jobType: "carryPartJob",
-                targetID: structure.id,
+                targetID: structure.id as string,
                 targetType: structure.structureType,
                 remaining: storageSpace,
                 actionType: "transfer",
@@ -161,7 +161,7 @@ export class CarryPartJobs implements IJobTypeHelper {
         if (room.storage !== undefined) {
             const storageJob: CarryPartJob = {
                 jobType: "carryPartJob",
-                targetID: room.storage.id,
+                targetID: room.storage.id as string,
                 targetType: STRUCTURE_STORAGE,
                 remaining: room.storage.storeCapacity - _.sum(room.storage.store),
                 actionType: "transfer",
@@ -174,7 +174,7 @@ export class CarryPartJobs implements IJobTypeHelper {
         if (room.terminal !== undefined) {
             const terminalJob: CarryPartJob = {
                 jobType: "carryPartJob",
-                targetID: room.terminal.id,
+                targetID: room.terminal.id as string,
                 targetType: STRUCTURE_TERMINAL,
                 remaining: room.terminal.storeCapacity - _.sum(room.terminal.store),
                 actionType: "transfer",
@@ -196,7 +196,7 @@ export class CarryPartJobs implements IJobTypeHelper {
             _.forEach(nonUpgraderLinks, (link: StructureLink) => {
                 const fillLinkJob: CarryPartJob = {
                     jobType: "carryPartJob",
-                    targetID: link.id,
+                    targetID: link.id as string,
                     targetType: STRUCTURE_LINK,
                     remaining: link.energyCapacity - link.energy,
                     actionType: "transfer",

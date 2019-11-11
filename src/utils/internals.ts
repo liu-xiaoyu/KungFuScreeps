@@ -48,6 +48,8 @@ export * from "Helpers/RoleHelpers/RemoteHarvesterBodyOptsHelper";
 export * from "Helpers/RoleHelpers/ClaimerBodyOptsHelper";
 export * from "Helpers/RoleHelpers/RemoteReserverBodyOptsHelper";
 export * from "Helpers/RoleHelpers/ScoutBodyOptsHelper";
+export * from "Helpers/RoleHelpers/TowerDrainerMedicBodyOptsHelper";
+export * from "Helpers/RoleHelpers/TowerDrainerTankBodyOptsHelper";
 // ---------------------------
 // Room Spawn Limit Implementations
 export * from "Helpers/CreepLimitHelpers/IntroStateCreepLimits";
@@ -97,6 +99,8 @@ export * from "Managers/Roles/MedicCreepManager";
 export * from "Managers/Roles/StalkerCreepManager";
 export * from "Managers/Roles/DomesticDefenderCreepManager";
 export * from "Managers/Roles/ScoutCreepManager";
+export * from "Managers/Roles/TowerDrainerMedicCreepManager";
+export * from "Managers/Roles/TowerDrainerTankCreepManager";
 // ---------------------------------
 // Import All Jobs
 export * from "Jobs/CarryPartJobs";

@@ -33,8 +33,8 @@ export class CreepApi {
         throw new UserException(
             "Bad jobType in CreepApi.doWork",
             "The jobtype of the job passed to CreepApi.doWork was invalid, or there is no implementation of that job type." +
-                "\n Job Type: " +
-                job.jobType,
+            "\n Job Type: " +
+            job.jobType,
             ERROR_FATAL
         );
     }
@@ -62,8 +62,8 @@ export class CreepApi {
         throw new UserException(
             "Bad jobType in CreepApi.travelTo",
             "The jobtype of the job passed to CreepApi.travelTo was invalid, or there is no implementation of this job type" +
-                "\n Job Type: " +
-                job.jobType,
+            "\n Job Type: " +
+            job.jobType,
             ERROR_FATAL
         );
     }
@@ -143,10 +143,10 @@ export class CreepApi {
         return new UserException(
             "Invalid Job actionType or targetType",
             "An invalid actionType or structureType has been provided by creep [" +
-                creep.name +
-                "]" +
-                "\n Job: " +
-                JSON.stringify(job),
+            creep.name +
+            "]" +
+            "\n Job: " +
+            JSON.stringify(job),
             ERROR_ERROR
         );
     }
@@ -269,7 +269,7 @@ export class CreepApi {
                     rampartsToBeRepaired
                 ) as StructureRampart;
                 return {
-                    targetID: closestRampart.id,
+                    targetID: closestRampart.id as string,
                     targetType: "rampart",
                     actionType: "repair",
                     jobType: "workPartJob",
@@ -352,7 +352,7 @@ export class CreepApi {
                             return (
                                 creep.memory.job !== undefined &&
                                 (creep.memory.role === "remoteMiner" || creep.memory.role === "miner") &&
-                                creep.memory.job.targetID === source.id
+                                creep.memory.job.targetID === source.id as string
                             );
                         }).length;
 
@@ -437,7 +437,7 @@ export class CreepApi {
                 (lJob: GetEnergyJob) => !lJob.isTaken && lJob.resources!.energy >= creep.carryCapacity * 0.6
             );
 
-            if(lootJobs.length > 0) { 
+            if (lootJobs.length > 0) {
                 return lootJobs[0];
             }
         }

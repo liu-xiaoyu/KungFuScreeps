@@ -88,7 +88,7 @@ export class MemoryApi {
      * @param room the room memory we are getting the upgrader link from
      */
     public static getUpgraderLink(room: Room): StructureLink | null {
-        return Game.getObjectById(room.memory.upgradeLink);
+        return Game.getObjectById(room.memory.upgradeLink as string);
     }
 
     /**

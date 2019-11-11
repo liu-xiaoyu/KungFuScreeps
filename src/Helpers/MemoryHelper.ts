@@ -111,7 +111,9 @@ export class MemoryHelper {
             scout: 0,
             stalker: 0,
             worker: 0,
-            zealot: 0
+            zealot: 0,
+            towerMedic: 0,
+            towerTank: 0
         };
     }
 }

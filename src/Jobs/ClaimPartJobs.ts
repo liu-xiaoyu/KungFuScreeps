@@ -201,7 +201,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
         _.forEach(controllers, (controller: StructureController) => {
             const signJob: ClaimPartJob = {
                 jobType: "claimPartJob",
-                targetID: controller.id,
+                targetID: controller.id as string,
                 targetType: "controller",
                 actionType: "sign",
                 isTaken: false

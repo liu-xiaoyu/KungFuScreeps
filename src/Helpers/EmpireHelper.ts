@@ -104,8 +104,8 @@ export class EmpireHelper {
             throw new UserException(
                 "Manual Dependent Room Finding Error",
                 "Flag [" +
-                    overrideFlag.name +
-                    "]. We have no vision in the room you attempted to manually set as override dependent room.",
+                overrideFlag.name +
+                "]. We have no vision in the room you attempted to manually set as override dependent room.",
                 ERROR_ERROR
             );
         }
@@ -317,7 +317,6 @@ export class EmpireHelper {
      */
     public static getFlagType(flag: Flag): FlagTypeConstant | undefined {
         let flagType: FlagTypeConstant | undefined;
-
         // Attack flags
         if (flag.color === COLOR_RED) {
             // Check the subtype
@@ -330,10 +329,12 @@ export class EmpireHelper {
                 // Stalker Solo
                 case COLOR_BROWN:
                     flagType = STALKER_SOLO;
+                    break;
 
                 // Standard Squad
                 case COLOR_RED:
                     flagType = STANDARD_SQUAD;
+                    break;
             }
         }
         // Claim Flags

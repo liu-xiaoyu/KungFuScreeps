@@ -119,7 +119,7 @@ export class MiliApi {
                 }
 
                 // Set walls and ramparts as unwalkable
-                room.find(FIND_STRUCTURES).forEach(function(struct: Structure<StructureConstant>) {
+                room.find(FIND_STRUCTURES).forEach(function (struct: Structure<StructureConstant>) {
                     if (struct.structureType === STRUCTURE_WALL || struct.structureType === STRUCTURE_RAMPART) {
                         // Set walls and ramparts as unwalkable
                         costs.set(struct.pos.x, struct.pos.y, 0xff);
@@ -127,7 +127,7 @@ export class MiliApi {
                 } as any);
 
                 // Set creeps as unwalkable
-                room.find(FIND_CREEPS).forEach(function(currentCreep: Creep) {
+                room.find(FIND_CREEPS).forEach(function (currentCreep: Creep) {
                     costs.set(currentCreep.pos.x, currentCreep.pos.y, 0xff);
                 });
 
@@ -294,14 +294,18 @@ export class MiliApi {
         }
         let path: PathFinderPath;
         const pathFinderOptions: PathFinderOpts = { flee: true };
-        path = PathFinder.search(creep.pos, hostileCreep.pos, pathFinderOptions);
+        const goal: { pos: RoomPosition, range: number } = { pos: hostileCreep.pos, range: 4 };
+        path = PathFinder.search(creep.pos, goal, pathFinderOptions);
+        console.log("raw path: " + path.path);
+        console.log("full path: " + JSON.stringify(path));
         if (path.path.length > 0) {
-            creep.moveTo(path.path[0]);
+            creep.moveTo(path.path[path.path.length - 1]);
             return true;
         }
         return false;
     }
 
+    // new line right here
     /**
      * perform the basic operations for military creeps
      * This includes: Fleeing, Rallying, moving into target room, and moving off exit tile

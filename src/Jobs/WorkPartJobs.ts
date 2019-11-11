@@ -108,7 +108,7 @@ export class WorkPartJobs implements IJobTypeHelper {
         _.forEach(repairTargets, (structure: Structure) => {
             const repairJob: WorkPartJob = {
                 jobType: "workPartJob",
-                targetID: structure.id,
+                targetID: structure.id as string,
                 targetType: <BuildableStructureConstant>structure.structureType,
                 actionType: "repair",
                 remaining: structure.hitsMax - structure.hits,
@@ -155,7 +155,7 @@ export class WorkPartJobs implements IJobTypeHelper {
         _.forEach(constructionSites, (cs: ConstructionSite) => {
             const buildJob: WorkPartJob = {
                 jobType: "workPartJob",
-                targetID: cs.id,
+                targetID: cs.id as string,
                 targetType: "constructionSite",
                 actionType: "build",
                 remaining: cs.progressTotal - cs.progress,
@@ -193,7 +193,7 @@ export class WorkPartJobs implements IJobTypeHelper {
         if (room.controller !== undefined) {
             const controllerJob: WorkPartJob = {
                 jobType: "workPartJob",
-                targetID: room.controller.id,
+                targetID: room.controller.id as string,
                 targetType: "controller",
                 actionType: "upgrade",
                 remaining: room.controller.progressTotal - room.controller.progress,

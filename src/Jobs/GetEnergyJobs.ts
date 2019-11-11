@@ -134,12 +134,12 @@ export class GetEnergyJobs implements IJobTypeHelper {
             const sourceEnergyRemaining = source.energyCapacity - 2 * numWorkParts * 300;
 
             // Create the StoreDefinition for the source
-            const sourceResources: StoreDefinition = { energy: sourceEnergyRemaining };
+            const sourceResources: StoreDefinition = { energy: sourceEnergyRemaining } as StoreDefinition;
 
             // Create the GetEnergyJob object for the source
             const sourceJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
-                targetID: source.id,
+                targetID: source.id as string,
                 targetType: "source",
                 actionType: "harvest",
                 resources: sourceResources,
@@ -171,12 +171,12 @@ export class GetEnergyJobs implements IJobTypeHelper {
             const mineralEnergyRemaining = mineral.mineralAmount;
 
             // Create the StoreDefinition for the source
-            const mineralResources: StoreDefinition = { energy: mineralEnergyRemaining };
+            const mineralResources: StoreDefinition = { energy: mineralEnergyRemaining } as StoreDefinition;
 
             // Create the GetEnergyJob object for the source
             const sourceJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
-                targetID: mineral.id,
+                targetID: mineral.id as string,
                 targetType: "mineral",
                 actionType: "harvest",
                 resources: mineralResources,
@@ -233,7 +233,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             // Create the containerJob
             const containerJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
-                targetID: container.id,
+                targetID: container.id as string,
                 targetType: STRUCTURE_CONTAINER,
                 actionType: "withdraw",
                 resources: adjustedContainerStore,
@@ -261,10 +261,10 @@ export class GetEnergyJobs implements IJobTypeHelper {
 
         const upgraderLink = MemoryApi.getUpgraderLink(room);
         if (upgraderLink !== undefined && upgraderLink !== null) {
-            const linkStore: StoreDefinition = { energy: upgraderLink.energy };
+            const linkStore: StoreDefinition = { energy: upgraderLink.energy } as StoreDefinition;
             const linkJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
-                targetID: upgraderLink!.id,
+                targetID: upgraderLink!.id as string,
                 targetType: STRUCTURE_LINK,
                 actionType: "withdraw",
                 resources: linkStore,
@@ -279,17 +279,17 @@ export class GetEnergyJobs implements IJobTypeHelper {
      * Gets a list of GetEnergyJobs for the Ruins / Tombstones of a room
      * @param room The room to create the job list for
      */
-    public static createLootJobs(room: Room): GetEnergyJob[] { 
+    public static createLootJobs(room: Room): GetEnergyJob[] {
         const tombstones = MemoryApi.getTombstones(room, (tombstone: Tombstone) => tombstone.store.energy >= TOMBSTONE_MINIMUM_ENERGY);
         const ruins = MemoryApi.getRuins(room, (ruin: Ruin) => ruin.store.energy >= RUIN_MINIMUM_ENERGY);
 
-        if(tombstones.length === 0 && ruins.length === 0) { 
+        if (tombstones.length === 0 && ruins.length === 0) {
             return [];
         }
 
         const lootJobList: GetEnergyJob[] = [];
 
-        _.forEach(tombstones, (tombstone: Tombstone) => { 
+        _.forEach(tombstones, (tombstone: Tombstone) => {
             // Get all creeps that are targeting this tombstone to withdraw from it
             const creepsUsingTombstone = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
                 if (
@@ -303,7 +303,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             });
 
             // The tombstone.store we will use instead of the true value
-            const adjustedTombstoneStore: StoreDefinition = tombstone.store;
+            const adjustedTombstoneStore: Store<ResourceConstant, true> = tombstone.store;
 
             // Subtract the empty carry of creeps targeting this tombstone to withdraw
             _.forEach(creepsUsingTombstone, (creep: Creep) => {
@@ -313,7 +313,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             // Create the tombstoneJob
             const tombstoneJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
-                targetID: tombstone.id,
+                targetID: tombstone.id as string,
                 targetType: "tombstone",
                 actionType: "withdraw",
                 resources: adjustedTombstoneStore,
@@ -337,7 +337,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             });
 
             // The container.store we will use instead of the true value
-            const adjustedRuinStore: StoreDefinition = ruin.store;
+            const adjustedRuinStore: Store<ResourceConstant, true> = ruin.store;
 
             // Subtract the empty carry of creeps targeting this container to withdraw
             _.forEach(creepsUsingRuin, (creep: Creep) => {
@@ -347,7 +347,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             // Create the containerJob
             const ruinJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
-                targetID: ruin.id,
+                targetID: ruin.id as string,
                 targetType: "ruin",
                 actionType: "withdraw",
                 resources: adjustedRuinStore,
@@ -372,7 +372,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
         if (room.storage !== undefined) {
             const storageJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
-                targetID: room.storage.id,
+                targetID: room.storage.id as string,
                 targetType: STRUCTURE_STORAGE,
                 actionType: "withdraw",
                 resources: room.storage.store,
@@ -385,7 +385,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
         if (room.terminal !== undefined) {
             const terminalJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
-                targetID: room.terminal.id,
+                targetID: room.terminal.id as string,
                 targetType: STRUCTURE_TERMINAL,
                 actionType: "withdraw",
                 resources: room.terminal.store,
@@ -414,7 +414,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
         const dropJobList: GetEnergyJob[] = [];
 
         _.forEach(drops, (drop: Resource) => {
-            const dropStore: StoreDefinition = { energy: 0 };
+            const dropStore: StoreDefinition = { energy: 0 } as StoreDefinition;
             dropStore[drop.resourceType] = drop.amount;
 
             const creepsUsingDrop = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
@@ -433,7 +433,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
 
             const dropJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
-                targetID: drop.id,
+                targetID: drop.id as string,
                 targetType: "droppedResource",
                 resources: dropStore,
                 actionType: "pickup",

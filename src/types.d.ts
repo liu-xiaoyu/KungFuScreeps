@@ -531,7 +531,7 @@ interface GetEnergyJob extends BaseJob {
      * Each object key is one of the RESOURCE_* constants, values are resources amounts.
      * RESOURCE_ENERGY is always defined and equals to 0 when empty, other resources are undefined when empty.
      */
-    resources: StoreDefinition;
+    resources: StoreDefinition | Store<ResourceConstant, true>;
 }
 
 /**

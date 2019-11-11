@@ -6,7 +6,9 @@ import {
     MemoryApi,
     CONTAINER_MINIMUM_ENERGY,
     ROLE_MINER,
-    ROLE_REMOTE_MINER
+    ROLE_REMOTE_MINER,
+    TOMBSTONE_MINIMUM_ENERGY,
+    RUIN_MINIMUM_ENERGY
 } from "utils/internals";
 
 export class GetEnergyJobs implements IJobTypeHelper {
@@ -37,7 +39,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             returnCode = extractor.cooldown > 0 ? ERR_TIRED : creep.harvest(target);
         } else if (job.actionType === "pickup" && target instanceof Resource) {
             returnCode = creep.pickup(target);
-        } else if (job.actionType === "withdraw" && target instanceof Structure) {
+        } else if (job.actionType === "withdraw" && (target instanceof Structure || target instanceof Ruin || target instanceof Tombstone)) {
             returnCode = creep.withdraw(target, RESOURCE_ENERGY);
         } else {
             throw CreepApi.badTarget_Error(creep, job);
@@ -81,7 +83,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             moveOpts.range = 1;
         } else if (job.actionType === "harvest" && moveTarget instanceof StructureContainer) {
             moveOpts.range = 0;
-        } else if (job.actionType === "withdraw" && (moveTarget instanceof Structure || moveTarget instanceof Creep)) {
+        } else if (job.actionType === "withdraw" && (moveTarget instanceof Structure || moveTarget instanceof Creep || moveTarget instanceof Ruin || moveTarget instanceof Tombstone)) {
             moveOpts.range = 1;
         } else if (job.actionType === "pickup" && moveTarget instanceof Resource) {
             moveOpts.range = 1;
@@ -250,6 +252,9 @@ export class GetEnergyJobs implements IJobTypeHelper {
      */
     public static createLinkJobs(room: Room): GetEnergyJob[] {
         const linkJobList: GetEnergyJob[] = [];
+
+        // TODO Actually get the list of jobs from a MemoryAPI function
+
         if (linkJobList.length === 0) {
             return [];
         }
@@ -268,6 +273,91 @@ export class GetEnergyJobs implements IJobTypeHelper {
             linkJobList.push(linkJob);
         }
         return linkJobList;
+    }
+
+    /**
+     * Gets a list of GetEnergyJobs for the Ruins / Tombstones of a room
+     * @param room The room to create the job list for
+     */
+    public static createLootJobs(room: Room): GetEnergyJob[] { 
+        const tombstones = MemoryApi.getTombstones(room, (tombstone: Tombstone) => tombstone.store.energy >= TOMBSTONE_MINIMUM_ENERGY);
+        const ruins = MemoryApi.getRuins(room, (ruin: Ruin) => ruin.store.energy >= RUIN_MINIMUM_ENERGY);
+
+        if(tombstones.length === 0 && ruins.length === 0) { 
+            return [];
+        }
+
+        const lootJobList: GetEnergyJob[] = [];
+
+        _.forEach(tombstones, (tombstone: Tombstone) => { 
+            // Get all creeps that are targeting this tombstone to withdraw from it
+            const creepsUsingTombstone = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+                if (
+                    creep.memory.job &&
+                    creep.memory.job.targetID === tombstone.id &&
+                    creep.memory.job.actionType === "withdraw"
+                ) {
+                    return true;
+                }
+                return false;
+            });
+
+            // The tombstone.store we will use instead of the true value
+            const adjustedTombstoneStore: StoreDefinition = tombstone.store;
+
+            // Subtract the empty carry of creeps targeting this tombstone to withdraw
+            _.forEach(creepsUsingTombstone, (creep: Creep) => {
+                adjustedTombstoneStore.energy -= creep.carryCapacity - creep.carry.energy;
+            });
+
+            // Create the tombstoneJob
+            const tombstoneJob: GetEnergyJob = {
+                jobType: "getEnergyJob",
+                targetID: tombstone.id,
+                targetType: "tombstone",
+                actionType: "withdraw",
+                resources: adjustedTombstoneStore,
+                isTaken: _.sum(adjustedTombstoneStore) <= 0 // Taken if empty
+            };
+            // Append to the main array
+            lootJobList.push(tombstoneJob);
+        });
+
+        _.forEach(ruins, (ruin: Ruin) => {
+            // Get all creeps that are targeting this ruin to withdraw from it
+            const creepsUsingRuin = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+                if (
+                    creep.memory.job &&
+                    creep.memory.job.targetID === ruin.id &&
+                    creep.memory.job.actionType === "withdraw"
+                ) {
+                    return true;
+                }
+                return false;
+            });
+
+            // The container.store we will use instead of the true value
+            const adjustedRuinStore: StoreDefinition = ruin.store;
+
+            // Subtract the empty carry of creeps targeting this container to withdraw
+            _.forEach(creepsUsingRuin, (creep: Creep) => {
+                adjustedRuinStore.energy -= creep.carryCapacity - creep.carry.energy;
+            });
+
+            // Create the containerJob
+            const ruinJob: GetEnergyJob = {
+                jobType: "getEnergyJob",
+                targetID: ruin.id,
+                targetType: "ruin",
+                actionType: "withdraw",
+                resources: adjustedRuinStore,
+                isTaken: _.sum(adjustedRuinStore) <= 0 // Taken if empty
+            };
+            // Append to the main array
+            lootJobList.push(ruinJob);
+        });
+
+        return lootJobList;
     }
 
     /**

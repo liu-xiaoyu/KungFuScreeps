@@ -30,7 +30,9 @@ import {
     ERROR_ERROR,
     MINERAL_CACHE_TTL,
     UserException,
-    RoomApi
+    RoomApi,
+    RUINS_CACHE_TTL,
+    LOOT_JOB_CACHE_TTL
 } from "utils/internals";
 
 // the api for the memory class
@@ -187,6 +189,7 @@ export class MemoryApi {
                 sources: { data: null, cache: null },
                 minerals: { data: null, cache: null },
                 tombstones: { data: null, cache: null },
+                ruins: { data: null, cache: null },
                 droppedResources: { data: null, cache: null },
                 jobs: {},
                 structures: { data: null, cache: null },
@@ -199,6 +202,7 @@ export class MemoryApi {
                 sources: { data: null, cache: null },
                 minerals: { data: null, cache: null },
                 tombstones: { data: null, cache: null },
+                ruins: { data: null, cache: null },
                 droppedResources: { data: null, cache: null },
                 constructionSites: { data: null, cache: null },
                 defcon: -1,
@@ -508,6 +512,39 @@ export class MemoryApi {
         }
 
         return tombstones;
+    }
+
+    /**
+     * Returns a list of ruins in the room, updating if necessary
+     *
+     * @param room The room we want to look in
+     * @param filterFunction [Optional] The function to filter the ruin objects
+     * @param forceUpdate [Optional] Invalidate Cache by force
+     * @returns Ruin[]  An array of Ruins, if there are any
+     */
+    public static getRuins(
+        room: Room,
+        filterFunction?: (object: Ruin) => boolean,
+        forceUpdate?: boolean
+    ): Ruin[] {
+        if (
+            NO_CACHING_MEMORY ||
+            forceUpdate ||
+            !Memory.rooms[room.name].ruins ||
+            Memory.rooms[room.name].ruins.cache < Game.time - RUINS_CACHE_TTL
+        ) {
+            MemoryHelper_Room.updateRuins(room);
+        }
+
+        const ruinIDs: string[] = Memory.rooms[room.name].ruins.data;
+
+        let ruins = MemoryHelper.getOnlyObjectsFromIDs<Ruin>(ruinIDs);
+
+        if (filterFunction !== undefined) {
+            ruins = _.filter(ruins, filterFunction);
+        }
+
+        return ruins;
     }
 
     /**
@@ -1052,6 +1089,36 @@ export class MemoryApi {
         }
 
         return pickupJobs;
+    }
+
+    /**
+     * Get the list of GetEnergyJobs.lootJobs
+     * @param room The room to get the jobs from
+     * @param filterFunction [Optional] A function to filter the getEnergyjob list
+     * @param forceUpdate [Optional] Forcibly invalidate the cache
+     */
+    public static getLootJobs(
+        room: Room,
+        filterFunction?: (object: GetEnergyJob) => boolean,
+        forceUpdate?: boolean
+    ): GetEnergyJob[] {
+        if (
+            NO_CACHING_MEMORY ||
+            forceUpdate ||
+            !Memory.rooms[room.name].jobs!.getEnergyJobs ||
+            !Memory.rooms[room.name].jobs!.getEnergyJobs!.lootJobs ||
+            Memory.rooms[room.name].jobs!.getEnergyJobs!.lootJobs!.cache < Game.time - LOOT_JOB_CACHE_TTL
+        ) {
+            MemoryHelper_Room.updateGetEnergy_lootJobs(room);
+        }
+
+        let lootJobs: GetEnergyJob[] = Memory.rooms[room.name].jobs!.getEnergyJobs!.lootJobs!.data;
+
+        if (filterFunction !== undefined) {
+            lootJobs = _.filter(lootJobs, filterFunction);
+        }
+
+        return lootJobs;
     }
 
     /**
@@ -1663,8 +1730,8 @@ export class MemoryApi {
             roomJob = _.find(jobListing.linkJobs!.data, (lJob: GetEnergyJob) => lJob.targetID === job.targetID);
         }
 
-        if (roomJob === undefined && jobListing.tombstoneJobs) {
-            roomJob = _.find(jobListing.tombstoneJobs!.data, (tJob: GetEnergyJob) => tJob.targetID === job.targetID);
+        if (roomJob === undefined && jobListing.lootJobs) {
+            roomJob = _.find(jobListing.lootJobs!.data, (tJob: GetEnergyJob) => tJob.targetID === job.targetID);
         }
 
         return roomJob;
@@ -1721,6 +1788,8 @@ export class MemoryApi {
             job.targetType === "droppedResource" ||
             job.targetType === "link" ||
             job.targetType === "container" ||
+            job.targetType === "ruin" ||
+            job.targetType === "tombstone" ||
             job.targetType === "storage" ||
             job.targetType === "terminal"
         ) {

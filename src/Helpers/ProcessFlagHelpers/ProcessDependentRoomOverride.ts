@@ -24,10 +24,10 @@ export class ProcessDependentRoomOverride implements IFlagProcesser {
 
         MemoryApi.createEmpireAlertNode(
             "Option Flag [" +
-                flag.name +
-                "] processed. Flag Type: [" +
-                RoomVisualHelper.convertFlagTypeToString(flagTypeConst) +
-                "]",
+            flag.name +
+            "] processed. Flag Type: [" +
+            RoomVisualHelper.convertFlagTypeToString(flagTypeConst) +
+            "]",
             10
         );
     }

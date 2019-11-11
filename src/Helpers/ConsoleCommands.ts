@@ -13,7 +13,7 @@ export class ConsoleCommands {
      * @param roomName the name of the room we want to remove construction sites from
      * @param structureType [optional] the type of structure we want to remove the sites of
      */
-    public static removeConstructionSites = function(roomName: string, structureType?: string): void {
+    public static removeConstructionSites = function (roomName: string, structureType?: string): void {
         Game.rooms[roomName].find(FIND_MY_CONSTRUCTION_SITES).forEach((site: ConstructionSite) => {
             if (!structureType || site.structureType === structureType) {
                 site.remove();
@@ -25,7 +25,7 @@ export class ConsoleCommands {
      * remove all flags from the empire when called
      * @param substr a name contained in flags we want to remove
      */
-    public static removeFlags = function(substr: string): void {
+    public static removeFlags = function (substr: string): void {
         _.forEach(Game.flags, flag => {
             if (_.includes(flag.name, substr)) {
                 console.log(`removing flag ${flag.name} in ${flag.pos.roomName}`);
@@ -38,7 +38,7 @@ export class ConsoleCommands {
      * display status of specified room or all rooms if room specified
      * @param room [optional] the room we want to display the stats for (default all rooms)
      */
-    public static displayRoomStatus = function(roomName?: string): void {
+    public static displayRoomStatus = function (roomName?: string): void {
         // if no room was specified, display status for all
         if (!roomName) {
             _.forEach(Game.rooms, (currentRoom: Room) => {
@@ -62,7 +62,7 @@ export class ConsoleCommands {
      * kill all creeps
      * @param room [optional] the room we want to kill all creeps in (default all rooms)
      */
-    public static killAllCreeps = function(room?: Room, role?: RoleConstant): void {
+    public static killAllCreeps = function (room?: Room, role?: RoleConstant): void {
         // if no room specified, kill all creeps
         if (!room) {
             _.forEach(Game.creeps, creep => {
@@ -88,7 +88,7 @@ export class ConsoleCommands {
      * @param resourceType the type of resource we want to transfer
      * @param amount the amount of the resource we want to send
      */
-    public static sendResource = function(
+    public static sendResource = function (
         sendingRoom: Room,
         receivingRoom: Room,
         resourceType: ResourceConstant,

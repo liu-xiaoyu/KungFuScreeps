@@ -47,7 +47,7 @@ export class ProcessDefaultRemoteRoom implements IFlagProcesser {
             throw new UserException(
                 "Already working this dependent room!",
                 "The room you placed the remote flag in is already being worked by " +
-                    existingDepedentRemoteRoomMem.roomName,
+                existingDepedentRemoteRoomMem.roomName,
                 ERROR_WARN
             );
         }

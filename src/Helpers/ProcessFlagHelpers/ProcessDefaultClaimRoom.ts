@@ -47,7 +47,7 @@ export class ProcessDefaultClaimRoom implements IFlagProcesser {
             throw new UserException(
                 "Already working this dependent room!",
                 "The room you placed the claim flag in is already being worked by " +
-                    existingDepedentClaimRoomMem.roomName,
+                existingDepedentClaimRoomMem.roomName,
                 ERROR_WARN
             );
         }

@@ -2,12 +2,12 @@
 
 using namespace ScreepsLib;
 
-string HelloWorld::sayHello()
+string EMSCRIPTEN_KEEPALIVE HelloWorld::sayHello()
 {
   return "Hello Big Boy";
 }
 
-string HelloWorld::sayHello(string name)
+string EMSCRIPTEN_KEEPALIVE HelloWorld::sayHello(string name)
 {
   return "Hello" + name;
 }

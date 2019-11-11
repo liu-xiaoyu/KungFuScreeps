@@ -83,6 +83,7 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                     fillStorage: true,
                     fillTerminal: true,
                     getDroppedEnergy: true,
+                    getLootJobs: true,
                     getFromContainer: true //
                 };
                 break;
@@ -96,6 +97,7 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                     fillExtension: true,
                     fillTerminal: true,
                     fillStorage: true,
+                    getLootJobs: true,
                     getDroppedEnergy: true, //
                     getFromContainer: true //
                 };
@@ -111,6 +113,7 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                     fillSpawn: true, //
                     fillExtension: true,
                     fillTerminal: true,
+                    getLootJobs: true,
                     fillStorage: true,
                     getFromContainer: true, //
                     getDroppedEnergy: true //
@@ -125,6 +128,7 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                     fillTerminal: true,
                     fillSpawn: true, //
                     fillExtension: true,
+                    getLootJobs: true,
                     getFromStorage: true, //
                     getFromContainer: true, //
                     getDroppedEnergy: true, //
@@ -141,6 +145,7 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                     fillStorage: true, //
                     fillExtension: true,
                     fillSpawn: true,
+                    getLootJobs: true,
                     getFromStorage: true, //
                     getDroppedEnergy: true, //
                 };

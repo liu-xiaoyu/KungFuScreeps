@@ -116,6 +116,7 @@ export const SOURCE_CACHE_TTL = -1; // Sources
 export const MINERAL_CACHE_TTL = -1; // Minerals
 export const CONSTR_CACHE_TTL = 50; // Construction Sites
 export const TOMBSTONE_CACHE_TTL = 50; // Tombstones
+export const RUINS_CACHE_TTL = 50; // Ruins
 export const DROPS_CACHE_TTL = 50; // Dropped Resources
 export const FCREEP_CACHE_TTL = 20; // Friendly Creep
 export const HCREEP_CACHE_TTL = 1; // Hostile Creep
@@ -125,6 +126,7 @@ export const CONTAINER_JOB_CACHE_TTL = 5; // Container jobs
 export const LINK_JOB_CACHE_TTL = 50; // Link Jobs
 export const BACKUP_JOB_CACHE_TTL = 5; // Backup Jobs
 export const PICKUP_JOB_CACHE_TTL = 50; // Pickup Jobs
+export const LOOT_JOB_CACHE_TTL = 50; // Tombstone/Ruin Jobs
 // ClaimPartJob Constants
 export const CLAIM_JOB_CACHE_TTL = 1; // Claim Jobs
 export const RESERVE_JOB_CACHE_TTL = 1; // Reserve Jobs

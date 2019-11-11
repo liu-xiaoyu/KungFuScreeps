@@ -31,6 +31,7 @@ export class MemoryHelper_Room {
         this.updateMinerals(room.name);
         this.updateDroppedResources(room);
         this.updateTombstones(room);
+        this.updateRuins(room);
         // Update Custom Memory Components
         this.updateDependentRooms(room);
         // Update Job Lists
@@ -216,6 +217,20 @@ export class MemoryHelper_Room {
     }
 
     /**
+     * Finds all ruins in room
+     *
+     * @param room The room to check in
+     */
+    public static updateRuins(room: Room): void {
+        Memory.rooms[room.name].ruins = { data: {}, cache: null };
+
+        const ruins = room.find(FIND_RUINS);
+
+        Memory.rooms[room.name].ruins.data = _.map(ruins, (ruin: Ruin) => ruin.id);
+        Memory.rooms[room.name].ruins.cache = Game.time;
+    }
+
+    /**
      * Find all dropped resources in a room
      *
      * @param room The room to check in
@@ -349,6 +364,21 @@ export class MemoryHelper_Room {
 
         Memory.rooms[room.name].jobs!.getEnergyJobs!.pickupJobs = {
             data: GetEnergyJobs.createPickupJobs(room),
+            cache: Game.time
+        };
+    }
+
+    /**
+     * Update the room's GetEnergyJobListing_lootJobs
+     * @param room The room to update the memory fo
+     */
+    public static updateGetEnergy_lootJobs(room: Room) {
+        if (Memory.rooms[room.name].jobs!.getEnergyJobs === undefined) {
+            Memory.rooms[room.name].jobs!.getEnergyJobs = {};
+        }
+
+        Memory.rooms[room.name].jobs!.getEnergyJobs!.lootJobs = {
+            data: GetEnergyJobs.createLootJobs(room),
             cache: Game.time
         };
     }

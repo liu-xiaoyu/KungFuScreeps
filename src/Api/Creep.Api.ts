@@ -33,8 +33,8 @@ export class CreepApi {
         throw new UserException(
             "Bad jobType in CreepApi.doWork",
             "The jobtype of the job passed to CreepApi.doWork was invalid, or there is no implementation of that job type." +
-            "\n Job Type: " +
-            job.jobType,
+                "\n Job Type: " +
+                job.jobType,
             ERROR_FATAL
         );
     }
@@ -62,8 +62,8 @@ export class CreepApi {
         throw new UserException(
             "Bad jobType in CreepApi.travelTo",
             "The jobtype of the job passed to CreepApi.travelTo was invalid, or there is no implementation of this job type" +
-            "\n Job Type: " +
-            job.jobType,
+                "\n Job Type: " +
+                job.jobType,
             ERROR_FATAL
         );
     }
@@ -143,10 +143,10 @@ export class CreepApi {
         return new UserException(
             "Invalid Job actionType or targetType",
             "An invalid actionType or structureType has been provided by creep [" +
-            creep.name +
-            "]" +
-            "\n Job: " +
-            JSON.stringify(job),
+                creep.name +
+                "]" +
+                "\n Job: " +
+                JSON.stringify(job),
             ERROR_ERROR
         );
     }
@@ -341,6 +341,7 @@ export class CreepApi {
                     const sourceObjects: Source[] = MemoryHelper.getOnlyObjectsFromIDs(sourceIDs);
                     const accessibleSourceObjects: Source[] = [];
 
+                    // TODO BELOW
                     // ! Known issue - Multiple Sources, but the one with enough access tiles is not "suitable"
                     // ! e.g. 2 sources, 1 access tile and 3 access tiles -- Only the 1 access tile will be "suitable"
                     // ! but will not have enough accessTiles to be assigned. Creep needs to target the "not suitable" source in this case.
@@ -418,20 +419,27 @@ export class CreepApi {
         }
 
         if (creepOptions.getDroppedEnergy) {
-            // All dropped resources with enough energy to fill creep.carry, and not taken, also accept dropped resources that are at least 60% of carry
+            // All dropped resources with enough energy to fill at least 60% of carry
             const dropJobs = MemoryApi.getPickupJobs(
                 room,
-                (dJob: GetEnergyJob) =>
-                    !dJob.isTaken &&
-                    (dJob.resources!.energy >= creep.carryCapacity ||
-                        (dJob.targetType === "droppedResource" && dJob.resources!.energy >= creep.carryCapacity * 0.6))
+                (dJob: GetEnergyJob) => !dJob.isTaken && dJob.resources!.energy >= creep.carryCapacity * 0.6
             );
 
             if (dropJobs.length > 0) {
                 return dropJobs[0];
             }
+        }
 
-            // TODO consider tombstones dropped energy and get them here
+        if (creepOptions.getLootJobs) {
+            // All tombstones / ruins with enough energy to fill at least 60% of carry
+            const lootJobs = MemoryApi.getLootJobs(
+                room,
+                (lJob: GetEnergyJob) => !lJob.isTaken && lJob.resources!.energy >= creep.carryCapacity * 0.6
+            );
+
+            if(lootJobs.length > 0) { 
+                return lootJobs[0];
+            }
         }
 
         if (creepOptions.getFromStorage || creepOptions.getFromTerminal) {

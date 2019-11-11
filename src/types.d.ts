@@ -418,6 +418,7 @@ type ResourceContainingStructureConstant =
 type GetEnergy_ValidTargets =
     | "source"
     | "tombstone"
+    | "ruin"
     | "droppedResource"
     | "mineral"
     | ResourceContainingStructureConstant;
@@ -628,7 +629,7 @@ interface GetEnergyJobListing {
     /**
      * Jobs that target tombstones
      */
-    tombstoneJobs?: Cache;
+    lootJobs?: Cache;
 }
 
 /**
@@ -740,6 +741,10 @@ interface RoomMemory {
      * IDs of all tombstones in the room
      */
     tombstones: Cache;
+    /**
+     * IDs of all ruins in the room
+     */
+    ruins: Cache;
     /**
      * IDs of the link the power upgrader pulls from
      */
@@ -945,6 +950,10 @@ interface CreepOptionsCiv {
      * if the creep can seek out dropped energy
      */
     getDroppedEnergy?: boolean;
+    /**
+     * if the creep can seek out tombstones/ruins
+     */
+    getLootJobs?: boolean;
     /**
      * if the creep can pull from a link
      */

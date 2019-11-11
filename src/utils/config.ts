@@ -38,6 +38,14 @@ export const CONTAINER_MINIMUM_ENERGY = 100;
  * Minimum amount of energy a link must have to be used in a GetEnergyJob
  */
 export const LINK_MINIMUM_ENERGY = 1;
+/**
+ * Minimum amount of energy a ruin must have to be used in a GetEnergyJob
+ */
+export const RUIN_MINIMUM_ENERGY = 100;
+/**
+ * Minimum amount of energy a tombstone must have to be used in a GetEnergyJob
+ */
+export const TOMBSTONE_MINIMUM_ENERGY = 100;
 
 /**
  * Percentage HP to begin repairing structures (Percentage of current limit for Ramparts and Walls)

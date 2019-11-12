@@ -14,7 +14,9 @@ import {
     STIMULATE_FLAG,
     ROOM_OVERLAY_GRAPH_ON,
     MemoryApi,
-    RoomVisualHelper
+    RoomVisualHelper,
+    MemoryHelper_Room,
+    RoomHelper
 } from "utils/internals";
 
 // Api for room visuals
@@ -569,5 +571,55 @@ export class RoomVisualApi {
 
         // Return where the next box should start
         return y + lines.length;
+    }
+
+    /**
+     * Creates an overlay that shows tower damage on each tile in the room. For debug purposes only
+     */
+    public static debug_towerDamageOverlay(room: Room) {
+        if(Memory.debug === undefined) {
+            Memory.debug = {};
+        }
+        
+        // Skip filling array if it has already been done
+        if(Memory.debug.towerDebug === undefined) {
+
+            Memory.debug.towerDebug = new Array(50);
+            
+            const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER);
+            
+            for(let x = 0; x < 50; x++) {
+                
+                Memory.debug.towerDebug[x] = new Array(50);
+                
+                for(let y = 0; y < 50; y++) {
+                    Memory.debug.towerDebug[x][y] = 0;
+                    _.forEach(towers, (tower: StructureTower) => {
+                        const distance = tower.pos.getRangeTo(x, y);
+                        Memory.debug.towerDebug[x][y] += RoomHelper.getTowerDamageAtRange(distance);
+                    });
+                }
+            }
+        }
+        
+        // Damage array should be populated at this point
+
+        const roomVisual = new RoomVisual(room.name);
+
+        for(let x = 0; x < 50; x++) {
+
+            if(x % 2 === 0) {
+                continue;
+            }
+
+            for(let y = 0; y < 50; y++) {
+
+                if(y % 2 === 0) {
+                    continue;
+                }
+
+                roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75});
+            }
+        }
     }
 }

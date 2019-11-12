@@ -145,21 +145,47 @@ export class RoomHelper {
     }
 
     /**
-     * get the amount of damage a tower will do at this distance
-     * @param range the distance the target is from the tower
+     * Calculate the tower scale (portion of damage/heal/repair) at the range to target
+     * @param distance The number of tiles away the target is
      */
-    public static getTowerDamageAtRange(range: number) {
-        if (range <= TOWER_OPTIMAL_RANGE) {
-            return TOWER_POWER_ATTACK;
+    public static getTowerRangeScaleFactor(distance: number): number {
+        if(distance <= TOWER_OPTIMAL_RANGE) {
+            return 1;
         }
-        if (range >= TOWER_FALLOFF_RANGE) {
-            range = TOWER_FALLOFF_RANGE;
+
+        if(distance >= TOWER_FALLOFF_RANGE) {
+            return 1 - TOWER_FALLOFF;
         }
-        return (
-            TOWER_POWER_ATTACK -
-            (TOWER_POWER_ATTACK * TOWER_FALLOFF * (range - TOWER_OPTIMAL_RANGE)) /
-            (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE)
-        );
+
+        // Falloff is linear between optimal range and maximum range
+        const scaleDifferencePerTile = TOWER_FALLOFF / (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE);
+
+        // Fall off does not start until after optimal range
+        return 1 - (distance - TOWER_OPTIMAL_RANGE) * scaleDifferencePerTile;
+    }
+
+    /**
+     * Get the amount of damage a tower will do at this distance
+     * @param distance The number of tiles away the target is
+     */
+    public static getTowerDamageAtRange(distance: number) {
+        return Math.floor( TOWER_POWER_ATTACK * this.getTowerRangeScaleFactor(distance) );
+    }
+
+    /**
+     * Get the amount of damage a tower will heal at this distance
+     * @param distance The number of tiles away the target is
+     */
+    public static getTowerHealAtRange(distance: number) { 
+        return Math.floor(TOWER_POWER_HEAL * this.getTowerRangeScaleFactor(distance));
+    }
+
+    /**
+     * Get the amount of damage a tower will repair at this distance
+     * @param distance The number of tiles away the target is
+     */
+    public static getTowerRepairAtRange(distance: number) { 
+        return Math.floor(TOWER_POWER_REPAIR * this.getTowerRangeScaleFactor(distance));
     }
 
     /**

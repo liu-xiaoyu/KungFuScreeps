@@ -51,5 +51,8 @@ export class RoomVisualManager {
         endRightLine = RoomVisualApi.createOptionFlagVisual(room, RIGHT_START_X, endRightLine);
         // Display message box on the bottom right
         endRightLine = RoomVisualApi.createMessageBoxVisual(room, RIGHT_START_X, endRightLine);
+
+        // ------DEBUG-------------------------
+        // RoomVisualApi.debug_towerDamageOverlay(room);
     }
 }

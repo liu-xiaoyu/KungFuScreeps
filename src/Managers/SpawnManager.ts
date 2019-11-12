@@ -41,7 +41,7 @@ export class SpawnManager {
             // Check if we even have enough energy to even spawn this potential monstrosity
             if (room.energyAvailable >= bodyEnergyCost) {
                 // Get all the information we will need to spawn the next creep
-                const spawnDirection: DirectionConstant[] = SpawnApi.getSpawnDirection(nextCreepRole, room);
+                const spawnDirection: DirectionConstant[] = SpawnApi.getSpawnDirection(nextCreepRole, room, openSpawn);
                 const roomState: RoomStateConstant = room.memory.roomState!;
                 const name: string = SpawnHelper.generateCreepName(nextCreepRole, roomTier, room);
                 const targetRoom: string = SpawnApi.getCreepTargetRoom(room, nextCreepRole, creepBody, name);

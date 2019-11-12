@@ -597,16 +597,11 @@ export class SpawnApi {
     /**
      * Get the direction the creep needs to be spawned in
      */
-    public static getSpawnDirection(nextCreepRole: RoleConstant, room: Room): DirectionConstant[] {
-        const spawns: StructureSpawn[] = _.filter(
-            Game.spawns,
-            (spawn: StructureSpawn) => spawn.room.name === room.name
-        );
-        const centerSpawn: StructureSpawn | null = MemoryHelper_Room.getCenterSpawn(room, spawns);
+    public static getSpawnDirection(nextCreepRole: RoleConstant, room: Room, openSpawn: StructureSpawn): DirectionConstant[] {
 
-        if (!centerSpawn) {
+        if (!openSpawn) {
             throw new UserException(
-                "Couldn't find center spawn for the room",
+                "Couldn't find correct spawn for the room",
                 "role: " + nextCreepRole + "\nCreep Home Room",
                 ERROR_ERROR
             );
@@ -614,7 +609,7 @@ export class SpawnApi {
 
         for (const index in CREEP_BODY_OPT_HELPERS) {
             if (CREEP_BODY_OPT_HELPERS[index].name === nextCreepRole) {
-                return CREEP_BODY_OPT_HELPERS[index].getSpawnDirection(centerSpawn!, room);
+                return CREEP_BODY_OPT_HELPERS[index].getSpawnDirection(openSpawn!, room);
             }
         }
         throw new UserException(

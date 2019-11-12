@@ -61,8 +61,31 @@ export class HarvesterCreepManager implements ICivCreepRoleManager {
             }
         }
 
-        if (creepOptions.fillStorage || creepOptions.fillTerminal) {
-            const storeJobs = MemoryApi.getStoreJobs(room, (bsJob: CarryPartJob) => !bsJob.isTaken);
+        if (creepOptions.fillStorage) {
+            const storeJobs = MemoryApi.getStoreJobs(room, (bsJob: CarryPartJob) =>
+                !bsJob.isTaken && bsJob.targetType === STRUCTURE_STORAGE);
+
+            if (storeJobs.length > 0) {
+                const jobObjects: Structure[] = MemoryHelper.getOnlyObjectsFromIDs(
+                    _.map(storeJobs, job => job.targetID)
+                );
+
+                const closestTarget = creep.pos.findClosestByRange(jobObjects);
+                let closestJob;
+
+                if (closestTarget !== null) {
+                    closestJob = _.find(storeJobs, (job: CarryPartJob) => job.targetID === closestTarget.id);
+                } else {
+                    // if findCLosest nulls out, just choose first
+                    closestJob = storeJobs[0];
+                }
+                return closestJob;
+            }
+        }
+
+        if (creepOptions.fillTerminal) {
+            const storeJobs = MemoryApi.getStoreJobs(room, (bsJob: CarryPartJob) =>
+                !bsJob.isTaken && bsJob.targetType === STRUCTURE_TERMINAL);
 
             if (storeJobs.length > 0) {
                 const jobObjects: Structure[] = MemoryHelper.getOnlyObjectsFromIDs(

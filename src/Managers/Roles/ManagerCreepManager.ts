@@ -27,15 +27,61 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
     }
 
     /**
+     * Check if theres a job besides just filling the storage
+     * @param creep the creep we are checking the job for
+     * @param room the room we are in
+     * @returns boolean telling us if there is a non storage filling job or not
+     */
+    private isNonStorageJob(creep: Creep, room: Room): boolean {
+        const job: CarryPartJob | undefined = this.getCarryJob(creep, room);
+        return (job !== undefined && job.targetType !== STRUCTURE_STORAGE);
+    }
+
+    /**
      * Find a job to get energy for the manager
      * @param creep the manager creep we are running
      * @param room the room the creep is in
      */
     private getEnergyJob(creep: Creep, room: Room): BaseJob | undefined {
-        // Make sure we aren't getting energy just to put it right back into the storage
-        // Prefer terminal first, then storage if we must
-        // Probably check getCarryJob to see if a job BESIDES putting back in storage exists
-        // since i guess that will be default job for manager?, and if so continue, otherwise skip the tick?
+        const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
+        // Check for energy in the terminal
+        if (creepOptions.getFromTerminal) {
+            // All backupStructures with enough energy to fill creep.carry, and not taken
+            const backupStructures = MemoryApi.getBackupStructuresJobs(
+                room,
+                (job: GetEnergyJob) =>
+                    !job.isTaken && job.resources.energy >= creep.carryCapacity &&
+                    job.targetType === STRUCTURE_TERMINAL
+            );
+
+            if (backupStructures.length > 0) {
+                const terminal: StructureTerminal = Game.getObjectById(backupStructures[0].targetID) as StructureTerminal;
+                if (creep.pos.isNearTo(terminal)) {
+                    return backupStructures[0];
+                }
+            }
+        }
+
+        // Check for energy in the storage
+        // Second check it to make sure we don't get out energy just to put it back in
+        if (creepOptions.getFromStorage && this.isNonStorageJob(creep, room)) {
+            // All backupStructures with enough energy to fill creep.carry, and not taken
+            const backupStructures = MemoryApi.getBackupStructuresJobs(
+                room,
+                (job: GetEnergyJob) =>
+                    !job.isTaken && job.resources.energy >= creep.carryCapacity &&
+                    job.targetType === STRUCTURE_STORAGE
+            );
+
+            if (backupStructures.length > 0) {
+                const storage: StructureStorage = Game.getObjectById(backupStructures[0].targetID) as StructureStorage;
+                if (creep.pos.isNearTo(storage)) {
+                    return backupStructures[0];
+                }
+            }
+        }
+
+        return undefined;
     }
 
     /**
@@ -44,8 +90,22 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
      * @param room the room the creep is in
      */
     private getCarryJob(creep: Creep, room: Room): CarryPartJob | undefined {
-        // Make sure the carry part job target is within range: 1
-        // Make sure its in the right order (spawns, towers, links, nukes, storage)
+        const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
+        if (creepOptions.fillSpawn) {
+
+        }
+
+        if (creepOptions.fillTower) {
+
+        }
+
+        if (creepOptions.fillLink) {
+
+        }
+
+        if (creepOptions.fillStorage) {
+
+        }
     }
 
     /**

@@ -124,6 +124,7 @@ export class ClaimerBodyOptsHelper implements ICreepBodyOptsHelper {
         const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
         const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
         const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
-        return _.filter(directions, (d: DirectionConstant) => d !== managerDirection);
+        directions.splice(directions.indexOf(managerDirection), 1);
+        return directions;
     }
 }

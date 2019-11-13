@@ -105,7 +105,7 @@ export class ManagerBodyOptsHelper implements ICreepBodyOptsHelper {
     public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
         const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
         const directions: DirectionConstant[] = [];
-        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter);
+        const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter!.x, roomCenter!.y);
         directions.push(managerDirection);
         return directions;
     }

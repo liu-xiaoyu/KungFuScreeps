@@ -454,8 +454,8 @@ export class RoomHelper {
             if (!rr) {
                 return;
             }
-
-            if (SpawnHelper.isRemoteRoomEnemyReserved(rr)) {
+            // Don't consider these sources valid if the controller is reserved by an enemy, or theres defcon 2 >=
+            if (SpawnHelper.isRemoteRoomEnemyReserved(rr) || (Memory.rooms[rr.roomName] && Memory.rooms[rr.roomName].defcon >= 2)) {
                 return;
             }
 

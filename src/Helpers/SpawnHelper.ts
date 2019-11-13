@@ -22,6 +22,7 @@ import {
     ALL_DEFENSIVE_ROLES,
     RESERVER_MIN_TTL,
     ROOM_STATE_INTRO,
+
     remoteRolePriority
 } from "utils/internals";
 
@@ -491,12 +492,31 @@ export class SpawnHelper {
             }
 
             // If the TTL is below the limit set in config, we need a reserver
-            if (remoteRoom.reserveTTL <= RESERVER_MIN_TTL) {
+            if (remoteRoom.reserveTTL <= RESERVER_MIN_TTL || this.isRemoteRoomEnemyReserved(remoteRoom)) {
                 numReserversNeeded++;
             }
         }
 
         return numReserversNeeded;
+    }
+
+    /**
+     * Gets the status of a remote room's controller in respect to it being reserved by an invader
+     * @param remoteRoom the remote room memory of the room we are checking
+     */
+    public static isRemoteRoomEnemyReserved(remoteRoom: RemoteRoomMemory): boolean {
+        // If we don't have vision of the room, just assume we need a reserver for the lulz
+        const room: Room = Game.rooms[remoteRoom.roomName];
+        if (!room) {
+            return true;
+        }
+
+        if (room.controller && room.controller.reservation) {
+            return (room.controller.reservation!.username !== "UhmBrock" &&
+                room.controller.reservation!.username !== "Jakesboy2");
+        }
+
+        return false;
     }
 
     /**

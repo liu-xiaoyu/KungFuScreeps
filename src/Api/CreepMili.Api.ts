@@ -296,8 +296,6 @@ export class MiliApi {
         const pathFinderOptions: PathFinderOpts = { flee: true };
         const goal: { pos: RoomPosition, range: number } = { pos: hostileCreep.pos, range: 4 };
         path = PathFinder.search(creep.pos, goal, pathFinderOptions);
-        console.log("raw path: " + path.path);
-        console.log("full path: " + JSON.stringify(path));
         if (path.path.length > 0) {
             creep.moveTo(path.path[path.path.length - 1]);
             return true;

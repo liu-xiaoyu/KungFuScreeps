@@ -32,7 +32,7 @@ export class RoomHelper {
             return false;
         } else if (
             room.controller.owner !== undefined &&
-            (room.controller.owner.username === "UhmBrock" || room.controller.owner.username === "Jakesboy2")
+            (room.controller.owner.username === "UhmBrock" || room.controller.owner.username === "jakesboy2")
         ) {
             return true;
         } else if (this.isAllyReserved(room)) {
@@ -53,7 +53,7 @@ export class RoomHelper {
         return (room.controller.reservation !== undefined &&
             room.controller.reservation.username !== undefined &&
             (room.controller.reservation!.username === "UhmBrock" ||
-                room.controller.reservation!.username === "Jakesboy2"));
+                room.controller.reservation!.username === "jakesboy2"));
     }
 
     /**

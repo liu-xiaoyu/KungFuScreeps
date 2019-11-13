@@ -515,6 +515,9 @@ export class SpawnHelper {
         if (!room) {
             return true;
         }
+        if (RoomHelper.isNoReservation(room)) {
+            return false;
+        }
         return !RoomHelper.isAllyReserved(room);
     }
 

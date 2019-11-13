@@ -136,8 +136,6 @@ export class EventHelper {
                 requestingRoleArray = STALKER_SOLO_ARRAY;
                 break;
         }
-        console.log(requestingRoleArray);
-        console.log(creepRole);
         return requestingRoleArray.includes(creepRole);
     }
 

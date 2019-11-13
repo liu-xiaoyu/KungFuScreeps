@@ -34,16 +34,25 @@ export class RoomHelper {
             (room.controller.owner.username === "UhmBrock" || room.controller.owner.username === "Jakesboy2")
         ) {
             return true;
-        } else if (
-            room.controller.reservation !== undefined &&
-            room.controller.reservation.username !== undefined &&
-            (room.controller.reservation!.username === "UhmBrock" ||
-                room.controller.reservation!.username === "Jakesboy2")
-        ) {
+        } else if (this.isAllyReserved(room)) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Check if a room is reserved by an ally
+     * @param room the room we are checking the reservation for
+     */
+    public static isAllyReserved(room: Room): boolean {
+        if (!room || !room.controller) {
+            return false;
+        }
+        return (room.controller.reservation !== undefined &&
+            room.controller.reservation.username !== undefined &&
+            (room.controller.reservation!.username === "UhmBrock" ||
+                room.controller.reservation!.username === "Jakesboy2"));
     }
 
     /**
@@ -442,6 +451,10 @@ export class RoomHelper {
 
         _.forEach(remoteRooms, (rr: RemoteRoomMemory) => {
             if (!rr) {
+                return;
+            }
+
+            if (!this.isAllyReserved(Game.rooms[rr.roomName])) {
                 return;
             }
 

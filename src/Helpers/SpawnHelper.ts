@@ -510,13 +510,7 @@ export class SpawnHelper {
         if (!room) {
             return true;
         }
-
-        if (room.controller && room.controller.reservation) {
-            return (room.controller.reservation!.username !== "UhmBrock" &&
-                room.controller.reservation!.username !== "Jakesboy2");
-        }
-
-        return false;
+        return !RoomHelper.isAllyReserved(room);
     }
 
     /**

@@ -1,4 +1,4 @@
-import { CreepHelper, CreepApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException } from "utils/internals";
+import { CreepHelper, CreepApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException, RoomHelper } from "utils/internals";
 
 export class ClaimPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "claimPartJob";
@@ -34,13 +34,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
             returnCode = creep.claimController(target);
         } else if (job.actionType === "reserve" && target instanceof StructureController) {
             // this handles enemy reserved controller as well
-            const controller: StructureController = target as StructureController;
-            if (controller.reservation && controller.reservation.username !== "Jakesboy2" && controller.reservation.username !== "UhmBrock") {
-                returnCode = creep.attackController(target);
-            }
-            else {
-                returnCode = creep.reserveController(target);
-            }
+            returnCode = !RoomHelper.isAllyReserved(target.room) ? creep.attackController(target) : creep.reserveController(target);
             deleteOnSuccess = false; // don't delete job since we do this until death
         } else if (job.actionType === "sign" && target instanceof StructureController) {
             returnCode = creep.signController(target, CreepHelper.getSigningText());

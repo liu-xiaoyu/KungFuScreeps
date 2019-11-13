@@ -491,6 +491,11 @@ export class SpawnHelper {
                 continue;
             }
 
+            // Don't consider these sources valid if the controller is reserved by an enemy, or theres defcon 2 >=
+            if (Memory.rooms[remoteRoom.roomName] && Memory.rooms[remoteRoom.roomName].defcon >= 2) {
+                continue;
+            }
+
             // If the TTL is below the limit set in config, we need a reserver
             if (remoteRoom.reserveTTL <= RESERVER_MIN_TTL || this.isRemoteRoomEnemyReserved(remoteRoom)) {
                 numReserversNeeded++;

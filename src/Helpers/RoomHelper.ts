@@ -4,7 +4,8 @@ import {
     ERROR_WARN,
     STIMULATE_FLAG,
     UserException,
-    TOWER_ALLOWED_TO_REPAIR
+    TOWER_ALLOWED_TO_REPAIR,
+    SpawnHelper
 } from "utils/internals";
 
 // helper functions for rooms
@@ -454,7 +455,7 @@ export class RoomHelper {
                 return;
             }
 
-            if (!this.isAllyReserved(Game.rooms[rr.roomName])) {
+            if (SpawnHelper.isRemoteRoomEnemyReserved(rr)) {
                 return;
             }
 

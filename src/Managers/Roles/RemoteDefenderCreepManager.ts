@@ -33,7 +33,8 @@ export class RemoteDefenderCreepManager implements IMiliCreepRoleManager {
 
         // Temp fix for making remote defenders ignore roads and stuff
         if (!(target instanceof Creep)) {
-            target = undefined;
+            const invaderCore: StructureInvaderCore[] = creep.room.find(FIND_HOSTILE_STRUCTURES, { filter: s => s.structureType === STRUCTURE_INVADER_CORE }) as StructureInvaderCore[];
+            target = invaderCore.length > 0 ? invaderCore[0] : undefined;
         }
 
         const isMelee: boolean = false;

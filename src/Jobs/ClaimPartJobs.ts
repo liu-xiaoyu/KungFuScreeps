@@ -34,7 +34,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
             returnCode = creep.claimController(target);
         } else if (job.actionType === "reserve" && target instanceof StructureController) {
             // this handles enemy reserved controller as well
-            returnCode = !RoomHelper.isAllyReserved(target.room) ? creep.attackController(target) : creep.reserveController(target);
+            returnCode = !RoomHelper.isAllyReserved(target.room) && !RoomHelper.isNoReservation(target.room) ? creep.attackController(target) : creep.reserveController(target);
             deleteOnSuccess = false; // don't delete job since we do this until death
         } else if (job.actionType === "sign" && target instanceof StructureController) {
             returnCode = creep.signController(target, CreepHelper.getSigningText());

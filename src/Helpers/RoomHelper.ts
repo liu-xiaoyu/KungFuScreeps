@@ -594,4 +594,16 @@ export class RoomHelper {
     public static verifyObjectByID(id: string): boolean {
         return Game.getObjectById(id) !== undefined;
     }
+
+    /**
+     * Check if a room has no reservation on it
+     * @param room the room we are checking
+     */
+    public static isNoReservation(room: Room): boolean {
+        if (room.controller) {
+            return room.controller.reservation === undefined;
+        }
+        return false;
+    }
+
 }

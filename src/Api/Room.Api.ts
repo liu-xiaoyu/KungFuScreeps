@@ -428,7 +428,10 @@ export class RoomApi {
     public static runLinks(room: Room): void {
         // If we don't have an upgrader link, cancel early
         const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room);
-        if (!upgraderLink || upgraderLink.energy <= 400) {
+        if (!upgraderLink) {
+            return;
+        }
+        if (upgraderLink.energy > 400) {
             return;
         }
 

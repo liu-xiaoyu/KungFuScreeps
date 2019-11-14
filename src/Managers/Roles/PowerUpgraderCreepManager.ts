@@ -46,7 +46,7 @@ export class PowerUpgraderCreepManager implements ICivCreepRoleManager {
      */
     public newGetEnergyJob(creep: Creep, room: Room): GetEnergyJob | undefined {
         // All link jobs with enough energy to fill creep.carry, and not taken
-        const linkJobs = MemoryApi.getLinkJobs(room, (job: GetEnergyJob) => !job.isTaken);
+        const linkJobs = MemoryApi.getLinkJobs(room, (job: GetEnergyJob) => !job.isTaken, true);
 
         if (linkJobs.length > 0) {
             return linkJobs[0];

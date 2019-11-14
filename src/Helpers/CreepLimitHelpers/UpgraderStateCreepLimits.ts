@@ -11,6 +11,7 @@ import {
     ROLE_COLONIZER,
     ROLE_REMOTE_DEFENDER,
     ROOM_STATE_UPGRADER,
+    ROLE_MANAGER,
     RoomHelper,
     SpawnHelper,
     MemoryApi
@@ -44,7 +45,7 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
         // Generate Limits --------
         domesticLimits[ROLE_MINER] = minerLimits;
         domesticLimits[ROLE_HARVESTER] = 2;
-        domesticLimits[ROLE_WORKER] = 2;
+        domesticLimits[ROLE_WORKER] = 1;
         domesticLimits[ROLE_POWER_UPGRADER] = 1;
         domesticLimits[ROLE_LORRY] = numLorries;
         domesticLimits[ROLE_MANAGER] = 1;

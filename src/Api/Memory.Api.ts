@@ -88,7 +88,10 @@ export class MemoryApi {
      * @param room the room memory we are getting the upgrader link from
      */
     public static getUpgraderLink(room: Room): StructureLink | null {
-        return Game.getObjectById(room.memory.upgradeLink as string);
+        // TODO remove this and all references to it, or update it and remove the one in RoomHelper. We duplicated this and
+        // didn't use it so it never got fixed. But imo it should be in memory api like it is not in room helper? Idk honetsly... or just not store it in memory
+        // idc either way just putting todo so i remove it later
+        return RoomHelper.getUpgraderLink(room) as StructureLink | null;
     }
 
     /**
@@ -1022,7 +1025,7 @@ export class MemoryApi {
             MemoryHelper_Room.updateGetEnergy_linkJobs(room);
         }
 
-        let linkJobs: GetEnergyJob[] = Memory.rooms[room.name].jobs!.getEnergyJobs!.sourceJobs!.data;
+        let linkJobs: GetEnergyJob[] = Memory.rooms[room.name].jobs!.getEnergyJobs!.linkJobs!.data;
 
         if (filterFunction !== undefined) {
             linkJobs = _.filter(linkJobs, filterFunction);

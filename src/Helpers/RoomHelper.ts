@@ -213,7 +213,7 @@ export class RoomHelper {
         const controller: StructureController | undefined = room.controller;
 
         // Break early if we don't have 3 links yet
-        if (links.length < 3) {
+        if (links.length < 2) {
             return null;
         }
 
@@ -230,7 +230,8 @@ export class RoomHelper {
         }
 
         // Find the closest link to the controller, this is our upgrader link
-        return controller!.pos.findClosestByRange(links);
+        const closestLink: Structure<StructureConstant> | null = controller!.pos.findClosestByRange(links) as Structure<StructureConstant>;
+        return controller.pos.inRangeTo(closestLink.pos.x, closestLink.pos.y, 3) ? closestLink : null;
     }
 
     /**

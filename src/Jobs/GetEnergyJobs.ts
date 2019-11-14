@@ -8,7 +8,8 @@ import {
     ROLE_MINER,
     ROLE_REMOTE_MINER,
     TOMBSTONE_MINIMUM_ENERGY,
-    RUIN_MINIMUM_ENERGY
+    RUIN_MINIMUM_ENERGY,
+    LINK_MINIMUM_ENERGY
 } from "utils/internals";
 
 export class GetEnergyJobs implements IJobTypeHelper {
@@ -253,14 +254,8 @@ export class GetEnergyJobs implements IJobTypeHelper {
     public static createLinkJobs(room: Room): GetEnergyJob[] {
         const linkJobList: GetEnergyJob[] = [];
 
-        // TODO Actually get the list of jobs from a MemoryAPI function
-
-        if (linkJobList.length === 0) {
-            return [];
-        }
-
-        const upgraderLink = MemoryApi.getUpgraderLink(room);
-        if (upgraderLink !== undefined && upgraderLink !== null) {
+        const upgraderLink: StructureLink = MemoryApi.getUpgraderLink(room) as StructureLink;
+        if (upgraderLink !== undefined && upgraderLink !== null && upgraderLink.energy > LINK_MINIMUM_ENERGY) {
             const linkStore: StoreDefinition = { energy: upgraderLink.energy } as StoreDefinition;
             const linkJob: GetEnergyJob = {
                 jobType: "getEnergyJob",

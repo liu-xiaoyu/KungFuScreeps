@@ -37,7 +37,7 @@ export const CONTAINER_MINIMUM_ENERGY = 100;
 /**
  * Minimum amount of energy a link must have to be used in a GetEnergyJob
  */
-export const LINK_MINIMUM_ENERGY = 1;
+export const LINK_MINIMUM_ENERGY = 200;
 /**
  * Minimum amount of energy a ruin must have to be used in a GetEnergyJob
  */

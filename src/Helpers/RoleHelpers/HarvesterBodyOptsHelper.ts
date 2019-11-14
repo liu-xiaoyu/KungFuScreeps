@@ -148,6 +148,7 @@ export class HarvesterBodyOptsHelper implements ICreepBodyOptsHelper {
                     getLootJobs: true,
                     getFromStorage: true, //
                     getDroppedEnergy: true, //
+                    getFromContainer: true
                 };
 
                 break;

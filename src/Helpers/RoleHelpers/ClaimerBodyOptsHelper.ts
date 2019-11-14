@@ -59,7 +59,7 @@ export class ClaimerBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate options for claimer creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for Claimer
         let body: CreepBodyDescriptor = { claim: 1, move: 2 };
         const opts: CreepBodyOptions = { mixType: GROUPED };

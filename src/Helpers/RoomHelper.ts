@@ -335,43 +335,16 @@ export class RoomHelper {
      * @param room the room we are searching for repair targets in
      */
     public static chooseTowerTargetRepair(room: Room): Structure | undefined | null {
-        // Check for priority repair job of an allowed type
-        const priorityRepairJobs = MemoryApi.getPriorityRepairJobs(room);
-        if (priorityRepairJobs.length > 0) {
-            for (const job of priorityRepairJobs) {
-                const target: Structure = Game.getObjectById(job.targetID) as Structure;
-                if (this.isTowerAllowedToRepair(target.structureType)) {
-                    return target;
-                }
-            }
-        }
-
         // Check for non-priority repair jobs of an allowed type
-        const repairJobs = MemoryApi.getRepairJobs(room, (job: WorkPartJob) => !job.isTaken);
+        const repairJobs = MemoryApi.getRepairJobs(room,
+            (j: WorkPartJob) => j.targetType === STRUCTURE_CONTAINER || j.targetType === STRUCTURE_ROAD
+        );
+
         if (repairJobs.length > 0) {
-            for (const job of priorityRepairJobs) {
-                const target: Structure = Game.getObjectById(job.targetID) as Structure;
-                if (this.isTowerAllowedToRepair(target.structureType)) {
-                    return target;
-                }
-            }
+            return Game.getObjectById(repairJobs[0].targetID) as Structure;
         }
 
         return undefined;
-    }
-
-    /**
-     * Decide if a structure type is allowed for the tower to repair
-     * @param target the target we are checking for
-     */
-    public static isTowerAllowedToRepair(structureType: StructureConstant): boolean {
-        for (const i in TOWER_ALLOWED_TO_REPAIR) {
-            const currentStructureType = TOWER_ALLOWED_TO_REPAIR[i];
-            if (currentStructureType === structureType) {
-                return true;
-            }
-        }
-        return false;
     }
 
     // Get the number of non-terrain-wall tiles around a RoomObject

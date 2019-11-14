@@ -33,7 +33,7 @@ export class RemoteDefenderBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate body for remote defender creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for Remote Defender
         let body: CreepBodyDescriptor = { attack: 5, move: 5 };
         const opts: CreepBodyOptions = { mixType: GROUPED };

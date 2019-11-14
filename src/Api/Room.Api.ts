@@ -159,9 +159,9 @@ export class RoomApi {
             return;
         }
 
-        // have each tower attack this target
+        // have each tower repair this target, making sure we have at least half energy remaining for an emergency
         towers.forEach((t: StructureTower) => {
-            if (t) {
+            if (t && (t.energy >= t.energyCapacity * .5)) {
                 t.repair(idealTarget);
             }
         });
@@ -173,7 +173,7 @@ export class RoomApi {
      */
     public static runTowersEmergecyRampartRepair(rampart: StructureRampart): void {
         const towers: StructureTower[] = MemoryApi.getStructureOfType(rampart.room.name, STRUCTURE_TOWER) as StructureTower[];
-        // have each tower attack this target
+        // have each tower repair this target
         towers.forEach((t: StructureTower) => {
             if (t) {
                 t.repair(rampart);

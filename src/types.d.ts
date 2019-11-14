@@ -232,7 +232,7 @@ interface ICreepBodyOptsHelper {
         squadUUIDParam: number | null,
         rallyLocationParam: RoomPosition | null
     ) => (CreepOptionsCiv | undefined) | (CreepOptionsMili | undefined);
-    generateCreepBody: (tier: TierConstant) => BodyPartConstant[];
+    generateCreepBody: (tier: TierConstant, room: Room) => BodyPartConstant[];
     getTargetRoom: (
         room: Room,
         roleConst: RoleConstant,

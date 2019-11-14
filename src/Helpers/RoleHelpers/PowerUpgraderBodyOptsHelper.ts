@@ -9,7 +9,8 @@ import {
     ROLE_POWER_UPGRADER,
     SpawnHelper,
     SpawnApi,
-    MemoryApi
+    MemoryApi,
+    RoomHelper
 } from "utils/internals";
 
 export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
@@ -25,24 +26,23 @@ export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate body for power upgrader creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for Power Upgrader
         let body: CreepBodyDescriptor = { work: 18, carry: 8, move: 4 };
         const opts: CreepBodyOptions = { mixType: GROUPED };
+        // Have a de
+        const numRemoteSources = RoomHelper.numRemoteSources(room);
+        let numWorkParts: number = (numRemoteSources * 3);
 
-        // There are currently no plans to use power upgraders before links become available
-        // Need to experiment with work parts here and find out whats keeps up with the links
-        // Without over draining the storage, but still puts up numbers
         switch (tier) {
-            case TIER_6: // 15 Work, 1 Carry, 1 Move - Total Cost: 2300
-                body = { work: 17, carry: 8, move: 4 };
+            case TIER_6:
+            case TIER_7:
+                numWorkParts += 11;
+                numWorkParts = SpawnHelper.limitNumWorkParts(numWorkParts, 600, tier);
+                body = { work: numWorkParts, carry: 8, move: 4 };
                 break;
 
-            case TIER_7: // 1 Work, 8 Carry, 4 Move - Total Cost: 2800
-                body = { work: 22, carry: 8, move: 4 };
-                break;
-
-            case TIER_8: // 1 Work, 8 Carry, 4 Move - Total Cost: 2100
+            case TIER_8: // 15 Work, 8 Carry, 4 Move - Total Cost: 2100
                 body = { work: 15, carry: 8, move: 4 }; // RCL 8 you can only do 15 per tick
                 break;
         }

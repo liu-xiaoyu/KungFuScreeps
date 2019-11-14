@@ -36,7 +36,7 @@ export class DomesticDefenderBodyOptsHelper implements ICreepBodyOptsHelper {
      * generate body for domestic defender creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for Stalker
         let body: CreepBodyDescriptor = { attack: 2, move: 2 };
         const opts: CreepBodyOptions = { mixType: GROUPED };

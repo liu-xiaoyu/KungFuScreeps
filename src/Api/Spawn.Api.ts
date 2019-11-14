@@ -277,23 +277,12 @@ export class SpawnApi {
     public static getEnergyCostOfBody(body: BodyPartConstant[]): number {
         // Create the object with the costs of each body part
         let totalCost = 0;
-        const bodyPartCost: StringMap = {
-            work: 100,
-            carry: 50,
-            move: 50,
-            attack: 80,
-            ranged_attack: 150,
-            heal: 250,
-            claim: 600,
-            tough: 10
-        };
 
         // Loop over the creep body array summing the total cost of the body parts
         for (let i = 0; i < body.length; ++i) {
             const currBodyPart = body[i];
-            totalCost += bodyPartCost[currBodyPart];
+            totalCost += BODYPART_COST[currBodyPart];
         }
-
         return totalCost;
     }
 
@@ -396,13 +385,13 @@ export class SpawnApi {
      * @param tier the tier our room is at
      * @param role the role of the creep we want
      */
-    public static generateCreepBody(tier: TierConstant, role: RoleConstant | null): BodyPartConstant[] {
+    public static generateCreepBody(tier: TierConstant, role: RoleConstant | null, room: Room): BodyPartConstant[] {
         if (!role) {
             throw new UserException("Null role provided to generate creep options", "Api/SpawnApi", ERROR_ERROR);
         }
         for (const index in CREEP_BODY_OPT_HELPERS) {
             if (CREEP_BODY_OPT_HELPERS[index].name === role) {
-                return CREEP_BODY_OPT_HELPERS[index].generateCreepBody(tier);
+                return CREEP_BODY_OPT_HELPERS[index].generateCreepBody(tier, room);
             }
         }
         throw new UserException(

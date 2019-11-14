@@ -34,7 +34,7 @@ export class RemoteMinerBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate body for remote miner creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for Remote Miner
         let body: CreepBodyDescriptor = { work: 6, carry: 1, move: 3 };
         const opts: CreepBodyOptions = { mixType: GROUPED };

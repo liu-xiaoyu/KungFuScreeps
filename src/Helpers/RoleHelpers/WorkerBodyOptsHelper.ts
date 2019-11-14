@@ -34,7 +34,7 @@ export class WorkerBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate body for worker creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for Worker
         let body: CreepBodyDescriptor = { work: 1, carry: 2, move: 2 };
         const opts: CreepBodyOptions = { mixType: GROUPED };

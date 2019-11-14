@@ -37,7 +37,7 @@ export class StalkerBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate body for stalker creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for Stalker
         let body: CreepBodyDescriptor = { ranged_attack: 1, move: 1 };
         const opts: CreepBodyOptions = { mixType: GROUPED };

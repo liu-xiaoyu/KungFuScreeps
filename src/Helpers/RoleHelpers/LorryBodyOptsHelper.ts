@@ -34,7 +34,7 @@ export class LorryBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate body for lorry creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for Lorry
         let body: CreepBodyDescriptor = { carry: 3, move: 3 };
         const opts: CreepBodyOptions = { mixType: GROUPED };

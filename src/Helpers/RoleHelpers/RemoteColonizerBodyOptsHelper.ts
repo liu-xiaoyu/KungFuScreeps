@@ -33,7 +33,7 @@ export class RemoteColonizerBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate body for remote colonizer creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for Remote Colonizer
         let body: CreepBodyDescriptor = { work: 7, carry: 5, move: 6 };
         const opts: CreepBodyOptions = { mixType: GROUPED };

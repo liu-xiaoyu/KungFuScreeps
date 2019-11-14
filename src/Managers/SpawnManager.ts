@@ -35,7 +35,7 @@ export class SpawnManager {
         // If we are spawning a creep this tick, continue from here
         if (nextCreepRole) {
             const roomTier: TierConstant = SpawnApi.getTier(room, nextCreepRole);
-            const creepBody: BodyPartConstant[] = SpawnApi.generateCreepBody(roomTier, nextCreepRole);
+            const creepBody: BodyPartConstant[] = SpawnApi.generateCreepBody(roomTier, nextCreepRole, room);
             const bodyEnergyCost: number = SpawnApi.getEnergyCostOfBody(creepBody);
 
             // Check if we even have enough energy to even spawn this potential monstrosity

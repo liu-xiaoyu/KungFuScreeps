@@ -231,6 +231,7 @@ export class CreepApi {
     /**********************************************************/
     /*        GET NEW JOB SECTION                           ***/
     /**********************************************************/
+    // TODO - move all of these to their respective managers for refactoring purposes
 
     /**
      * Gets a new WorkPartJob for worker
@@ -251,7 +252,7 @@ export class CreepApi {
         }
 
         // Startup On Ramparts
-        if (creepOptions.repair) {
+        if (creepOptions.wallRepair) {
             const defenseRepairJobs: WorkPartJob[] = MemoryApi.getRepairJobs(room, (job: WorkPartJob) => {
                 const target = Game.getObjectById(job.targetID) as Structure;
                 if (target && target.structureType === STRUCTURE_RAMPART) {

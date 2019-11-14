@@ -30,7 +30,7 @@ export class MineralMinerBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate body for mienral miner creep
      * @param tier The tier of the room
      */
-    public generateCreepBody = (tier: TierConstant): BodyPartConstant[] => {
+    public generateCreepBody = (tier: TierConstant, room: Room): BodyPartConstant[] => {
         let body: CreepBodyDescriptor = { work: 2, move: 2 };
         const opts: CreepBodyOptions = { mixType: GROUPED };
 

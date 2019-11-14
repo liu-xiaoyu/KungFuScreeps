@@ -506,6 +506,18 @@ export class SpawnHelper {
     }
 
     /**
+     * normalize the number of work parts a power upgrader can have to make sure we don't go past the energy available
+     * @param usedEnergy the energy we are already using
+     * @param numWorkParts the number of work parts we want
+     * @param energyAvailable the amount of energy we are limited to
+     * @returns the number of work parts it can have
+     */
+    public static limitNumWorkParts(numWorkParts: number, usedEnergy: number, energyAvailable: number): number {
+        const workPartsAllowed: number = Math.floor((energyAvailable - usedEnergy) / BODYPART_COST[WORK]);
+        return numWorkParts > workPartsAllowed ? workPartsAllowed : numWorkParts;
+    }
+
+    /**
      * Gets the status of a remote room's controller in respect to it being reserved by an invader
      * @param remoteRoom the remote room memory of the room we are checking
      */

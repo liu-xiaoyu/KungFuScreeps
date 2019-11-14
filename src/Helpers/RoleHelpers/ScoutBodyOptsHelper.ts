@@ -35,7 +35,7 @@ export class ScoutBodyOptsHelper implements ICreepBodyOptsHelper {
      * Generate body for Scout creep
      * @param tier the tier of the room
      */
-    public generateCreepBody(tier: TierConstant): BodyPartConstant[] {
+    public generateCreepBody(tier: TierConstant, room: Room): BodyPartConstant[] {
         // Default Values for harvester
         const body: CreepBodyDescriptor = { move: 1 };
         const opts: CreepBodyOptions = { mixType: GROUPED };

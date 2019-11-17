@@ -161,3 +161,8 @@ export const TOWER_THRESHOLD: number = 0.85;
  * The storage threshold we want to hit before spawning another worker
  */
 export const STORAGE_ADDITIONAL_WORKER_THRESHOLD: number = 100000;
+
+/**
+ * The storage threshold we want to hit before spawning another power upgrader
+ */
+export const STORAGE_ADDITIONAL_UPGRADER_THRESHOLD: number = 300000;

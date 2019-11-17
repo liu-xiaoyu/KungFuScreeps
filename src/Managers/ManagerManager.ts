@@ -1,5 +1,5 @@
 import {
-    ROOM_OVERLAY_ON,
+    ROOM_VISUALS_ON,
     CREEP_MANAGER_BUCKET_LIMIT,
     SPAWN_MANAGER_BUCKET_LIMIT,
     EMPIRE_MANAGER_BUCKET_LIMIT,
@@ -65,7 +65,7 @@ export class ManagerManager {
         }
 
         // Display room visuals if we have a fat enough bucket and config option allows it
-        if (!Game.cpu["bucket"] || (Game.cpu["bucket"] > ROOM_OVERLAY_BUCKET_LIMIT && ROOM_OVERLAY_ON)) {
+        if (!Game.cpu["bucket"] || (Game.cpu["bucket"] > ROOM_OVERLAY_BUCKET_LIMIT && ROOM_VISUALS_ON)) {
             try {
                 RoomVisualManager.runRoomVisualManager();
             } catch (e) {

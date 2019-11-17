@@ -596,7 +596,7 @@ export class RoomVisualApi {
                     Memory.debug.towerDebug[x][y] = 0;
                     _.forEach(towers, (tower: StructureTower) => {
                         const distance = tower.pos.getRangeTo(x, y);
-                        Memory.debug.towerDebug[x][y] += RoomHelper.getTowerDamageAtRange(distance);
+                        Memory.debug.towerDebug[x][y] += RoomHelper.getTowerDamageAtRange(distance, 15, false);
                     });
                 }
             }
@@ -618,7 +618,11 @@ export class RoomVisualApi {
                     continue;
                 }
 
-                roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75});
+                if(Memory.debug.towerDebug[x][y] > 0) {
+                    roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75, color: "#00ff00"});
+                } else {
+                    roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75, color: "#ff0000"});
+                }
             }
         }
     }

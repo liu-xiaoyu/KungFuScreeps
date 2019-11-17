@@ -63,7 +63,12 @@ export const PRIORITY_REPAIR_THRESHOLD = 0.3;
 export const RAMPART_HITS_THRESHOLD = 10000;
 
 /**
- * toggle for the room visual overlay
+ * Control whether we run VisualManager to make any visuals at all
+ */
+export const ROOM_VISUALS_ON = true;
+
+/**
+ * toggle for the room stats/info visual overlay
  */
 export const ROOM_OVERLAY_ON = true;
 
@@ -71,6 +76,11 @@ export const ROOM_OVERLAY_ON = true;
  * toggle for the graph in room overlay (high cpu cost)
  */
 export const ROOM_OVERLAY_GRAPH_ON = true;
+
+/**
+ * toggle debug overlay (very high CPU cost)
+ */
+export const ROOM_DEBUG_OVERLAY_ON = false;
 
 /**
  * display % or raw value on your rcl progress

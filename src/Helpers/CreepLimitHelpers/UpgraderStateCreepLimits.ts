@@ -14,7 +14,8 @@ import {
     ROLE_MANAGER,
     RoomHelper,
     SpawnHelper,
-    MemoryApi
+    MemoryApi,
+    STORAGE_ADDITIONAL_WORKER_THRESHOLD
 } from "utils/internals";
 
 export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
@@ -41,11 +42,18 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
 
         const numLorries: number = SpawnHelper.getLorryLimitForRoom(room, room.memory.roomState!);
         const minerLimits: number = MemoryApi.getSources(room.name).length;
+        let numWorkers: number = 1
+
+        // If we have more than 100k energy in storage, we want another worker to help whittle it down
+        if (room.storage && room.storage!.store[RESOURCE_ENERGY] > STORAGE_ADDITIONAL_WORKER_THRESHOLD) {
+            numWorkers++;
+        }
+
 
         // Generate Limits --------
         domesticLimits[ROLE_MINER] = minerLimits;
         domesticLimits[ROLE_HARVESTER] = 2;
-        domesticLimits[ROLE_WORKER] = 1;
+        domesticLimits[ROLE_WORKER] = numWorkers;
         domesticLimits[ROLE_POWER_UPGRADER] = 1;
         domesticLimits[ROLE_LORRY] = numLorries;
         domesticLimits[ROLE_MANAGER] = 1;

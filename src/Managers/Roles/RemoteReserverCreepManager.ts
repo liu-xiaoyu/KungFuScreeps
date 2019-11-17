@@ -19,7 +19,8 @@ export class RemoteReserverCreepManager implements ICivCreepRoleManager {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
 
         if (creepOptions.claim) {
-            const reserveJob = MemoryApi.getReserveJobs(room, (sjob: ClaimPartJob) => !sjob.isTaken);
+            const reserveJob = MemoryApi.getReserveJobs(room,
+                (sjob: ClaimPartJob) => !sjob.isTaken && sjob.targetID === creep.memory.targetRoom);
             if (reserveJob.length > 0) {
                 return reserveJob[0];
             }

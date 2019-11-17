@@ -496,13 +496,30 @@ export class SpawnHelper {
                 continue;
             }
 
-            // If the TTL is below the limit set in config, we need a reserver
-            if (remoteRoom.reserveTTL <= RESERVER_MIN_TTL || this.isRemoteRoomEnemyReserved(remoteRoom)) {
+            // We have to make sure the limit remains for an existing reserver as well
+            if (this.reserverExistsForRoomCurrently(room, remoteRoom)) {
+                numReserversNeeded++;
+            }
+            else if (remoteRoom.reserveTTL <= RESERVER_MIN_TTL || this.isRemoteRoomEnemyReserved(remoteRoom)) {
                 numReserversNeeded++;
             }
         }
 
         return numReserversNeeded;
+    }
+
+    /**
+     * Check if there is a reserver for this remote room already
+     * @param room the room doing the spawning
+     * @param remoteRoom the remote room we are checking for
+     * @returns the bool result on if there is a remote reserver set to this room arleady
+     */
+    public static reserverExistsForRoomCurrently(room: Room, remoteRoom: RemoteRoomMemory): boolean {
+        const creepsInRemoteRoom: Creep[] = MemoryApi.getMyCreeps(room.name,
+            (c: Creep) => c.memory.role === ROLE_REMOTE_RESERVER
+                && c.memory.targetRoom === remoteRoom.roomName
+                && c.ticksToLive !== undefined && c.ticksToLive >= 50);
+        return creepsInRemoteRoom.length > 0;
     }
 
     /**
@@ -538,7 +555,7 @@ export class SpawnHelper {
      */
     public static getRemoteRoomNeedingRemoteReserver(room: Room): RemoteRoomMemory | undefined {
         const reserversInRoom: Creep[] = MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_REMOTE_RESERVER);
-        return _.first(MemoryApi.getRemoteRooms(room,
+        return _.find(MemoryApi.getRemoteRooms(room,
             (rr: RemoteRoomMemory) => rr.reserveTTL < RESERVER_MIN_TTL &&
                 !_.some(reserversInRoom, (c: Creep) => c.memory.targetRoom === rr.roomName)
         ));

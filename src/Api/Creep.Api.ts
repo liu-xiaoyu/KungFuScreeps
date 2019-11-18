@@ -5,6 +5,7 @@ import {
     ERROR_ERROR,
     ERROR_WARN,
     ERROR_FATAL,
+    ROLE_POWER_UPGRADER,
     ERROR_INFO,
     MemoryApi,
     MINERS_GET_CLOSEST_SOURCE,
@@ -241,7 +242,7 @@ export class CreepApi {
         const upgradeJobs = MemoryApi.getUpgradeJobs(room, (job: WorkPartJob) => !job.isTaken);
         const isCurrentUpgrader: boolean = _.some(
             MemoryApi.getMyCreeps(room.name),
-            (c: Creep) => c.memory.job && c.memory.job!.actionType === "upgrade"
+            (c: Creep) => (c.memory.job && c.memory.job!.actionType === "upgrade") || c.memory.role === ROLE_POWER_UPGRADER
         );
 
         // Assign upgrade job is one isn't currently being worked

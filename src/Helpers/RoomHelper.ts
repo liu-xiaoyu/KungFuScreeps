@@ -394,20 +394,27 @@ export class RoomHelper {
         // Get the amount of healing each creep can receive
         const creepHealData: Array<{"creep": Creep, "healAmount": number}> = this.getCreepHealData(healHostiles, otherHostiles);
 
+        // TODO Maybe make it consider the creep with 
+
         // Get best creep (least ability to heal)
         // TODO add a situation to handle equal heal amounts, to break the tie
-        const bestTarget = _.min(creepHealData, (data: StringMap) => data.healAmount);
+        let bestTarget = null;
+        let bestDamage = 0;
 
-        // Get distance / damage to target
-        const avgDistanceToTower = this.getAverageDistanceToTarget(towers, bestTarget.creep);
-        const towerDamageToTarget = this.getTowerDamageAtRange(avgDistanceToTower);
+        for(const data of creepHealData) {
+            // Get distance / damage to target
+            const avgDistanceToTower = this.getAverageDistanceToTarget(towers, data.creep);
+            const towerDamageToTarget = this.getTowerDamageAtRange(avgDistanceToTower);
+            
+            const netDamage = towerDamageToTarget - data.healAmount;
 
-        // Only fire on target if we will deal a net amount of damage > config value
-        if( towerDamageToTarget - bestTarget.healAmount > TOWER_DAMAGE_THRESHOLD) {
-            return bestTarget.creep;
-        } else {
-            return null;
+            if(netDamage >= TOWER_DAMAGE_THRESHOLD && bestDamage < netDamage) {
+                bestTarget = data.creep;
+                bestDamage = netDamage;
+            } 
         }
+
+        return bestTarget;
     }
 
     public static getCreepHealData(healHostiles: Creep[], otherHostiles?: Creep[]): Array<{"creep": Creep, "healAmount": number}> {

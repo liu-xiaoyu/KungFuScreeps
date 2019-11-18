@@ -57,19 +57,24 @@ export class RoomManager {
         // Run Towers
         const roomState = room.memory.roomState;
         if (RoomHelper.excecuteEveryTicks(RUN_TOWER_TIMER) && RoomHelper.isExistInRoom(room, STRUCTURE_TOWER)) {
-
             // Check first if we have EMERGECY ramparts to heal up
             // I just got this to work while it was bug testable, so feel free to refactor into something thats NOT this (maybe pull into a function either way idc)
-            const rampart: Structure<StructureConstant> = <Structure<StructureConstant>>_.first(room.find(FIND_MY_STRUCTURES,
-                { filter: (s: any) => s.structureType === STRUCTURE_RAMPART && s.hits < 1000 }
-            ));
+            const rampart: Structure<StructureConstant> = <Structure<StructureConstant>>(
+                _.first(
+                    room.find(FIND_MY_STRUCTURES, {
+                        filter: (s: any) => s.structureType === STRUCTURE_RAMPART && s.hits < 1000
+                    })
+                )
+            );
             if (rampart) {
                 RoomApi.runTowersEmergecyRampartRepair(rampart as StructureRampart);
-            }
-            else if (defcon >= 1) {
+            } else if (defcon >= 1) {
                 RoomApi.runTowersDefense(room);
             } else if (roomState === ROOM_STATE_UPGRADER || roomState === ROOM_STATE_NUKE_INBOUND) {
+                room.memory.shotLastTick = false;
                 RoomApi.runTowersRepair(room);
+            } else {
+                room.memory.shotLastTick = false;
             }
         }
 

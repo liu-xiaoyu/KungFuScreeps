@@ -233,12 +233,7 @@ interface ICreepBodyOptsHelper {
         rallyLocationParam: RoomPosition | null
     ) => (CreepOptionsCiv | undefined) | (CreepOptionsMili | undefined);
     generateCreepBody: (tier: TierConstant, room: Room) => BodyPartConstant[];
-    getTargetRoom: (
-        room: Room,
-        roleConst: RoleConstant,
-        creepBody: BodyPartConstant[],
-        creepName: string
-    ) => string;
+    getTargetRoom: (room: Room, roleConst: RoleConstant, creepBody: BodyPartConstant[], creepName: string) => string;
     getHomeRoom: (room: Room) => string;
     getSpawnDirection: (centerSpawn: StructureSpawn, room: Room) => DirectionConstant[];
 }
@@ -769,6 +764,10 @@ interface RoomMemory {
      * the defcon level for the room
      */
     defcon: number;
+    /**
+     * Whether or not this room fired its towers last tick
+     */
+    shotLastTick?: boolean;
     /**
      * Names of all rooms flagged to attack
      */

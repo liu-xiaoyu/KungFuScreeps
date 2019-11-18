@@ -186,6 +186,7 @@ export class MemoryApi {
                 },
                 creeps: { data: null, cache: null },
                 defcon: -1,
+                shotLastTick: false,
                 hostiles: { data: null, cache: null },
                 remoteRooms: [],
                 roomState: ROOM_STATE_INTRO,
@@ -525,11 +526,7 @@ export class MemoryApi {
      * @param forceUpdate [Optional] Invalidate Cache by force
      * @returns Ruin[]  An array of Ruins, if there are any
      */
-    public static getRuins(
-        room: Room,
-        filterFunction?: (object: Ruin) => boolean,
-        forceUpdate?: boolean
-    ): Ruin[] {
+    public static getRuins(room: Room, filterFunction?: (object: Ruin) => boolean, forceUpdate?: boolean): Ruin[] {
         if (
             NO_CACHING_MEMORY ||
             forceUpdate ||
@@ -881,7 +878,7 @@ export class MemoryApi {
      * @returns Flag[] an array of all flags
      */
     public static getAllFlags(filterFunction?: (flag: Flag) => boolean): Flag[] {
-        const allFlags: Flag[] = Object.keys(Game.flags).map(function (flagIndex) {
+        const allFlags: Flag[] = Object.keys(Game.flags).map(function(flagIndex) {
             return Game.flags[flagIndex];
         });
 
@@ -1564,10 +1561,10 @@ export class MemoryApi {
             throw new UserException(
                 "Error in updateJobMemory",
                 "Could not find the job in room memory to update." +
-                "\nCreep: " +
-                creep.name +
-                "\nJob: " +
-                JSON.stringify(creep.memory.job),
+                    "\nCreep: " +
+                    creep.name +
+                    "\nJob: " +
+                    JSON.stringify(creep.memory.job),
                 ERROR_ERROR
             );
         }
@@ -1942,7 +1939,7 @@ export class MemoryApi {
 
         // sum up the number of each role we come across
         for (const creep of creepsInRoom) {
-            if (creep.ticksToLive && (creep.ticksToLive < (creep.body.length * 3))) {
+            if (creep.ticksToLive && creep.ticksToLive < creep.body.length * 3) {
                 continue;
             }
             allCreepCount[creep.memory.role] = allCreepCount[creep.memory.role] + 1;

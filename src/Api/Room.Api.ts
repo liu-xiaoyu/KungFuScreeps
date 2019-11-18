@@ -136,8 +136,12 @@ export class RoomApi {
         // choose the most ideal target and have every tower attack it
         const idealTarget: Creep | undefined | null = RoomHelper.chooseTowerAttackTarget(room);
         if (!idealTarget) {
+            room.memory.shotLastTick = false;
             return;
         }
+
+        // Set fired to true if we have a target
+        room.memory.shotLastTick = true;
 
         // have each tower attack this target
         towers.forEach((t: StructureTower) => {
@@ -161,7 +165,7 @@ export class RoomApi {
 
         // have each tower repair this target, making sure we have at least half energy remaining for an emergency
         towers.forEach((t: StructureTower) => {
-            if (t && (t.energy >= t.energyCapacity * .5)) {
+            if (t && t.energy >= t.energyCapacity * 0.5) {
                 t.repair(idealTarget);
             }
         });
@@ -172,7 +176,10 @@ export class RoomApi {
      * @param rampart the rampart we are targeting
      */
     public static runTowersEmergecyRampartRepair(rampart: StructureRampart): void {
-        const towers: StructureTower[] = MemoryApi.getStructureOfType(rampart.room.name, STRUCTURE_TOWER) as StructureTower[];
+        const towers: StructureTower[] = MemoryApi.getStructureOfType(
+            rampart.room.name,
+            STRUCTURE_TOWER
+        ) as StructureTower[];
         // have each tower repair this target
         towers.forEach((t: StructureTower) => {
             if (t) {
@@ -187,7 +194,9 @@ export class RoomApi {
      */
     public static setDefconLevel(room: Room): void {
         const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
-        const hostileStructures = room.find(FIND_HOSTILE_STRUCTURES, { filter: s => s.structureType === STRUCTURE_INVADER_CORE });
+        const hostileStructures = room.find(FIND_HOSTILE_STRUCTURES, {
+            filter: s => s.structureType === STRUCTURE_INVADER_CORE
+        });
         // check level 0 first to reduce cpu drain as it will be the most common scenario
         // level 0 -- no danger
         if (hostileCreeps.length === 0 && hostileStructures.length === 0) {

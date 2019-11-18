@@ -28,8 +28,8 @@ export const STUCK_VISUAL_COLORS = [
     "#FF0000", // 100% +
     "#800080", //  75% +
     "#0000FF", //  50% +
-    "#FFFFFF", //  25% +
-]
+    "#FFFFFF" //  25% +
+];
 /**
  * Minimum amount of energy a container must have to be used in a GetEnergyJob
  */
@@ -119,7 +119,7 @@ export const CONTROLLER_SIGNING_TEXT = [
     "spunk junkies",
     "trespassers will be violated",
     "world biggest blunts smoked here",
-    "",
+    ""
 ];
 
 /**
@@ -168,9 +168,14 @@ export const TOWER_ALLOWED_TO_REPAIR: StructureConstant[] = [STRUCTURE_CONTAINER
 export const TOWER_REPAIR_THRESHOLD: number = 0.85;
 
 /**
- * The amount of damage a tower should be able to deal before it will fire on a target
+ * The minimum amount of damage a tower should be able to deal before it stops firing, once it has already started firing
  */
-export const TOWER_DAMAGE_THRESHOLD: number = 50;
+export const TOWER_MIN_DAMAGE_THRESHOLD: number = 50;
+
+/**
+ * The amount of damage a tower should be able to deal before it will fire on a target, unless it has already started firing
+ */
+export const TOWER_MAX_DAMAGE_THRESHOLD: number = 150;
 
 /**
  * The storage threshold we want to hit before spawning another worker

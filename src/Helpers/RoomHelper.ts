@@ -6,7 +6,11 @@ import {
     UserException,
     TOWER_ALLOWED_TO_REPAIR,
     CreepHelper,
+<<<<<<< HEAD
     SpawnHelper
+=======
+    TOWER_DAMAGE_THRESHOLD
+>>>>>>> Testing tower code
 } from "utils/internals";
 
 // helper functions for rooms
@@ -406,13 +410,12 @@ export class RoomHelper {
         }
 
         if(attackCreeps.length > 0) {
+            // Target using heal creeps and attack creeps, ignore civilian creeps
             return this.getBestTowerAttackTarget_IncludeHeal(healCreeps, attackCreeps, towers);
         }
 
+        // Target Heal creeps and civilian creeps if there are no attack creeps
         return this.getBestTowerAttackTarget_IncludeHeal(healCreeps, civilianCreeps, towers);
-        // Group heal creeps by vincinity, then calculate the approx heal each creep could receive
-        // Choose the best target based on proximity / damage we can do vs their heal. 
-
     }
 
     /**
@@ -445,7 +448,45 @@ export class RoomHelper {
      * @param towers Array of friendly towers
      */
     public static getBestTowerAttackTarget_IncludeHeal(healHostiles: Creep[], otherHostiles: Creep[], towers: StructureTower[]): Creep | null {
-        
+        const hostiles: Creep[] = otherHostiles === undefined ? healHostiles : healHostiles.concat(otherHostiles);
+
+        const creepHealData: StringMap = [];
+
+        // Loop through each creep and get heal amount
+        // Each heal creep will consider healing itself as well as any other creep to cover worst-case scenario
+        for(const creep of hostiles) {
+
+            let healAmount = 0;
+
+            // Loop through all healers to find which can affect this creep and by how much
+            for(const healer of healHostiles) {
+                const distance = creep.pos.getRangeTo(healer);
+                // skip if creep is too far to heal
+                if(distance > 3){
+                    continue;
+                } // Creep is not able to heal() and must use rangedHeal() 
+                else if(distance > 1){
+                    healAmount += healer.getActiveBodyparts(HEAL) * RANGED_HEAL_POWER;
+                } // Creep can use heal() 
+                else { 
+                    healAmount += healer.getActiveBodyparts(HEAL) * HEAL_POWER;
+                }
+            }
+
+            creepHealData.push({"creep": creep, "healAmount": healAmount});
+        }
+
+        // Get best creep (least ability to heal)
+        const bestTarget = _.max(creepHealData, (data: StringMap) => data.healAmount);
+
+        const avgDistanceToTower = this.getAverageDistanceToTarget(towers, bestTarget.creep);
+        const towerDamageToTarget = this.getTowerDamageAtRange(avgDistanceToTower);
+
+        if( towerDamageToTarget - bestTarget.healAmount > TOWER_DAMAGE_THRESHOLD) {
+            return bestTarget.creep;
+        } else {
+            return null;
+        }
     }
 
     /**

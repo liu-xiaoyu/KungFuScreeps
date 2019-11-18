@@ -165,7 +165,12 @@ export const TOWER_ALLOWED_TO_REPAIR: StructureConstant[] = [STRUCTURE_CONTAINER
 /**
  * The % energy a tower must have before we fill it up
  */
-export const TOWER_THRESHOLD: number = 0.85;
+export const TOWER_REPAIR_THRESHOLD: number = 0.85;
+
+/**
+ * The amount of damage a tower should be able to deal before it will fire on a target
+ */
+export const TOWER_DAMAGE_THRESHOLD: number = 50;
 
 /**
  * The storage threshold we want to hit before spawning another worker

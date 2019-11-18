@@ -6,8 +6,9 @@ import {
     UserException,
     TOWER_ALLOWED_TO_REPAIR,
     CreepHelper,
-    TOWER_DAMAGE_THRESHOLD,
-    SpawnHelper
+    TOWER_MIN_DAMAGE_THRESHOLD,
+    SpawnHelper,
+    TOWER_MAX_DAMAGE_THRESHOLD
 } from "utils/internals";
 
 // helper functions for rooms
@@ -394,7 +395,14 @@ export class RoomHelper {
             }
         });
 
-        return bestTarget;
+        if (
+            (bestDamage >= TOWER_MIN_DAMAGE_THRESHOLD && towers[0].room.memory.shotLastTick == true) ||
+            bestDamage >= TOWER_MAX_DAMAGE_THRESHOLD
+        ) {
+            return bestTarget;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -426,15 +434,25 @@ export class RoomHelper {
             const avgDistanceToTower = this.getAverageDistanceToTarget(towers, data.creep);
             const towerDamageToTarget = this.getTowerDamageAtRange(avgDistanceToTower);
 
+            // Get damage after all possible healing has been applied
             const netDamage = towerDamageToTarget - data.healAmount;
 
-            if (netDamage >= TOWER_DAMAGE_THRESHOLD && bestDamage < netDamage) {
+            // If this is better than our last target, choose it
+            if (bestDamage < netDamage) {
                 bestTarget = data.creep;
                 bestDamage = netDamage;
             }
         }
 
-        return bestTarget;
+        // If we shot last tick, netDamage >= min damage, else netDamage >= max damage
+        if (
+            (bestDamage >= TOWER_MIN_DAMAGE_THRESHOLD && towers[0].room.memory.shotLastTick == true) ||
+            bestDamage >= TOWER_MAX_DAMAGE_THRESHOLD
+        ) {
+            return bestTarget;
+        } else {
+            return null;
+        }
     }
 
     public static getCreepHealData(

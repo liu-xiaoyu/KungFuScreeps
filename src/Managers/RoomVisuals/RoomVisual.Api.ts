@@ -18,7 +18,8 @@ import {
     MemoryHelper_Room,
     RoomHelper,
     CreepHelper,
-    TOWER_DAMAGE_THRESHOLD
+    TOWER_MIN_DAMAGE_THRESHOLD,
+    TOWER_MAX_DAMAGE_THRESHOLD
 } from "utils/internals";
 
 // Api for room visuals
@@ -667,7 +668,13 @@ export class RoomVisualApi {
             const distance = RoomHelper.getAverageDistanceToTarget(towers, data.creep);
             const damage = RoomHelper.getTowerDamageAtRange(distance);
 
-            if (damage - data.healAmount > TOWER_DAMAGE_THRESHOLD) {
+            const netDamage = damage - data.healAmount;
+
+            // If greater than the min damage and we shot last tick, or greater than max damage regardless of shooting last tick
+            if (
+                (netDamage >= TOWER_MIN_DAMAGE_THRESHOLD && room.memory.shotLastTick == true) ||
+                netDamage >= TOWER_MAX_DAMAGE_THRESHOLD
+            ) {
                 roomVisual.text((damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {
                     font: 0.75,
                     color: "#00ff00"

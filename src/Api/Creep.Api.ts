@@ -251,37 +251,8 @@ export class CreepApi {
             }
         }
 
-        // Startup On Ramparts
-        if (creepOptions.repair) {
-            const defenseRepairJobs: WorkPartJob[] = MemoryApi.getRepairJobs(room, (job: WorkPartJob) => {
-                const target = Game.getObjectById(job.targetID) as Structure;
-                if (target && target.structureType === STRUCTURE_RAMPART) {
-                    return target.hits <= RAMPART_HITS_THRESHOLD;
-                }
-                return false;
-            });
-
-            if (defenseRepairJobs.length > 0) {
-                const rampartsToBeRepaired: StructureRampart[] = _.map(
-                    defenseRepairJobs,
-                    (j: WorkPartJob) => Game.getObjectById(j.targetID) as StructureRampart
-                );
-                const closestRampart: StructureRampart = creep.pos.findClosestByRange(
-                    rampartsToBeRepaired
-                ) as StructureRampart;
-                return {
-                    targetID: closestRampart.id as string,
-                    targetType: "rampart",
-                    actionType: "repair",
-                    jobType: "workPartJob",
-                    isTaken: false,
-                    remaining: closestRampart.hitsMax - closestRampart.hits
-                };
-            }
-        }
-
         // Priority Repair Only
-        if (creepOptions.wallRepair) {
+        if (creepOptions.repair || creepOptions.wallRepair) {
             const priorityRepairJobs = MemoryApi.getPriorityRepairJobs(room);
             if (priorityRepairJobs.length > 0) {
                 return priorityRepairJobs[0];
@@ -298,6 +269,14 @@ export class CreepApi {
         // Regular repair
         if (creepOptions.repair) {
             const repairJobs = MemoryApi.getRepairJobs(room, (job: WorkPartJob) => !job.isTaken);
+            if (repairJobs.length > 0) {
+                return repairJobs[0];
+            }
+        }
+
+        // Wall Repair
+        if (creepOptions.wallRepair) {
+            const repairJobs = MemoryApi.getRepairJobs(room, (job: WorkPartJob) => !job.isTaken && job.targetType === STRUCTURE_RAMPART);
             if (repairJobs.length > 0) {
                 return repairJobs[0];
             }

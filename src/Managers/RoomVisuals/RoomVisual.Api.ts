@@ -16,13 +16,9 @@ import {
     MemoryApi,
     RoomVisualHelper,
     MemoryHelper_Room,
-<<<<<<< HEAD
     RoomHelper,
     CreepHelper,
     TOWER_DAMAGE_THRESHOLD
-=======
-    RoomHelper
->>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
 } from "utils/internals";
 
 // Api for room visuals
@@ -124,9 +120,9 @@ export class RoomVisualApi {
             if (creepLimits.domesticLimits.powerUpgrader > 0) {
                 lines.push(
                     "Power Upgraders:    " +
-                    roles[ROLE_POWER_UPGRADER] +
-                    " / " +
-                    creepLimits.domesticLimits.powerUpgrader
+                        roles[ROLE_POWER_UPGRADER] +
+                        " / " +
+                        creepLimits.domesticLimits.powerUpgrader
                 );
             }
         }
@@ -140,17 +136,17 @@ export class RoomVisualApi {
             if (creepLimits.remoteLimits.remoteHarvester > 0) {
                 lines.push(
                     "Remote Harvesters:    " +
-                    roles[ROLE_REMOTE_HARVESTER] +
-                    " / " +
-                    creepLimits.remoteLimits.remoteHarvester
+                        roles[ROLE_REMOTE_HARVESTER] +
+                        " / " +
+                        creepLimits.remoteLimits.remoteHarvester
                 );
             }
             if (creepLimits.remoteLimits.remoteReserver > 0) {
                 lines.push(
                     "Remote Reservers:    " +
-                    roles[ROLE_REMOTE_RESERVER] +
-                    " / " +
-                    creepLimits.remoteLimits.remoteReserver
+                        roles[ROLE_REMOTE_RESERVER] +
+                        " / " +
+                        creepLimits.remoteLimits.remoteReserver
                 );
             }
             if (creepLimits.remoteLimits.remoteColonizer > 0) {
@@ -161,9 +157,9 @@ export class RoomVisualApi {
             if (creepLimits.remoteLimits.remoteDefender > 0) {
                 lines.push(
                     "Remote Defenders:    " +
-                    roles[ROLE_REMOTE_DEFENDER] +
-                    " / " +
-                    creepLimits.remoteLimits.remoteDefender
+                        roles[ROLE_REMOTE_DEFENDER] +
+                        " / " +
+                        creepLimits.remoteLimits.remoteDefender
                 );
             }
             if (creepLimits.remoteLimits.claimer > 0) {
@@ -582,61 +578,48 @@ export class RoomVisualApi {
     /**
      * Creates an overlay that shows tower damage on each tile in the room. For debug purposes only
      */
-<<<<<<< HEAD
     public static debug_towerDamageOverlay_perTile(room: Room) {
-=======
-    public static debug_towerDamageOverlay(room: Room) {
->>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
-        if(Memory.debug === undefined) {
+        if (Memory.debug === undefined) {
             Memory.debug = {};
         }
-        
-        // Skip filling array if it has already been done
-        if(Memory.debug.towerDebug === undefined) {
 
+        // Skip filling array if it has already been done
+        if (Memory.debug.towerDebug === undefined) {
             Memory.debug.towerDebug = new Array(50);
-            
+
             const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER);
-            
-            for(let x = 0; x < 50; x++) {
-                
+
+            for (let x = 0; x < 50; x++) {
                 Memory.debug.towerDebug[x] = new Array(50);
-                
-                for(let y = 0; y < 50; y++) {
+
+                for (let y = 0; y < 50; y++) {
                     Memory.debug.towerDebug[x][y] = 0;
                     _.forEach(towers, (tower: StructureTower) => {
                         const distance = tower.pos.getRangeTo(x, y);
-<<<<<<< HEAD
                         Memory.debug.towerDebug[x][y] += RoomHelper.getTowerDamageAtRange(distance, 15, false);
-=======
-                        Memory.debug.towerDebug[x][y] += RoomHelper.getTowerDamageAtRange(distance);
->>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
                     });
                 }
             }
         }
-        
+
         // Damage array should be populated at this point
 
         const roomVisual = new RoomVisual(room.name);
 
-        for(let x = 0; x < 50; x++) {
-
-            if(x % 2 === 0) {
+        for (let x = 0; x < 50; x++) {
+            if (x % 2 === 0) {
                 continue;
             }
 
-            for(let y = 0; y < 50; y++) {
-
-                if(y % 2 === 0) {
+            for (let y = 0; y < 50; y++) {
+                if (y % 2 === 0) {
                     continue;
                 }
 
-<<<<<<< HEAD
-                if(Memory.debug.towerDebug[x][y] > 0) {
-                    roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75, color: "#00ff00"});
+                if (Memory.debug.towerDebug[x][y] > 0) {
+                    roomVisual.text(Memory.debug.towerDebug[x][y], x, y, { font: 0.75, color: "#00ff00" });
                 } else {
-                    roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75, color: "#ff0000"});
+                    roomVisual.text(Memory.debug.towerDebug[x][y], x, y, { font: 0.75, color: "#ff0000" });
                 }
             }
         }
@@ -650,7 +633,7 @@ export class RoomVisualApi {
         const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
 
         // Quit early if no creeps
-        if(hostileCreeps.length === 0) {
+        if (hostileCreeps.length === 0) {
             return;
         }
 
@@ -658,33 +641,42 @@ export class RoomVisualApi {
         const healCreeps = _.remove(hostileCreeps, (c: Creep) => CreepHelper.bodyPartExists(c, HEAL));
 
         // Take out creeps that can attack
-        const attackCreeps = _.remove(hostileCreeps, (c: Creep) => CreepHelper.bodyPartExists(c, ATTACK, RANGED_ATTACK));
+        const attackCreeps = _.remove(hostileCreeps, (c: Creep) =>
+            CreepHelper.bodyPartExists(c, ATTACK, RANGED_ATTACK)
+        );
 
         // rename for clarity, all creeps leftover should be civilian
-        // TODO Make a case for work part / claim part creeps? 
+        // TODO Make a case for work part / claim part creeps?
         const civilianCreeps = hostileCreeps;
 
         // All towers in the room
         // const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
-        const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.energy > 0) as StructureTower[];
-    
+        const towers = MemoryApi.getStructureOfType(
+            room.name,
+            STRUCTURE_TOWER,
+            (tower: StructureTower) => tower.energy > 0
+        ) as StructureTower[];
+
         const creepHealData = RoomHelper.getCreepHealData(healCreeps, attackCreeps);
-        
+
         // Damage array should be populated at this point
 
         const roomVisual = new RoomVisual(room.name);
 
-        for(const data of creepHealData) {
+        for (const data of creepHealData) {
             const distance = RoomHelper.getAverageDistanceToTarget(towers, data.creep);
             const damage = RoomHelper.getTowerDamageAtRange(distance);
 
-            if( damage - data.healAmount > TOWER_DAMAGE_THRESHOLD) {
-                roomVisual.text( (damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {font: 0.75, color: "#00ff00"});
+            if (damage - data.healAmount > TOWER_DAMAGE_THRESHOLD) {
+                roomVisual.text((damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {
+                    font: 0.75,
+                    color: "#00ff00"
+                });
             } else {
-                roomVisual.text( (damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {font: 0.75, color: "#ff0000"});
-=======
-                roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75});
->>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
+                roomVisual.text((damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {
+                    font: 0.75,
+                    color: "#ff0000"
+                });
             }
         }
     }

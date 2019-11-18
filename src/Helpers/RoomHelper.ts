@@ -52,10 +52,12 @@ export class RoomHelper {
         if (!room || !room.controller) {
             return false;
         }
-        return (room.controller.reservation !== undefined &&
+        return (
+            room.controller.reservation !== undefined &&
             room.controller.reservation.username !== undefined &&
             (room.controller.reservation!.username === "UhmBrock" ||
-                room.controller.reservation!.username === "jakesboy2"));
+                room.controller.reservation!.username === "jakesboy2")
+        );
     }
 
     /**
@@ -151,11 +153,11 @@ export class RoomHelper {
      * @param distance The number of tiles away the target is
      */
     public static getTowerRangeScaleFactor(distance: number): number {
-        if(distance <= TOWER_OPTIMAL_RANGE) {
+        if (distance <= TOWER_OPTIMAL_RANGE) {
             return 1;
         }
 
-        if(distance >= TOWER_FALLOFF_RANGE) {
+        if (distance >= TOWER_FALLOFF_RANGE) {
             return 1 - TOWER_FALLOFF;
         }
 
@@ -169,39 +171,38 @@ export class RoomHelper {
     /**
      * Get the amount of damage a tower will do at this distance
      * @param distance The number of tiles away the target is
-<<<<<<< HEAD
      * @param healParts [Optional] The number of heal parts to calculate against
      * @param rangedHeal [Optional] Whether or not to use rangedHeal calculation instead of direct heal
      */
     public static getTowerDamageAtRange(distance: number, healParts = 0, rangedHeal = false) {
         // Base Calculation for tower damage
-        const attackPower = Math.floor( TOWER_POWER_ATTACK * this.getTowerRangeScaleFactor(distance) );
+        const attackPower = Math.floor(TOWER_POWER_ATTACK * this.getTowerRangeScaleFactor(distance));
 
-        if(healParts < 0) {
-            throw new UserException("Incorrect Arguments for getTowerDamageAtRange", "Attempted to pass a negative number of heal parts to function.", ERROR_WARN);
+        if (healParts < 0) {
+            throw new UserException(
+                "Incorrect Arguments for getTowerDamageAtRange",
+                "Attempted to pass a negative number of heal parts to function.",
+                ERROR_WARN
+            );
         }
 
         let healPower: number;
 
-        if(rangedHeal) {
+        if (rangedHeal) {
             healPower = healParts * RANGED_HEAL_POWER;
-        } else { // direct/melee heal
+        } else {
+            // direct/melee heal
             healPower = healParts * HEAL_POWER;
         }
 
         return attackPower - healPower;
-=======
-     */
-    public static getTowerDamageAtRange(distance: number) {
-        return Math.floor( TOWER_POWER_ATTACK * this.getTowerRangeScaleFactor(distance) );
->>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
     }
 
     /**
      * Get the amount of damage a tower will heal at this distance
      * @param distance The number of tiles away the target is
      */
-    public static getTowerHealAtRange(distance: number) { 
+    public static getTowerHealAtRange(distance: number) {
         return Math.floor(TOWER_POWER_HEAL * this.getTowerRangeScaleFactor(distance));
     }
 
@@ -209,7 +210,7 @@ export class RoomHelper {
      * Get the amount of damage a tower will repair at this distance
      * @param distance The number of tiles away the target is
      */
-    public static getTowerRepairAtRange(distance: number) { 
+    public static getTowerRepairAtRange(distance: number) {
         return Math.floor(TOWER_POWER_REPAIR * this.getTowerRangeScaleFactor(distance));
     }
 
@@ -273,15 +274,17 @@ export class RoomHelper {
             throw new UserException(
                 "Tried to getUpgraderLink of a room with no controller",
                 "Get Upgrader Link was called for room [" +
-                room.name +
-                "]" +
-                ", but theres no controller in this room.",
+                    room.name +
+                    "]" +
+                    ", but theres no controller in this room.",
                 ERROR_WARN
             );
         }
 
         // Find the closest link to the controller, this is our upgrader link
-        const closestLink: Structure<StructureConstant> | null = controller!.pos.findClosestByRange(links) as Structure<StructureConstant>;
+        const closestLink: Structure<StructureConstant> | null = controller!.pos.findClosestByRange(links) as Structure<
+            StructureConstant
+        >;
         return controller.pos.inRangeTo(closestLink.pos.x, closestLink.pos.y, 3) ? closestLink : null;
     }
 
@@ -327,7 +330,7 @@ export class RoomHelper {
     }
 
     /**
-     * 
+     *
      * @param room The room to find the target for
      */
     public static chooseTowerAttackTarget(room: Room): Creep | null {
@@ -335,7 +338,7 @@ export class RoomHelper {
         const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
 
         // Quit early if no creeps
-        if(hostileCreeps.length === 0) {
+        if (hostileCreeps.length === 0) {
             return null;
         }
 
@@ -343,21 +346,27 @@ export class RoomHelper {
         const healCreeps = _.remove(hostileCreeps, (c: Creep) => CreepHelper.bodyPartExists(c, HEAL));
 
         // Take out creeps that can attack
-        const attackCreeps = _.remove(hostileCreeps, (c: Creep) => CreepHelper.bodyPartExists(c, ATTACK, RANGED_ATTACK));
+        const attackCreeps = _.remove(hostileCreeps, (c: Creep) =>
+            CreepHelper.bodyPartExists(c, ATTACK, RANGED_ATTACK)
+        );
 
         // rename for clarity, all creeps leftover should be civilian
-        // TODO Make a case for work part / claim part creeps? 
+        // TODO Make a case for work part / claim part creeps?
         const civilianCreeps = hostileCreeps;
 
         // All towers in the room
         // const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
-        const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.energy > 0) as StructureTower[];
+        const towers = MemoryApi.getStructureOfType(
+            room.name,
+            STRUCTURE_TOWER,
+            (tower: StructureTower) => tower.energy > 0
+        ) as StructureTower[];
 
-        if(healCreeps.length === 0) {
+        if (healCreeps.length === 0) {
             return this.getBestTowerAttackTarget_NoHeal(towers, attackCreeps);
         }
 
-        if(attackCreeps.length > 0) {
+        if (attackCreeps.length > 0) {
             // Target using heal creeps and attack creeps, ignore civilian creeps
             return this.getBestTowerAttackTarget_IncludeHeal(towers, healCreeps, attackCreeps);
         }
@@ -372,20 +381,19 @@ export class RoomHelper {
      * @param towers Array of friendly towers
      */
     public static getBestTowerAttackTarget_NoHeal(towers: StructureTower[], hostiles: Creep[]): Creep | null {
-        
         let bestTarget: Creep | null = null;
         let bestDamage: number = 0;
-        
+
         _.forEach(hostiles, (c: Creep) => {
             const distance = this.getAverageDistanceToTarget(towers, c);
             const damage = this.getTowerDamageAtRange(distance);
 
-            if(damage > bestDamage) {
+            if (damage > bestDamage) {
                 bestTarget = c;
                 bestDamage = damage;
             }
         });
-        
+
         return bestTarget;
     }
 
@@ -395,62 +403,69 @@ export class RoomHelper {
      * @param otherHostiles Array of hostile creeps that can't heal
      * @param towers Array of friendly towers
      */
-    public static getBestTowerAttackTarget_IncludeHeal(towers: StructureTower[], healHostiles: Creep[], otherHostiles?: Creep[]): Creep | null {
-    
+    public static getBestTowerAttackTarget_IncludeHeal(
+        towers: StructureTower[],
+        healHostiles: Creep[],
+        otherHostiles?: Creep[]
+    ): Creep | null {
         // Get the amount of healing each creep can receive
-        const creepHealData: Array<{"creep": Creep, "healAmount": number}> = this.getCreepHealData(healHostiles, otherHostiles);
+        const creepHealData: Array<{ creep: Creep; healAmount: number }> = this.getCreepHealData(
+            healHostiles,
+            otherHostiles
+        );
 
-        // TODO Maybe make it consider the creep with 
+        // TODO Maybe make it consider the creep with
 
         // Get best creep (least ability to heal)
         // TODO add a situation to handle equal heal amounts, to break the tie
         let bestTarget = null;
         let bestDamage = 0;
 
-        for(const data of creepHealData) {
+        for (const data of creepHealData) {
             // Get distance / damage to target
             const avgDistanceToTower = this.getAverageDistanceToTarget(towers, data.creep);
             const towerDamageToTarget = this.getTowerDamageAtRange(avgDistanceToTower);
-            
+
             const netDamage = towerDamageToTarget - data.healAmount;
 
-            if(netDamage >= TOWER_DAMAGE_THRESHOLD && bestDamage < netDamage) {
+            if (netDamage >= TOWER_DAMAGE_THRESHOLD && bestDamage < netDamage) {
                 bestTarget = data.creep;
                 bestDamage = netDamage;
-            } 
+            }
         }
 
         return bestTarget;
     }
 
-    public static getCreepHealData(healHostiles: Creep[], otherHostiles?: Creep[]): Array<{"creep": Creep, "healAmount": number}> {
-
+    public static getCreepHealData(
+        healHostiles: Creep[],
+        otherHostiles?: Creep[]
+    ): Array<{ creep: Creep; healAmount: number }> {
         const hostiles: Creep[] = otherHostiles === undefined ? healHostiles : healHostiles.concat(otherHostiles);
 
-        const creepHealData: Array<{"creep": Creep, "healAmount": number}> = [];
+        const creepHealData: Array<{ creep: Creep; healAmount: number }> = [];
 
         // Loop through each creep and get heal amount
         // Each heal creep will consider healing itself as well as any other creep to cover worst-case scenario
-        for(const creep of hostiles) {
-
+        for (const creep of hostiles) {
             let healAmount = 0;
 
             // Loop through all healers to find which can affect this creep and by how much
-            for(const healer of healHostiles) {
+            for (const healer of healHostiles) {
                 const distance = creep.pos.getRangeTo(healer);
                 // skip if creep is too far to heal
-                if(distance > 3){
+                if (distance > 3) {
                     continue;
-                } // Creep is not able to heal() and must use rangedHeal() 
-                else if(distance > 1){
+                } // Creep is not able to heal() and must use rangedHeal()
+                else if (distance > 1) {
                     healAmount += healer.getActiveBodyparts(HEAL) * RANGED_HEAL_POWER;
-                } // Creep can use heal() 
-                else { 
+                } // Creep can use heal()
+                else {
                     healAmount += healer.getActiveBodyparts(HEAL) * HEAL_POWER;
                 }
             }
 
-            creepHealData.push({"creep": creep, "healAmount": healAmount});
+            creepHealData.push({ creep: creep, healAmount: healAmount });
         }
 
         return creepHealData;
@@ -462,7 +477,8 @@ export class RoomHelper {
      */
     public static chooseTowerTargetRepair(room: Room): Structure | undefined | null {
         // Check for non-priority repair jobs of an allowed type
-        const repairJobs = MemoryApi.getRepairJobs(room,
+        const repairJobs = MemoryApi.getRepairJobs(
+            room,
             (j: WorkPartJob) => j.targetType === STRUCTURE_CONTAINER || j.targetType === STRUCTURE_ROAD
         );
 
@@ -579,7 +595,10 @@ export class RoomHelper {
                 return;
             }
             // Don't consider these sources valid if the controller is reserved by an enemy, or theres defcon 2 >=
-            if (SpawnHelper.isRemoteRoomEnemyReserved(rr) || (Memory.rooms[rr.roomName] && Memory.rooms[rr.roomName].defcon >= 2)) {
+            if (
+                SpawnHelper.isRemoteRoomEnemyReserved(rr) ||
+                (Memory.rooms[rr.roomName] && Memory.rooms[rr.roomName].defcon >= 2)
+            ) {
                 return;
             }
 
@@ -729,5 +748,4 @@ export class RoomHelper {
         }
         return false;
     }
-
 }

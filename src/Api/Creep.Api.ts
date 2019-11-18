@@ -252,7 +252,7 @@ export class CreepApi {
         }
 
         // Startup On Ramparts
-        if (creepOptions.wallRepair) {
+        if (creepOptions.repair) {
             const defenseRepairJobs: WorkPartJob[] = MemoryApi.getRepairJobs(room, (job: WorkPartJob) => {
                 const target = Game.getObjectById(job.targetID) as Structure;
                 if (target && target.structureType === STRUCTURE_RAMPART) {
@@ -281,7 +281,7 @@ export class CreepApi {
         }
 
         // Priority Repair Only
-        if (creepOptions.repair || creepOptions.wallRepair) {
+        if (creepOptions.wallRepair) {
             const priorityRepairJobs = MemoryApi.getPriorityRepairJobs(room);
             if (priorityRepairJobs.length > 0) {
                 return priorityRepairJobs[0];

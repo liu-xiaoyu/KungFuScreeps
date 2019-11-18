@@ -798,6 +798,7 @@ interface RoomMemory {
 interface Memory {
     empire: EmpireMemory;
     structures: { [structureID: string]: StructureMemory };
+    debug: StringMap;
 }
 interface EmpireMemory {
     /**

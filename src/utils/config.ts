@@ -63,7 +63,12 @@ export const PRIORITY_REPAIR_THRESHOLD = 0.3;
 export const RAMPART_HITS_THRESHOLD = 10000;
 
 /**
- * toggle for the room visual overlay
+ * Control whether we run VisualManager to make any visuals at all
+ */
+export const ROOM_VISUALS_ON = true;
+
+/**
+ * toggle for the room stats/info visual overlay
  */
 export const ROOM_OVERLAY_ON = true;
 
@@ -71,6 +76,11 @@ export const ROOM_OVERLAY_ON = true;
  * toggle for the graph in room overlay (high cpu cost)
  */
 export const ROOM_OVERLAY_GRAPH_ON = true;
+
+/**
+ * toggle debug overlay (very high CPU cost)
+ */
+export const ROOM_DEBUG_OVERLAY_ON = true;
 
 /**
  * display % or raw value on your rcl progress
@@ -155,7 +165,12 @@ export const TOWER_ALLOWED_TO_REPAIR: StructureConstant[] = [STRUCTURE_CONTAINER
 /**
  * The % energy a tower must have before we fill it up
  */
-export const TOWER_THRESHOLD: number = 0.85;
+export const TOWER_REPAIR_THRESHOLD: number = 0.85;
+
+/**
+ * The amount of damage a tower should be able to deal before it will fire on a target
+ */
+export const TOWER_DAMAGE_THRESHOLD: number = 50;
 
 /**
  * The storage threshold we want to hit before spawning another worker

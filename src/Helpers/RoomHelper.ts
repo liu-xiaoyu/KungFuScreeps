@@ -5,6 +5,8 @@ import {
     STIMULATE_FLAG,
     UserException,
     TOWER_ALLOWED_TO_REPAIR,
+    CreepHelper,
+    TOWER_DAMAGE_THRESHOLD,
     SpawnHelper
 } from "utils/internals";
 
@@ -145,21 +147,70 @@ export class RoomHelper {
     }
 
     /**
-     * get the amount of damage a tower will do at this distance
-     * @param range the distance the target is from the tower
+     * Calculate the tower scale (portion of damage/heal/repair) at the range to target
+     * @param distance The number of tiles away the target is
      */
-    public static getTowerDamageAtRange(range: number) {
-        if (range <= TOWER_OPTIMAL_RANGE) {
-            return TOWER_POWER_ATTACK;
+    public static getTowerRangeScaleFactor(distance: number): number {
+        if(distance <= TOWER_OPTIMAL_RANGE) {
+            return 1;
         }
-        if (range >= TOWER_FALLOFF_RANGE) {
-            range = TOWER_FALLOFF_RANGE;
+
+        if(distance >= TOWER_FALLOFF_RANGE) {
+            return 1 - TOWER_FALLOFF;
         }
-        return (
-            TOWER_POWER_ATTACK -
-            (TOWER_POWER_ATTACK * TOWER_FALLOFF * (range - TOWER_OPTIMAL_RANGE)) /
-            (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE)
-        );
+
+        // Falloff is linear between optimal range and maximum range
+        const scaleDifferencePerTile = TOWER_FALLOFF / (TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE);
+
+        // Fall off does not start until after optimal range
+        return 1 - (distance - TOWER_OPTIMAL_RANGE) * scaleDifferencePerTile;
+    }
+
+    /**
+     * Get the amount of damage a tower will do at this distance
+     * @param distance The number of tiles away the target is
+<<<<<<< HEAD
+     * @param healParts [Optional] The number of heal parts to calculate against
+     * @param rangedHeal [Optional] Whether or not to use rangedHeal calculation instead of direct heal
+     */
+    public static getTowerDamageAtRange(distance: number, healParts = 0, rangedHeal = false) {
+        // Base Calculation for tower damage
+        const attackPower = Math.floor( TOWER_POWER_ATTACK * this.getTowerRangeScaleFactor(distance) );
+
+        if(healParts < 0) {
+            throw new UserException("Incorrect Arguments for getTowerDamageAtRange", "Attempted to pass a negative number of heal parts to function.", ERROR_WARN);
+        }
+
+        let healPower: number;
+
+        if(rangedHeal) {
+            healPower = healParts * RANGED_HEAL_POWER;
+        } else { // direct/melee heal
+            healPower = healParts * HEAL_POWER;
+        }
+
+        return attackPower - healPower;
+=======
+     */
+    public static getTowerDamageAtRange(distance: number) {
+        return Math.floor( TOWER_POWER_ATTACK * this.getTowerRangeScaleFactor(distance) );
+>>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
+    }
+
+    /**
+     * Get the amount of damage a tower will heal at this distance
+     * @param distance The number of tiles away the target is
+     */
+    public static getTowerHealAtRange(distance: number) { 
+        return Math.floor(TOWER_POWER_HEAL * this.getTowerRangeScaleFactor(distance));
+    }
+
+    /**
+     * Get the amount of damage a tower will repair at this distance
+     * @param distance The number of tiles away the target is
+     */
+    public static getTowerRepairAtRange(distance: number) { 
+        return Math.floor(TOWER_POWER_REPAIR * this.getTowerRangeScaleFactor(distance));
     }
 
     /**
@@ -276,58 +327,133 @@ export class RoomHelper {
     }
 
     /**
-     * choose an ideal target for the towers to attack
-     * TODO actually choose an ideal target not just the first one lol
-     * @param room the room we are in
+     * 
+     * @param room The room to find the target for
      */
-    public static chooseTowerTargetDefense(room: Room): Creep | null | undefined {
-        // get the creep we will do the most damage to
-        const hostileCreeps: Array<Creep | null> = MemoryApi.getHostileCreeps(room.name);
-        const isHealers: boolean = _.some(hostileCreeps, (c: Creep) =>
-            _.some(c.body, (b: BodyPartDefinition) => b.type === "heal")
-        );
-        const isAttackers: boolean = _.some(hostileCreeps, (c: Creep) =>
-            _.some(c.body, (b: BodyPartDefinition) => b.type === "attack" || b.type === "ranged_attack")
-        );
-        const isWorkers: boolean = _.some(hostileCreeps, (c: Creep) =>
-            _.some(c.body, (b: BodyPartDefinition) => b.type === "work")
-        );
-        const isCivilians: boolean = _.some(
-            hostileCreeps,
-            (creep: Creep) =>
-                !_.some(creep.body, (b: BodyPartDefinition) => b.type === "heal") &&
-                !_.some(creep.body, (b: BodyPartDefinition) => b.type === "attack" || b.type === "ranged_attack") &&
-                !_.some(creep.body, (b: BodyPartDefinition) => b.type === "work")
-        );
+    public static chooseTowerAttackTarget(room: Room): Creep | null {
+        // All hostiles
+        const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
 
-        // If healers are present with attackers, target healers
-        if (isHealers && isAttackers && !isWorkers) {
-            return _.find(hostileCreeps, (c: Creep) => _.some(c.body, (b: BodyPartDefinition) => b.type === "heal"));
+        // Quit early if no creeps
+        if(hostileCreeps.length === 0) {
+            return null;
         }
 
-        // If workers are present, target worker
-        if (isWorkers) {
-            return _.find(hostileCreeps, (c: Creep) => _.some(c.body, (b: BodyPartDefinition) => b.type === "work"));
+        // Take out creeps with heal parts
+        const healCreeps = _.remove(hostileCreeps, (c: Creep) => CreepHelper.bodyPartExists(c, HEAL));
+
+        // Take out creeps that can attack
+        const attackCreeps = _.remove(hostileCreeps, (c: Creep) => CreepHelper.bodyPartExists(c, ATTACK, RANGED_ATTACK));
+
+        // rename for clarity, all creeps leftover should be civilian
+        // TODO Make a case for work part / claim part creeps? 
+        const civilianCreeps = hostileCreeps;
+
+        // All towers in the room
+        // const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
+        const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.energy > 0) as StructureTower[];
+
+        if(healCreeps.length === 0) {
+            return this.getBestTowerAttackTarget_NoHeal(towers, attackCreeps);
         }
 
-        // If attackers are present, target them
-        if (isAttackers) {
-            return _.find(hostileCreeps, (c: Creep) => _.some(c.body, (b: BodyPartDefinition) => b.type === "attack"));
+        if(attackCreeps.length > 0) {
+            // Target using heal creeps and attack creeps, ignore civilian creeps
+            return this.getBestTowerAttackTarget_IncludeHeal(towers, healCreeps, attackCreeps);
         }
 
-        // If no combat related creeps, target civilians
-        if (isCivilians) {
-            _.find(
-                hostileCreeps,
-                (creep: Creep) =>
-                    !_.some(creep.body, (b: BodyPartDefinition) => b.type === "heal") &&
-                    !_.some(creep.body, (b: BodyPartDefinition) => b.type === "attack" || b.type === "ranged_attack") &&
-                    !_.some(creep.body, (b: BodyPartDefinition) => b.type === "work")
-            );
+        // Target Heal creeps and civilian creeps if there are no attack creeps
+        return this.getBestTowerAttackTarget_IncludeHeal(towers, healCreeps, civilianCreeps);
+    }
+
+    /**
+     * Get the best target for towers, not considering heal parts
+     * @param hostiles Array of hostile creeps
+     * @param towers Array of friendly towers
+     */
+    public static getBestTowerAttackTarget_NoHeal(towers: StructureTower[], hostiles: Creep[]): Creep | null {
+        
+        let bestTarget: Creep | null = null;
+        let bestDamage: number = 0;
+        
+        _.forEach(hostiles, (c: Creep) => {
+            const distance = this.getAverageDistanceToTarget(towers, c);
+            const damage = this.getTowerDamageAtRange(distance);
+
+            if(damage > bestDamage) {
+                bestTarget = c;
+                bestDamage = damage;
+            }
+        });
+        
+        return bestTarget;
+    }
+
+    /**
+     * Get the best target for towers, taking their ability to heal into account
+     * @param healHostiles Array of hostile creeps that can heal
+     * @param otherHostiles Array of hostile creeps that can't heal
+     * @param towers Array of friendly towers
+     */
+    public static getBestTowerAttackTarget_IncludeHeal(towers: StructureTower[], healHostiles: Creep[], otherHostiles?: Creep[]): Creep | null {
+    
+        // Get the amount of healing each creep can receive
+        const creepHealData: Array<{"creep": Creep, "healAmount": number}> = this.getCreepHealData(healHostiles, otherHostiles);
+
+        // TODO Maybe make it consider the creep with 
+
+        // Get best creep (least ability to heal)
+        // TODO add a situation to handle equal heal amounts, to break the tie
+        let bestTarget = null;
+        let bestDamage = 0;
+
+        for(const data of creepHealData) {
+            // Get distance / damage to target
+            const avgDistanceToTower = this.getAverageDistanceToTarget(towers, data.creep);
+            const towerDamageToTarget = this.getTowerDamageAtRange(avgDistanceToTower);
+            
+            const netDamage = towerDamageToTarget - data.healAmount;
+
+            if(netDamage >= TOWER_DAMAGE_THRESHOLD && bestDamage < netDamage) {
+                bestTarget = data.creep;
+                bestDamage = netDamage;
+            } 
         }
 
-        // If there are no hostile creeps, or we didn't find a valid target, return undefined
-        return undefined;
+        return bestTarget;
+    }
+
+    public static getCreepHealData(healHostiles: Creep[], otherHostiles?: Creep[]): Array<{"creep": Creep, "healAmount": number}> {
+
+        const hostiles: Creep[] = otherHostiles === undefined ? healHostiles : healHostiles.concat(otherHostiles);
+
+        const creepHealData: Array<{"creep": Creep, "healAmount": number}> = [];
+
+        // Loop through each creep and get heal amount
+        // Each heal creep will consider healing itself as well as any other creep to cover worst-case scenario
+        for(const creep of hostiles) {
+
+            let healAmount = 0;
+
+            // Loop through all healers to find which can affect this creep and by how much
+            for(const healer of healHostiles) {
+                const distance = creep.pos.getRangeTo(healer);
+                // skip if creep is too far to heal
+                if(distance > 3){
+                    continue;
+                } // Creep is not able to heal() and must use rangedHeal() 
+                else if(distance > 1){
+                    healAmount += healer.getActiveBodyparts(HEAL) * RANGED_HEAL_POWER;
+                } // Creep can use heal() 
+                else { 
+                    healAmount += healer.getActiveBodyparts(HEAL) * HEAL_POWER;
+                }
+            }
+
+            creepHealData.push({"creep": creep, "healAmount": healAmount});
+        }
+
+        return creepHealData;
     }
 
     /**
@@ -345,6 +471,30 @@ export class RoomHelper {
         }
 
         return undefined;
+    }
+
+    /**
+     * Decide if a structure type is allowed for the tower to repair
+     * @param target the target we are checking for
+     */
+    public static isTowerAllowedToRepair(structureType: StructureConstant): boolean {
+        for (const i in TOWER_ALLOWED_TO_REPAIR) {
+            const currentStructureType = TOWER_ALLOWED_TO_REPAIR[i];
+            if (currentStructureType === structureType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Gets the average distance from the array of objects to a target
+     * @param fromPoints An array of objects that have a pos property
+     * @param target An object with a pos property
+     */
+    public static getAverageDistanceToTarget(fromPoints: _HasRoomPosition[], target: _HasRoomPosition) {
+        const totalDistance = _.sum(fromPoints, (point: _HasRoomPosition) => point.pos.getRangeTo(target.pos));
+        return totalDistance / fromPoints.length;
     }
 
     // Get the number of non-terrain-wall tiles around a RoomObject

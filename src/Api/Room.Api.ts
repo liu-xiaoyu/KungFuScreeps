@@ -17,7 +17,7 @@ import {
     REPAIR_THRESHOLD,
     PRIORITY_REPAIR_THRESHOLD,
     RUN_RESERVE_TTL_TIMER,
-    TOWER_THRESHOLD
+    TOWER_REPAIR_THRESHOLD
 } from "utils/internals";
 
 // an api used for functions related to the room
@@ -134,7 +134,7 @@ export class RoomApi {
     public static runTowersDefense(room: Room): void {
         const towers: StructureTower[] = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER) as StructureTower[];
         // choose the most ideal target and have every tower attack it
-        const idealTarget: Creep | undefined | null = RoomHelper.chooseTowerTargetDefense(room);
+        const idealTarget: Creep | undefined | null = RoomHelper.chooseTowerAttackTarget(room);
         if (!idealTarget) {
             return;
         }
@@ -308,7 +308,7 @@ export class RoomApi {
             room.name,
             STRUCTURE_TOWER,
             (t: StructureTower) => {
-                return t.energy < t.energyCapacity * TOWER_THRESHOLD;
+                return t.energy < t.energyCapacity * TOWER_REPAIR_THRESHOLD;
             }
         );
         // Sort by lowest to highest towers, so the most needed gets filled first

@@ -169,6 +169,7 @@ export class RoomHelper {
     /**
      * Get the amount of damage a tower will do at this distance
      * @param distance The number of tiles away the target is
+<<<<<<< HEAD
      * @param healParts [Optional] The number of heal parts to calculate against
      * @param rangedHeal [Optional] Whether or not to use rangedHeal calculation instead of direct heal
      */
@@ -189,6 +190,11 @@ export class RoomHelper {
         }
 
         return attackPower - healPower;
+=======
+     */
+    public static getTowerDamageAtRange(distance: number) {
+        return Math.floor( TOWER_POWER_ATTACK * this.getTowerRangeScaleFactor(distance) );
+>>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
     }
 
     /**

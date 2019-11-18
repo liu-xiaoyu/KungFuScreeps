@@ -59,7 +59,7 @@ export class RoomVisualManager {
         // ------DEBUG-------------------------
         if(ROOM_DEBUG_OVERLAY_ON) {
             // RoomVisualApi.debug_towerDamageOverlay_perTile(room);
-            RoomVisualApi.debug_towerDamageOverlay_perCreep(room);
+            // RoomVisualApi.debug_towerDamageOverlay_perCreep(room);
         }
     }
 }

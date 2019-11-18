@@ -16,9 +16,13 @@ import {
     MemoryApi,
     RoomVisualHelper,
     MemoryHelper_Room,
+<<<<<<< HEAD
     RoomHelper,
     CreepHelper,
     TOWER_DAMAGE_THRESHOLD
+=======
+    RoomHelper
+>>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
 } from "utils/internals";
 
 // Api for room visuals
@@ -578,7 +582,11 @@ export class RoomVisualApi {
     /**
      * Creates an overlay that shows tower damage on each tile in the room. For debug purposes only
      */
+<<<<<<< HEAD
     public static debug_towerDamageOverlay_perTile(room: Room) {
+=======
+    public static debug_towerDamageOverlay(room: Room) {
+>>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
         if(Memory.debug === undefined) {
             Memory.debug = {};
         }
@@ -598,7 +606,11 @@ export class RoomVisualApi {
                     Memory.debug.towerDebug[x][y] = 0;
                     _.forEach(towers, (tower: StructureTower) => {
                         const distance = tower.pos.getRangeTo(x, y);
+<<<<<<< HEAD
                         Memory.debug.towerDebug[x][y] += RoomHelper.getTowerDamageAtRange(distance, 15, false);
+=======
+                        Memory.debug.towerDebug[x][y] += RoomHelper.getTowerDamageAtRange(distance);
+>>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
                     });
                 }
             }
@@ -620,6 +632,7 @@ export class RoomVisualApi {
                     continue;
                 }
 
+<<<<<<< HEAD
                 if(Memory.debug.towerDebug[x][y] > 0) {
                     roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75, color: "#00ff00"});
                 } else {
@@ -669,6 +682,9 @@ export class RoomVisualApi {
                 roomVisual.text( (damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {font: 0.75, color: "#00ff00"});
             } else {
                 roomVisual.text( (damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {font: 0.75, color: "#ff0000"});
+=======
+                roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75});
+>>>>>>> 57df9d42bbb79a65842c5ea720d49343dba54783
             }
         }
     }

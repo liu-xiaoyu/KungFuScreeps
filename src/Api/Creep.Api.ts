@@ -281,7 +281,7 @@ export class CreepApi {
         }
 
         // Priority Repair Only
-        if (creepOptions.repair) {
+        if (creepOptions.repair || creepOptions.wallRepair) {
             const priorityRepairJobs = MemoryApi.getPriorityRepairJobs(room);
             if (priorityRepairJobs.length > 0) {
                 return priorityRepairJobs[0];

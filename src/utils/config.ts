@@ -181,3 +181,9 @@ export const STORAGE_ADDITIONAL_WORKER_THRESHOLD: number = 100000;
  * The storage threshold we want to hit before spawning another power upgrader
  */
 export const STORAGE_ADDITIONAL_UPGRADER_THRESHOLD: number = 300000;
+
+/**
+ * The number of lifetimes it would take a worker to repair all the ramparts
+ * (for extra worker in upgrader state)
+ */
+export const NUM_LIFESPANS_FOR_EXTRA_CREEP: number = 2;

@@ -125,6 +125,7 @@ export class WorkerBodyOptsHelper implements ICreepBodyOptsHelper {
                     // Options marked with // are overriding the defaults
                     build: true, //
                     wallRepair: true, //
+                    upgrade: true, //
                     fillTower: true, //
                     getFromStorage: true, //
                     getDroppedEnergy: true, //

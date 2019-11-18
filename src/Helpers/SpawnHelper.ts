@@ -22,8 +22,9 @@ import {
     ALL_DEFENSIVE_ROLES,
     RESERVER_MIN_TTL,
     ROOM_STATE_INTRO,
-
-    remoteRolePriority
+    NUM_LIFESPANS_FOR_EXTRA_CREEP,
+    remoteRolePriority,
+    WALL_LIMIT
 } from "utils/internals";
 
 /**
@@ -599,5 +600,32 @@ export class SpawnHelper {
             return harvester.ticksToLive !== undefined && harvester.ticksToLive <= harvester.body.length * 3;
         }
         return false;
+    }
+
+    /**
+     * Decides if we need an extra worker based on the state of ramparts in the room
+     * @param room the room we are checking for
+     * @returns bool representing if we need the extra worker or not
+     */
+    public static needExtraWorkerUpgrader(room: Room, numWorkParts: number): boolean {
+        if (!room.controller) {
+            return false;
+        }
+
+        // Each work part repairs 100, assumes they'll be repairing for 90% of their lifespan. Precision isn't important
+        const creepRepairPerLife: number = (numWorkParts * 100 * 1500) * .90;
+        const ramparts: StructureRampart[] = MemoryApi.getStructureOfType(room.name, STRUCTURE_RAMPART) as StructureRampart[];
+        const totalRampartHits: number = _.sum(ramparts, (r: StructureRampart) => r.hits);
+        const maxRampartHits: number = WALL_LIMIT[room.controller.level] * ramparts.length;
+        const neededLifetimes: number = Math.ceil((maxRampartHits - totalRampartHits) / creepRepairPerLife);
+
+        // Break early if we're over the max hits already
+        if ((maxRampartHits - totalRampartHits) <= 0) {
+            return false;
+        }
+
+        // Only need an extra worker if the number of lifetimes for a single worker to get the ramparts to the limit
+        // is greater than the set config value
+        return neededLifetimes >= NUM_LIFESPANS_FOR_EXTRA_CREEP;
     }
 }

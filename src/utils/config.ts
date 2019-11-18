@@ -80,7 +80,7 @@ export const ROOM_OVERLAY_GRAPH_ON = true;
 /**
  * toggle debug overlay (very high CPU cost)
  */
-export const ROOM_DEBUG_OVERLAY_ON = false;
+export const ROOM_DEBUG_OVERLAY_ON = true;
 
 /**
  * display % or raw value on your rcl progress

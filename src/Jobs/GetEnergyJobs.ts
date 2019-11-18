@@ -298,7 +298,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             });
 
             // The tombstone.store we will use instead of the true value
-            const adjustedTombstoneStore: StoreDefinition = tombstone.store;
+            const adjustedTombstoneStore: Store<ResourceConstant, true> = tombstone.store;
 
             // Subtract the empty carry of creeps targeting this tombstone to withdraw
             _.forEach(creepsUsingTombstone, (creep: Creep) => {
@@ -332,7 +332,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             });
 
             // The container.store we will use instead of the true value
-            const adjustedRuinStore: StoreDefinition = ruin.store;
+            const adjustedRuinStore: Store<ResourceConstant, true> = ruin.store;
 
             // Subtract the empty carry of creeps targeting this container to withdraw
             _.forEach(creepsUsingRuin, (creep: Creep) => {

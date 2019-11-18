@@ -16,7 +16,9 @@ import {
     MemoryApi,
     RoomVisualHelper,
     MemoryHelper_Room,
-    RoomHelper
+    RoomHelper,
+    CreepHelper,
+    TOWER_DAMAGE_THRESHOLD
 } from "utils/internals";
 
 // Api for room visuals
@@ -576,7 +578,7 @@ export class RoomVisualApi {
     /**
      * Creates an overlay that shows tower damage on each tile in the room. For debug purposes only
      */
-    public static debug_towerDamageOverlay(room: Room) {
+    public static debug_towerDamageOverlay_perTile(room: Room) {
         if(Memory.debug === undefined) {
             Memory.debug = {};
         }
@@ -623,6 +625,50 @@ export class RoomVisualApi {
                 } else {
                     roomVisual.text(Memory.debug.towerDebug[x][y], x, y, {font: 0.75, color: "#ff0000"});
                 }
+            }
+        }
+    }
+
+    /**
+     * Creates an overlay on hostile creeps that shows the amount of damage we will do to them and whether we will fire
+     */
+    public static debug_towerDamageOverlay_perCreep(room: Room): void {
+        // All hostiles
+        const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
+
+        // Quit early if no creeps
+        if(hostileCreeps.length === 0) {
+            return;
+        }
+
+        // Take out creeps with heal parts
+        const healCreeps = _.remove(hostileCreeps, (c: Creep) => CreepHelper.bodyPartExists(c, HEAL));
+
+        // Take out creeps that can attack
+        const attackCreeps = _.remove(hostileCreeps, (c: Creep) => CreepHelper.bodyPartExists(c, ATTACK, RANGED_ATTACK));
+
+        // rename for clarity, all creeps leftover should be civilian
+        // TODO Make a case for work part / claim part creeps? 
+        const civilianCreeps = hostileCreeps;
+
+        // All towers in the room
+        // const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
+        const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.energy > 0) as StructureTower[];
+    
+        const creepHealData = RoomHelper.getCreepHealData(healCreeps, attackCreeps);
+        
+        // Damage array should be populated at this point
+
+        const roomVisual = new RoomVisual(room.name);
+
+        for(const data of creepHealData) {
+            const distance = RoomHelper.getAverageDistanceToTarget(towers, data.creep);
+            const damage = RoomHelper.getTowerDamageAtRange(distance);
+
+            if( damage - data.healAmount > TOWER_DAMAGE_THRESHOLD) {
+                roomVisual.text( (damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {font: 0.75, color: "#00ff00"});
+            } else {
+                roomVisual.text( (damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {font: 0.75, color: "#ff0000"});
             }
         }
     }

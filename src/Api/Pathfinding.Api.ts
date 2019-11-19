@@ -20,12 +20,13 @@ export class PathfindingApi {
         }
 
         if (!Memory.empire.movementData) {
-            Memory.empire.movementData = [];
+            Memory.empire.movementData = {};
         }
         // End Memory Safeguarding
     }
 
     /**
+     * This method is used to update movementData for the empire
      * @param room The room to get the status of
      * @returns RoomStatusType The status of the room
      */
@@ -43,7 +44,7 @@ export class PathfindingApi {
         } else if (!room.controller.my && room.controller.owner) {
             roomStatus = ROOM_STATUS_HOSTILE;
         } else if (!room.controller.my && room.controller.reservation !== undefined) {
-            roomStatus = ROOM_STATUS_HOSTILE_REMOTE;
+            roomStatus = ROOM_STATUS_HOSTILE_REMOTE; // TODO Make a state to distinguish for invader core reserved room
         } else {
             roomStatus = ROOM_STATUS_NEUTRAL;
         }
@@ -60,22 +61,11 @@ export class PathfindingApi {
             this.initializeEmpireMovementMemory();
         }
 
-        const roomDataIndex = _.findIndex(
-            Memory.empire.movementData!,
-            (roomData: RoomMovementData) => roomData.roomName === room.name
-        );
-
-        const roomData: RoomMovementData = {
+        Memory.empire.movementData!.roomName = {
             roomName: room.name,
             roomStatus: this.getRoomStatus(room),
             lastSeen: Game.time
         };
-
-        if (roomDataIndex === -1) {
-            Memory.empire.movementData!.push(roomData);
-        } else {
-            Memory.empire.movementData![roomDataIndex] = roomData;
-        }
     }
 
     /**
@@ -105,7 +95,7 @@ export class PathfindingApi {
         const DEFAULT_OPTS = {
             heuristicWeight: 1.5, // TODO Test this to see if we can afford to raise it ( higher number = less CPU use, lower number = more likely to get best path each time)
             range: 0, // Assume we want to go to the location, if not told otherwise
-            ignoreCreeps: true, // ! Might need to change this back to false if we have issues with enemy creeps
+            ignoreCreeps: true,
             reusePath: 999,
             // swampCost: 5, // Putting this here as a reminder that we can make bigger creeps that can move on swamps
             visualizePathStyle: {}, // Empty object for now, just uses default visualization

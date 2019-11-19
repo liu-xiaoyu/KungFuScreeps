@@ -799,6 +799,7 @@ interface Memory {
     structures: { [structureID: string]: StructureMemory };
     debug: StringMap;
 }
+
 interface EmpireMemory {
     /**
      * messages to display in each room's alert box
@@ -807,9 +808,12 @@ interface EmpireMemory {
     /**
      * PathfindingApi empire-wide memory
      */
-    movementData?: RoomMovementData[];
+    movementData?: MovementData;
 }
 
+interface MovementData {
+    [key: string]: RoomMovementData
+}
 /**
  * Contains pathfinding information about a room
  */

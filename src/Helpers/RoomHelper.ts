@@ -396,7 +396,7 @@ export class RoomHelper {
         });
 
         if (
-            (bestDamage >= TOWER_MIN_DAMAGE_THRESHOLD && towers[0].room.memory.shotLastTick == true) ||
+            (bestDamage >= TOWER_MIN_DAMAGE_THRESHOLD && towers[0].room.memory.shotLastTick === true) ||
             bestDamage >= TOWER_MAX_DAMAGE_THRESHOLD
         ) {
             return bestTarget;
@@ -446,7 +446,7 @@ export class RoomHelper {
 
         // If we shot last tick, netDamage >= min damage, else netDamage >= max damage
         if (
-            (bestDamage >= TOWER_MIN_DAMAGE_THRESHOLD && towers[0].room.memory.shotLastTick == true) ||
+            (bestDamage >= TOWER_MIN_DAMAGE_THRESHOLD && towers[0].room.memory.shotLastTick === true) ||
             bestDamage >= TOWER_MAX_DAMAGE_THRESHOLD
         ) {
             return bestTarget;
@@ -483,7 +483,7 @@ export class RoomHelper {
                 }
             }
 
-            creepHealData.push({ creep: creep, healAmount: healAmount });
+            creepHealData.push({ creep, healAmount });
         }
 
         return creepHealData;

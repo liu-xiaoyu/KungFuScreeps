@@ -672,7 +672,7 @@ export class RoomVisualApi {
 
             // If greater than the min damage and we shot last tick, or greater than max damage regardless of shooting last tick
             if (
-                (netDamage >= TOWER_MIN_DAMAGE_THRESHOLD && room.memory.shotLastTick == true) ||
+                (netDamage >= TOWER_MIN_DAMAGE_THRESHOLD && room.memory.shotLastTick === true) ||
                 netDamage >= TOWER_MAX_DAMAGE_THRESHOLD
             ) {
                 roomVisual.text((damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {

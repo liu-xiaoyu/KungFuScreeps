@@ -192,3 +192,8 @@ export const STORAGE_ADDITIONAL_UPGRADER_THRESHOLD: number = 300000;
  * (for extra worker in upgrader state)
  */
 export const NUM_LIFESPANS_FOR_EXTRA_CREEP: number = 2;
+
+/**
+ * Max number of workers in upgrader state
+ */
+export const MAX_WORKERS_UPGRADER_STATE: number = 4;

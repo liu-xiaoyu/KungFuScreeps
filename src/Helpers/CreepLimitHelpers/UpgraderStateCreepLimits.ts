@@ -57,11 +57,12 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
         if (room.storage && room.storage!.store[RESOURCE_ENERGY] > STORAGE_ADDITIONAL_WORKER_THRESHOLD && needExtraWorker) {
             numWorkers++;
         }
-
         // If we have more than 300k energy in storage, get another power ugprader out to help with that
         if (room.storage && room.storage!.store[RESOURCE_ENERGY] > STORAGE_ADDITIONAL_UPGRADER_THRESHOLD) {
             numPowerUpgraders++;
         }
+        // If we have a fair amount of construction sites in the room, pump out some extra workers
+        numWorkers = SpawnHelper.getWorkerLimitForConstructionHelper(numWorkers, room);
 
 
         // Generate Limits --------

@@ -23,7 +23,7 @@ import {
     RESERVER_MIN_TTL,
     ROOM_STATE_INTRO,
     NUM_LIFESPANS_FOR_EXTRA_CREEP,
-    remoteRolePriority,
+    MAX_WORKERS_UPGRADER_STATE,
     WALL_LIMIT
 } from "utils/internals";
 
@@ -625,5 +625,19 @@ export class SpawnHelper {
         // Only need an extra worker if the number of lifetimes for a single worker to get the ramparts to the limit
         // is greater than the set config value
         return neededLifetimes >= NUM_LIFESPANS_FOR_EXTRA_CREEP;
+    }
+
+    /**
+     * Get the limit of workers in the room
+     * This accounts specifically for construction sites in the room
+     * @param currentWorkers the number of workers currently in the room
+     * @param room the room we are checking for
+     */
+    public static getWorkerLimitForConstructionHelper(currentWorkers: number, room: Room): number {
+        const constructionSitesInRoom: ConstructionSite[] = _.filter(Game.constructionSites, (s: ConstructionSite) => s.room && s.room.name === room.name);
+        const hitsNeededToBuild: number = _.sum(constructionSitesInRoom, (s: ConstructionSite) => s.progressTotal - s.progress);
+        // Spawn 1 extra worker
+        const numNewWorkers: number = Math.floor(hitsNeededToBuild / 15000);
+        return (currentWorkers + numNewWorkers) <= MAX_WORKERS_UPGRADER_STATE ? currentWorkers + numNewWorkers : MAX_WORKERS_UPGRADER_STATE;
     }
 }

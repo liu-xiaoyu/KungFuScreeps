@@ -61,7 +61,7 @@ export class PathfindingApi {
             this.initializeEmpireMovementMemory();
         }
 
-        Memory.empire.movementData!.roomName = {
+        Memory.empire.movementData![room.name] = {
             roomName: room.name,
             roomStatus: this.getRoomStatus(room),
             lastSeen: Game.time

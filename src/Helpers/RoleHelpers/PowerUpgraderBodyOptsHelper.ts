@@ -31,7 +31,7 @@ export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
         let body: CreepBodyDescriptor = { work: 18, carry: 8, move: 4 };
         const opts: CreepBodyOptions = { mixType: GROUPED };
         const numRemoteSources = RoomHelper.numRemoteSources(room);
-        let numWorkParts: number = (numRemoteSources * 4);
+        let numWorkParts: number = (numRemoteSources * 3);
 
         switch (tier) {
             case TIER_6:

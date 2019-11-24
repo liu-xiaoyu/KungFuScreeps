@@ -275,9 +275,9 @@ export class RoomHelper {
             throw new UserException(
                 "Tried to getUpgraderLink of a room with no controller",
                 "Get Upgrader Link was called for room [" +
-                    room.name +
-                    "]" +
-                    ", but theres no controller in this room.",
+                room.name +
+                "]" +
+                ", but theres no controller in this room.",
                 ERROR_WARN
             );
         }
@@ -766,4 +766,24 @@ export class RoomHelper {
         }
         return false;
     }
+
+    /**
+     * Gets the total storage level for the room (terminal + storage)
+     * @param room the room we are checking in
+     * @returns number representing amount of energy in the room's store
+     */
+    public static getStorageLevel(room: Room): number {
+        const storage: StructureStorage | undefined = room.storage;
+        const terminal: StructureTerminal | undefined = room.terminal;
+        let storageLevels: number = 0;
+
+        if (storage) {
+            storageLevels += storage.store[RESOURCE_ENERGY];
+        }
+        if (terminal) {
+            storageLevels += terminal.store[RESOURCE_ENERGY];
+        }
+        return storageLevels;
+    }
+
 }

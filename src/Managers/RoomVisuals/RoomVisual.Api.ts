@@ -87,7 +87,8 @@ export class RoomVisualApi {
             remoteReserver: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_RESERVER).length,
             remoteHarvester: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_HARVESTER).length,
             claimer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_CLAIMER).length,
-            colonizer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_COLONIZER).length
+            colonizer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_COLONIZER).length,
+            remoteDefender: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_DEFENDER)
         };
         const spawningCreep: Creep[] = _.filter(MemoryApi.getMyCreeps(room.name), (c: Creep) => c.spawning);
         let spawningRole: string;
@@ -121,9 +122,9 @@ export class RoomVisualApi {
             if (creepLimits.domesticLimits.powerUpgrader > 0) {
                 lines.push(
                     "Power Upgraders:    " +
-                        roles[ROLE_POWER_UPGRADER] +
-                        " / " +
-                        creepLimits.domesticLimits.powerUpgrader
+                    roles[ROLE_POWER_UPGRADER] +
+                    " / " +
+                    creepLimits.domesticLimits.powerUpgrader
                 );
             }
         }
@@ -137,17 +138,17 @@ export class RoomVisualApi {
             if (creepLimits.remoteLimits.remoteHarvester > 0) {
                 lines.push(
                     "Remote Harvesters:    " +
-                        roles[ROLE_REMOTE_HARVESTER] +
-                        " / " +
-                        creepLimits.remoteLimits.remoteHarvester
+                    roles[ROLE_REMOTE_HARVESTER] +
+                    " / " +
+                    creepLimits.remoteLimits.remoteHarvester
                 );
             }
             if (creepLimits.remoteLimits.remoteReserver > 0) {
                 lines.push(
                     "Remote Reservers:    " +
-                        roles[ROLE_REMOTE_RESERVER] +
-                        " / " +
-                        creepLimits.remoteLimits.remoteReserver
+                    roles[ROLE_REMOTE_RESERVER] +
+                    " / " +
+                    creepLimits.remoteLimits.remoteReserver
                 );
             }
             if (creepLimits.remoteLimits.remoteColonizer > 0) {
@@ -158,9 +159,9 @@ export class RoomVisualApi {
             if (creepLimits.remoteLimits.remoteDefender > 0) {
                 lines.push(
                     "Remote Defenders:    " +
-                        roles[ROLE_REMOTE_DEFENDER] +
-                        " / " +
-                        creepLimits.remoteLimits.remoteDefender
+                    roles[ROLE_REMOTE_DEFENDER] +
+                    " / " +
+                    creepLimits.remoteLimits.remoteDefender
                 );
             }
             if (creepLimits.remoteLimits.claimer > 0) {

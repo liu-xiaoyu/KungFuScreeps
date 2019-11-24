@@ -197,3 +197,11 @@ export const NUM_LIFESPANS_FOR_EXTRA_CREEP: number = 2;
  * Max number of workers in upgrader state
  */
 export const MAX_WORKERS_UPGRADER_STATE: number = 4;
+
+/**
+ * Storage minimum for hamstringing power upgraders to rebuild storage
+ *
+ * Number of work parts for a mini power upgrader that this number decides
+ */
+export const STORAGE_LEVEL_MINI_UPGRADERS: number = 50000;
+export const MINI_UPGRADER_WORK_PARTS: number = 8;

@@ -9,13 +9,13 @@ import {
     ROLE_REMOTE_DEFENDER,
     ROLE_REMOTE_RESERVER,
     ROLE_WORKER,
+    ROLE_MANAGER,
     ROLE_POWER_UPGRADER,
     OVERRIDE_D_ROOM_FLAG,
     STIMULATE_FLAG,
     ROOM_OVERLAY_GRAPH_ON,
     MemoryApi,
     RoomVisualHelper,
-    MemoryHelper_Room,
     RoomHelper,
     CreepHelper,
     TOWER_MIN_DAMAGE_THRESHOLD,
@@ -88,7 +88,8 @@ export class RoomVisualApi {
             remoteHarvester: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_HARVESTER).length,
             claimer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_CLAIMER).length,
             colonizer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_COLONIZER).length,
-            remoteDefender: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_DEFENDER)
+            remoteDefender: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_DEFENDER),
+            manager: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_MANAGER),
         };
         const spawningCreep: Creep[] = _.filter(MemoryApi.getMyCreeps(room.name), (c: Creep) => c.spawning);
         let spawningRole: string;
@@ -119,13 +120,11 @@ export class RoomVisualApi {
             if (creepLimits.domesticLimits.lorry > 0) {
                 lines.push("Lorries:    " + roles[ROLE_LORRY] + " / " + creepLimits.domesticLimits.lorry);
             }
+            if (creepLimits.domesticLimits.lorry > 0) {
+                lines.push("Managers:    " + roles[ROLE_MANAGER] + " / " + creepLimits.domesticLimits.manager);
+            }
             if (creepLimits.domesticLimits.powerUpgrader > 0) {
-                lines.push(
-                    "Power Upgraders:    " +
-                    roles[ROLE_POWER_UPGRADER] +
-                    " / " +
-                    creepLimits.domesticLimits.powerUpgrader
-                );
+                lines.push("Power Upgraders:    " + roles[ROLE_POWER_UPGRADER] + " / " + creepLimits.domesticLimits.powerUpgrader);
             }
         }
 
@@ -673,7 +672,7 @@ export class RoomVisualApi {
 
             // If greater than the min damage and we shot last tick, or greater than max damage regardless of shooting last tick
             if (
-                (netDamage >= TOWER_MIN_DAMAGE_THRESHOLD && room.memory.shotLastTick == true) ||
+                (netDamage >= TOWER_MIN_DAMAGE_THRESHOLD && room.memory.shotLastTick === true) ||
                 netDamage >= TOWER_MAX_DAMAGE_THRESHOLD
             ) {
                 roomVisual.text((damage - data.healAmount).toString(), data.creep.pos.x, data.creep.pos.y, {

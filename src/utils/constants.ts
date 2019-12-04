@@ -120,6 +120,7 @@ export const RUINS_CACHE_TTL = 50; // Ruins
 export const DROPS_CACHE_TTL = 50; // Dropped Resources
 export const FCREEP_CACHE_TTL = 20; // Friendly Creep
 export const HCREEP_CACHE_TTL = 1; // Hostile Creep
+export const MOVEMENT_CACHE_TTL = 2500; // Empire cross-room movement data
 // GetEnergyJob Constants
 export const SOURCE_JOB_CACHE_TTL = 50; // Source jobs
 export const CONTAINER_JOB_CACHE_TTL = 5; // Container jobs

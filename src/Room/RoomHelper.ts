@@ -482,7 +482,7 @@ export class RoomHelper {
                 }
             }
 
-            creepHealData.push({ creep: creep, healAmount: healAmount });
+            creepHealData.push({ creep, healAmount });
         }
 
         return creepHealData;

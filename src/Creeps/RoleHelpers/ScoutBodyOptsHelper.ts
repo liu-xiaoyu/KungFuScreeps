@@ -74,8 +74,7 @@ export class ScoutBodyOptsHelper implements ICreepBodyOptsHelper {
         creepBody: BodyPartConstant[],
         creepName: string
     ): string {
-        // temporary value until we get an alg for this
-        // TODO write this function for scout
+        // Always returns home room name, and is changed in runCreepRole
         return room.name;
     }
 

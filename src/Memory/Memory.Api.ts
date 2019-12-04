@@ -173,7 +173,8 @@ export class MemoryApi {
                         worker: 0,
                         powerUpgrader: 0,
                         lorry: 0,
-                        scout: 0
+                        scout: 0,
+                        manager: 0
                     },
                     remoteLimits: {
                         remoteMiner: 0,
@@ -848,7 +849,8 @@ export class MemoryApi {
                 worker: 0,
                 powerUpgrader: 0,
                 lorry: 0,
-                scout: 0
+                scout: 0,
+                manager: 0
             },
             remoteLimits: {
                 remoteMiner: 0,

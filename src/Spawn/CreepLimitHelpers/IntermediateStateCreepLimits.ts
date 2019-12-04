@@ -20,7 +20,8 @@ export class IntermediateStateCreepLimits implements ICreepSpawnLimits {
             worker: 0,
             powerUpgrader: 0,
             lorry: 0,
-            scout: 0
+            scout: 0,
+            manager: 0
         };
 
         const minerLimits: number = MemoryApi.getSources(room.name).length;

@@ -41,7 +41,8 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
             worker: 0,
             powerUpgrader: 0,
             lorry: 0,
-            scout: 0
+            scout: 0,
+            manager: 0
         };
 
         const numLorries: number = SpawnHelper.getLorryLimitForRoom(room, room.memory.roomState!);

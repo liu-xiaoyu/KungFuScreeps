@@ -1089,6 +1089,10 @@ interface DomesticCreepLimits {
      */
     worker: number;
     /**
+     * limit for manager
+     */
+    manager: number;
+    /**
      * limit for domestic power upgraders
      */
     powerUpgrader: number;

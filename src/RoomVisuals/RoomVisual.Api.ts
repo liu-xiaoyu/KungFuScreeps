@@ -122,7 +122,7 @@ export class RoomVisualApi {
             if (creepLimits.domesticLimits.lorry > 0) {
                 lines.push("Lorries:    " + roles[ROLE_LORRY] + " / " + creepLimits.domesticLimits.lorry);
             }
-            if (creepLimits.domesticLimits.lorry > 0) {
+            if (creepLimits.domesticLimits.manager > 0) {
                 lines.push("Managers:    " + roles[ROLE_MANAGER] + " / " + creepLimits.domesticLimits.manager);
             }
             if (creepLimits.domesticLimits.powerUpgrader > 0) {

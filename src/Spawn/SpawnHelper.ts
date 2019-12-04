@@ -24,7 +24,8 @@ import {
     ROOM_STATE_INTRO,
     NUM_LIFESPANS_FOR_EXTRA_CREEP,
     MAX_WORKERS_UPGRADER_STATE,
-    WALL_LIMIT
+    WALL_LIMIT,
+    SCOUT_SPAWN_TICKS
 } from "Utils/Imports/internals";
 
 /**
@@ -639,5 +640,16 @@ export class SpawnHelper {
         // Spawn 1 extra worker
         const numNewWorkers: number = Math.floor(hitsNeededToBuild / 15000);
         return (currentWorkers + numNewWorkers) <= MAX_WORKERS_UPGRADER_STATE ? currentWorkers + numNewWorkers : MAX_WORKERS_UPGRADER_STATE;
+    }
+
+    /**
+     * Get the spawn limit for scouts
+     * @param room the room we are in
+     */
+    public static getScoutSpawnLimit(room: Room): number {
+        // Returns -1 if one has never been spawned, so check for that case as well in the if
+        const lastTickScoutSpawned: number = MemoryApi.getLastTickScoutSpawned(room);
+        const differenceCheck: number = Game.time - lastTickScoutSpawned
+        return (differenceCheck > SCOUT_SPAWN_TICKS || lastTickScoutSpawned === -1) ? 1 : 0;
     }
 }

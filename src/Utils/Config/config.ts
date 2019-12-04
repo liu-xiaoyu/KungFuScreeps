@@ -205,3 +205,9 @@ export const MAX_WORKERS_UPGRADER_STATE: number = 4;
  */
 export const STORAGE_LEVEL_MINI_UPGRADERS: number = 50000;
 export const MINI_UPGRADER_WORK_PARTS: number = 5;
+
+/**
+ * The number of ticks we want to pass between scout spawns
+ * currently set to one creep life, so if a scout dies it won't spawn another one to replace it until it would have naturally died
+ */
+export const SCOUT_SPAWN_TICKS: number = 1500;

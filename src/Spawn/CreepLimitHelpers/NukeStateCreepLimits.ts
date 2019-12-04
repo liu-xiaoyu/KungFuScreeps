@@ -19,7 +19,8 @@ export class NukeStateCreepLimits implements ICreepSpawnLimits {
             harvester: 0,
             worker: 0,
             powerUpgrader: 0,
-            lorry: 0
+            lorry: 0,
+            scout: 0
         };
 
         // If nuke is inbound, do not spawn additional creeps

@@ -8,6 +8,7 @@ import {
     ROLE_REMOTE_HARVESTER,
     ROLE_REMOTE_RESERVER,
     ROLE_CLAIMER,
+    ROLE_SCOUT,
     ROLE_COLONIZER,
     ROLE_REMOTE_DEFENDER,
     ROOM_STATE_UPGRADER,
@@ -40,8 +41,7 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
             worker: 0,
             powerUpgrader: 0,
             lorry: 0,
-            // TODO Replace this to be dynamic
-            scout: 1
+            scout: 0
         };
 
         const numLorries: number = SpawnHelper.getLorryLimitForRoom(room, room.memory.roomState!);
@@ -74,6 +74,7 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
         domesticLimits[ROLE_POWER_UPGRADER] = numPowerUpgraders;
         domesticLimits[ROLE_LORRY] = numLorries;
         domesticLimits[ROLE_MANAGER] = 1;
+        domesticLimits[ROLE_SCOUT] = SpawnHelper.getScoutSpawnLimit(room);
 
         return domesticLimits;
     }

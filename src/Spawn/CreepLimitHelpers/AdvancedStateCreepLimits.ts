@@ -48,13 +48,13 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
             harvester: 0,
             worker: 0,
             powerUpgrader: 0,
-            lorry: 0
+            lorry: 0,
+            scout: 0
         };
 
         const numLorries: number = SpawnHelper.getLorryLimitForRoom(room, room.memory.roomState!);
         const numRemoteRooms: number = RoomHelper.numRemoteRooms(room);
         const minerLimits: number = MemoryApi.getSources(room.name).length;
-        let numHarvesters: number = 2;
         let numWorkers: number = 3 + numRemoteRooms;
 
         // If we have more than 100k energy in storage, we want another worker to help whittle it down
@@ -62,27 +62,13 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
             numWorkers++;
         }
 
-        // [Special Case], if we recovered a room and only have 1 harvester (they would be too small to keep up with room)
-        if (numHarvesters === 1 && RoomHelper.excecuteEveryTicks(40)) {
-            const harvester: Creep | undefined = _.find(
-                MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER)
-            );
-            if (harvester) {
-                if (SpawnApi.getEnergyCostOfBody(Normalize.convertCreepBodyToBodyPartConstant(harvester.body)) <= 300) {
-                    numHarvesters = 2;
-                }
-            }
-        }
-
         // Generate Limits --------
         domesticLimits[ROLE_MINER] = minerLimits;
-        domesticLimits[ROLE_HARVESTER] = numHarvesters;
+        domesticLimits[ROLE_HARVESTER] = this.getNumHarvesters(room);;
         domesticLimits[ROLE_WORKER] = numWorkers;
         domesticLimits[ROLE_POWER_UPGRADER] = 0;
         domesticLimits[ROLE_LORRY] = numLorries;
-
-        // temp for testing
-        domesticLimits[ROLE_SCOUT] = 0;
+        domesticLimits[ROLE_SCOUT] = SpawnHelper.getScoutSpawnLimit(room);
 
         return domesticLimits;
     }
@@ -129,4 +115,25 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
 
         return remoteLimits;
     }
+
+    /**
+     * Get the number of harvesters we need for the room
+     * @param room the room we are checking for
+     * @returns the number of harvesters we need
+     */
+    private getNumHarvesters(room: Room): number {
+        // [Special Case], if we recovered a room and only have 1 harvester (they would be too small to keep up with room)
+        if (RoomHelper.excecuteEveryTicks(40)) {
+            const harvester: Creep | undefined = _.find(
+                MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER)
+            );
+            if (harvester) {
+                if (SpawnApi.getEnergyCostOfBody(Normalize.convertCreepBodyToBodyPartConstant(harvester.body)) <= 600) {
+                    return 2;
+                }
+            }
+        }
+        return 1;
+    }
+
 }

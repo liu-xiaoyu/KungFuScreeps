@@ -1,4 +1,4 @@
-import { C_EVENT_CREEP_SPAWNED, EventHelper, SpawnHelper, UserException, MemoryApi } from "Utils/Imports/internals";
+import { C_EVENT_CREEP_SPAWNED, EventHelper, SpawnHelper, UserException, MemoryApi, ROLE_SCOUT } from "Utils/Imports/internals";
 
 export class EventApi {
     /**
@@ -84,10 +84,16 @@ export class EventApi {
      */
     public static processCreepSpawnEvent(room: Room, event: CustomEvent, subject: any): void {
         const creep: Creep = subject as Creep;
+        if (!creep.memory.role) {
+            return;
+        }
 
         // Handle military creep being spawned
         if (SpawnHelper.isMilitaryRole(creep.memory.role)) {
             EventHelper.miltaryCreepSpawnTrigger(room, event, creep);
+        }
+        else if (creep.memory.role === ROLE_SCOUT) {
+            MemoryApi.updateLastTickScoutSpawned(room);
         }
     }
 

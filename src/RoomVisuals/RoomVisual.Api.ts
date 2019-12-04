@@ -9,6 +9,7 @@ import {
     ROLE_REMOTE_DEFENDER,
     ROLE_REMOTE_RESERVER,
     ROLE_WORKER,
+    ROLE_SCOUT,
     ROLE_MANAGER,
     ROLE_POWER_UPGRADER,
     OVERRIDE_D_ROOM_FLAG,
@@ -88,8 +89,9 @@ export class RoomVisualApi {
             remoteHarvester: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_HARVESTER).length,
             claimer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_CLAIMER).length,
             colonizer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_COLONIZER).length,
-            remoteDefender: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_DEFENDER),
-            manager: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_MANAGER),
+            remoteDefender: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_DEFENDER).length,
+            manager: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_MANAGER).length,
+            scout: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_SCOUT).length,
         };
         const spawningCreep: Creep[] = _.filter(MemoryApi.getMyCreeps(room.name), (c: Creep) => c.spawning);
         let spawningRole: string;
@@ -125,6 +127,9 @@ export class RoomVisualApi {
             }
             if (creepLimits.domesticLimits.powerUpgrader > 0) {
                 lines.push("Power Upgraders:    " + roles[ROLE_POWER_UPGRADER] + " / " + creepLimits.domesticLimits.powerUpgrader);
+            }
+            if (creepLimits.domesticLimits.scout > 0) {
+                lines.push("Scouts:    " + roles[ROLE_SCOUT] + " / " + creepLimits.domesticLimits.scout);
             }
         }
 

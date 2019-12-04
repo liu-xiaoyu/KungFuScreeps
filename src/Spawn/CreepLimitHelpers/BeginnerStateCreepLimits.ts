@@ -19,7 +19,8 @@ export class BeginnerStateCreepLimits implements ICreepSpawnLimits {
             harvester: 0,
             worker: 0,
             powerUpgrader: 0,
-            lorry: 0
+            lorry: 0,
+            scout: 0
         };
 
         // If we can't build a single sufficiently sized miner, handle multiple miner limits

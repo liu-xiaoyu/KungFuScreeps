@@ -792,6 +792,10 @@ interface RoomMemory {
      * memory for the custom in room events
      */
     events: CustomEvent[];
+    /**
+     * The last tick we had a scout spawn
+     */
+    lastScoutSpawn?: number;
 }
 
 interface Memory {
@@ -1092,6 +1096,10 @@ interface DomesticCreepLimits {
      * limit for domestic lorries
      */
     lorry: number;
+    /**
+     * limit for scout
+     */
+    scout: number;
 }
 
 /**

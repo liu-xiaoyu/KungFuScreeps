@@ -47,7 +47,10 @@ export class ScoutCreepManager implements ICivCreepRoleManager {
             );
         }
 
-        let newTargetRoom: string;
+        // Had a bug when I first pulled this in, this was undefined
+        // Defining it by default to avoid that bug
+        // Should fine a new room once it finds its already in the home room, so no issue
+        let newTargetRoom: string = creep.memory.homeRoom;
 
         // Loop through exits
         for (const i in exits) {

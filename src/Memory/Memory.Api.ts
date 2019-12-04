@@ -172,7 +172,8 @@ export class MemoryApi {
                         harvester: 0,
                         worker: 0,
                         powerUpgrader: 0,
-                        lorry: 0
+                        lorry: 0,
+                        scout: 0
                     },
                     remoteLimits: {
                         remoteMiner: 0,
@@ -846,7 +847,8 @@ export class MemoryApi {
                 harvester: 0,
                 worker: 0,
                 powerUpgrader: 0,
-                lorry: 0
+                lorry: 0,
+                scout: 0
             },
             remoteLimits: {
                 remoteMiner: 0,
@@ -1946,4 +1948,25 @@ export class MemoryApi {
         }
         return allCreepCount;
     }
+
+    /**
+     * Get the last tick a scout was spawned from memory
+     * @param room the room we are in
+     * @returns the last tick a scout was spawned in the room, -1 if one has not been spawned ever (ie memory was not set)
+     */
+    public static getLastTickScoutSpawned(room: Room): number {
+        if (!room.memory.lastScoutSpawn) {
+            return -1;
+        }
+        return room.memory.lastScoutSpawn;
+    }
+
+    /**
+     * Update the last tick a scout was spawned in memory to the current tick
+     * @param room the room we are in
+     */
+    public static updateLastTickScoutSpawned(room: Room): void {
+        room.memory.lastScoutSpawn = Game.time;
+    }
+
 }

@@ -19,7 +19,8 @@ export class IntroStateCreepLimits implements ICreepSpawnLimits {
             harvester: 0,
             worker: 0,
             powerUpgrader: 0,
-            lorry: 0
+            lorry: 0,
+            scout: 0
         };
 
         // Generate Limits -------

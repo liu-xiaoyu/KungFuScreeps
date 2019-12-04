@@ -1,4 +1,4 @@
-import { CreepHelper, CreepApi, PathfindingApi } from "utils/internals";
+import { CreepHelper, CreepApi, PathfindingApi } from "Utils/Imports/internals";
 
 export class MovePartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "movePartJob";

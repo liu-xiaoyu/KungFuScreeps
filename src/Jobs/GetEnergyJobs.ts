@@ -10,7 +10,7 @@ import {
     TOMBSTONE_MINIMUM_ENERGY,
     RUIN_MINIMUM_ENERGY,
     LINK_MINIMUM_ENERGY
-} from "utils/internals";
+} from "Utils/Imports/internals";
 
 export class GetEnergyJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "getEnergyJob";

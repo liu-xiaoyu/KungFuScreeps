@@ -1,4 +1,4 @@
-import { CreepHelper, CreepApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException, RoomHelper } from "utils/internals";
+import { CreepHelper, CreepApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException, RoomHelper } from "Utils/Imports/internals";
 
 export class ClaimPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "claimPartJob";
@@ -195,7 +195,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
         // TODO Get a list of controllers to be signed
         // Every controller we have vision of the room in the scouting structure,
         // its not owned by another player,
-        // and its not signed
+        // and its not signed (by us)
         const controllers: StructureController[] = [];
 
         if (controllers.length === 0) {

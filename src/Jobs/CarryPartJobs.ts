@@ -88,7 +88,7 @@ export class CarryPartJobs implements IJobTypeHelper {
     public static createFillJobs(room: Room): CarryPartJob[] {
         const lowSpawnsAndExtensions = RoomApi.getLowSpawnAndExtensions(room);
         const lowTowers = RoomApi.getTowersNeedFilled(room);
-        const upgraderLink: StructureLink | null = RoomHelper.getUpgraderLink(room) as StructureLink;
+        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink;
         if (lowSpawnsAndExtensions.length === 0 && lowTowers.length === 0 && !upgraderLink) {
             return [];
         }
@@ -215,7 +215,7 @@ export class CarryPartJobs implements IJobTypeHelper {
             storeJobs.push(terminalJob);
         }
 
-        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room);
+        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink | null;
 
         if (upgraderLink) {
             const nonUpgraderLinks: StructureLink[] = MemoryApi.getStructureOfType(

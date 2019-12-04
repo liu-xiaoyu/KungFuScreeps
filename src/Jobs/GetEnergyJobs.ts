@@ -263,7 +263,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
     public static createLinkJobs(room: Room): GetEnergyJob[] {
         const linkJobList: GetEnergyJob[] = [];
 
-        const upgraderLink: StructureLink = MemoryApi.getUpgraderLink(room) as StructureLink;
+        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink | null;
         if (upgraderLink !== undefined && upgraderLink !== null && upgraderLink.energy > LINK_MINIMUM_ENERGY) {
             const linkStore: StoreDefinition = { energy: upgraderLink.energy } as StoreDefinition;
             const linkJob: GetEnergyJob = {

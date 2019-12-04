@@ -247,49 +247,6 @@ export class RoomHelper {
     }
 
     /**
-     * check if the link is an upgrader link
-     * @param room the room we are checking
-     * @param sources the sources we are checking
-     * @param containers the containers we are checking
-     */
-    public static getUpgraderLink(room: Room): Structure<StructureConstant> | null {
-        // Throw warning if we do not own this room
-        if (!this.isOwnedRoom(room)) {
-            throw new UserException(
-                "Stimulate flag check on non-owned room",
-                "You attempted to check for a stimulate flag in a room we do not own. Room [" + room.name + "]",
-                ERROR_WARN
-            );
-        }
-
-        const links: Array<Structure<StructureConstant>> = MemoryApi.getStructureOfType(room.name, STRUCTURE_LINK);
-        const controller: StructureController | undefined = room.controller;
-
-        // Break early if we don't have 3 links yet
-        if (links.length < 2) {
-            return null;
-        }
-
-        // Make sure theres a controller in the room
-        if (!controller) {
-            throw new UserException(
-                "Tried to getUpgraderLink of a room with no controller",
-                "Get Upgrader Link was called for room [" +
-                room.name +
-                "]" +
-                ", but theres no controller in this room.",
-                ERROR_WARN
-            );
-        }
-
-        // Find the closest link to the controller, this is our upgrader link
-        const closestLink: Structure<StructureConstant> | null = controller!.pos.findClosestByRange(links) as Structure<
-            StructureConstant
-        >;
-        return controller.pos.inRangeTo(closestLink.pos.x, closestLink.pos.y, 3) ? closestLink : null;
-    }
-
-    /**
      * Check and see if an upgrader link exists
      * @param room the room we are checking for
      */
@@ -303,7 +260,7 @@ export class RoomHelper {
             );
         }
 
-        return this.getUpgraderLink(room) !== null;
+        return MemoryApi.getUpgraderLink(room) !== null;
     }
 
     /**

@@ -87,11 +87,39 @@ export class MemoryApi {
      * get the upgrader link for the room
      * @param room the room memory we are getting the upgrader link from
      */
-    public static getUpgraderLink(room: Room): StructureLink | null {
-        // TODO remove this and all references to it, or update it and remove the one in RoomHelper. We duplicated this and
-        // didn't use it so it never got fixed. But imo it should be in memory api like it is not in room helper? Idk honetsly... or just not store it in memory
-        // idc either way just putting todo so i remove it later
-        return RoomHelper.getUpgraderLink(room) as StructureLink | null;
+    public static getUpgraderLink(room: Room): Structure<StructureConstant> | null {
+        // Throw warning if we do not own this room
+        if (!RoomHelper.isOwnedRoom(room)) {
+            throw new UserException(
+                "Stimulate flag check on non-owned room",
+                "You attempted to check for a stimulate flag in a room we do not own. Room [" + room.name + "]",
+                ERROR_WARN
+            );
+        }
+
+        const links: Array<Structure<StructureConstant>> = MemoryApi.getStructureOfType(room.name, STRUCTURE_LINK);
+        const controller: StructureController | undefined = room.controller;
+
+        // Break early if we don't have 3 links yet
+        if (links.length < 2) {
+            return null;
+        }
+
+        // Make sure theres a controller in the room
+        if (!controller) {
+            throw new UserException(
+                "Tried to getUpgraderLink of a room with no controller",
+                "Get Upgrader Link was called for room [" +
+                room.name +
+                "]" +
+                ", but theres no controller in this room.",
+                ERROR_WARN
+            );
+        }
+
+        // Find the closest link to the controller, this is our upgrader link
+        const closestLink: Structure<StructureConstant> | null = controller!.pos.findClosestByRange(links) as Structure<StructureConstant>;
+        return controller.pos.inRangeTo(closestLink.pos.x, closestLink.pos.y, 3) ? closestLink : null;
     }
 
     /**

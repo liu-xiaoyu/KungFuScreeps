@@ -1,4 +1,4 @@
-import { CreepHelper, CreepApi, PathfindingApi, RoomApi, MemoryApi } from "utils/internals";
+import { CreepHelper, CreepApi, PathfindingApi, RoomApi, MemoryApi, RoomHelper } from "Utils/Imports/internals";
 
 export class CarryPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "carryPartJob";
@@ -88,8 +88,8 @@ export class CarryPartJobs implements IJobTypeHelper {
     public static createFillJobs(room: Room): CarryPartJob[] {
         const lowSpawnsAndExtensions = RoomApi.getLowSpawnAndExtensions(room);
         const lowTowers = RoomApi.getTowersNeedFilled(room);
-
-        if (lowSpawnsAndExtensions.length === 0 && lowTowers.length === 0) {
+        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink;
+        if (lowSpawnsAndExtensions.length === 0 && lowTowers.length === 0 && !upgraderLink) {
             return [];
         }
 
@@ -147,6 +147,37 @@ export class CarryPartJobs implements IJobTypeHelper {
             fillJobs.push(fillJob);
         });
 
+        // Consider different placement or function for this, we currently only have link jobs for get energy, but none for depositing
+        // If we don't have upgrader link yet, break now to save cpu
+        if (!upgraderLink) {
+            return fillJobs;
+        }
+        const nonUpgraderLinks: StructureLink[] = MemoryApi.getStructureOfType(room.name, STRUCTURE_LINK, (l: StructureLink) => l.id !== upgraderLink.id) as StructureLink[];
+        _.forEach(nonUpgraderLinks, (structure: StructureLink) => {
+            const creepsUsing = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+                return (
+                    creep.memory.job !== undefined &&
+                    creep.memory.job.targetID === structure.id &&
+                    creep.memory.job.actionType === "transfer"
+                );
+            });
+
+            const creepCapacity = _.sum(creepsUsing, (creep: Creep) => creep.carryCapacity - _.sum(creep.carry));
+
+            const storageSpace = structure.energyCapacity - structure.energy - creepCapacity;
+
+            const fillJob: CarryPartJob = {
+                jobType: "carryPartJob",
+                targetID: structure.id as string,
+                targetType: structure.structureType,
+                remaining: storageSpace,
+                actionType: "transfer",
+                isTaken: storageSpace <= 0
+            };
+
+            fillJobs.push(fillJob);
+        });
+
         return fillJobs;
     }
 
@@ -184,7 +215,7 @@ export class CarryPartJobs implements IJobTypeHelper {
             storeJobs.push(terminalJob);
         }
 
-        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room);
+        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink | null;
 
         if (upgraderLink) {
             const nonUpgraderLinks: StructureLink[] = MemoryApi.getStructureOfType(

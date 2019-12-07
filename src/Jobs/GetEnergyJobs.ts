@@ -8,8 +8,9 @@ import {
     ROLE_MINER,
     ROLE_REMOTE_MINER,
     TOMBSTONE_MINIMUM_ENERGY,
-    RUIN_MINIMUM_ENERGY
-} from "utils/internals";
+    RUIN_MINIMUM_ENERGY,
+    LINK_MINIMUM_ENERGY
+} from "Utils/Imports/internals";
 
 export class GetEnergyJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "getEnergyJob";
@@ -39,7 +40,10 @@ export class GetEnergyJobs implements IJobTypeHelper {
             returnCode = extractor.cooldown > 0 ? ERR_TIRED : creep.harvest(target);
         } else if (job.actionType === "pickup" && target instanceof Resource) {
             returnCode = creep.pickup(target);
-        } else if (job.actionType === "withdraw" && (target instanceof Structure || target instanceof Ruin || target instanceof Tombstone)) {
+        } else if (
+            job.actionType === "withdraw" &&
+            (target instanceof Structure || target instanceof Ruin || target instanceof Tombstone)
+        ) {
             returnCode = creep.withdraw(target, RESOURCE_ENERGY);
         } else {
             throw CreepApi.badTarget_Error(creep, job);
@@ -83,7 +87,13 @@ export class GetEnergyJobs implements IJobTypeHelper {
             moveOpts.range = 1;
         } else if (job.actionType === "harvest" && moveTarget instanceof StructureContainer) {
             moveOpts.range = 0;
-        } else if (job.actionType === "withdraw" && (moveTarget instanceof Structure || moveTarget instanceof Creep || moveTarget instanceof Ruin || moveTarget instanceof Tombstone)) {
+        } else if (
+            job.actionType === "withdraw" &&
+            (moveTarget instanceof Structure ||
+                moveTarget instanceof Creep ||
+                moveTarget instanceof Ruin ||
+                moveTarget instanceof Tombstone)
+        ) {
             moveOpts.range = 1;
         } else if (job.actionType === "pickup" && moveTarget instanceof Resource) {
             moveOpts.range = 1;
@@ -253,14 +263,8 @@ export class GetEnergyJobs implements IJobTypeHelper {
     public static createLinkJobs(room: Room): GetEnergyJob[] {
         const linkJobList: GetEnergyJob[] = [];
 
-        // TODO Actually get the list of jobs from a MemoryAPI function
-
-        if (linkJobList.length === 0) {
-            return [];
-        }
-
-        const upgraderLink = MemoryApi.getUpgraderLink(room);
-        if (upgraderLink !== undefined && upgraderLink !== null) {
+        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink | null;
+        if (upgraderLink !== undefined && upgraderLink !== null && upgraderLink.energy > LINK_MINIMUM_ENERGY) {
             const linkStore: StoreDefinition = { energy: upgraderLink.energy } as StoreDefinition;
             const linkJob: GetEnergyJob = {
                 jobType: "getEnergyJob",
@@ -280,7 +284,10 @@ export class GetEnergyJobs implements IJobTypeHelper {
      * @param room The room to create the job list for
      */
     public static createLootJobs(room: Room): GetEnergyJob[] {
-        const tombstones = MemoryApi.getTombstones(room, (tombstone: Tombstone) => tombstone.store.energy >= TOMBSTONE_MINIMUM_ENERGY);
+        const tombstones = MemoryApi.getTombstones(
+            room,
+            (tombstone: Tombstone) => tombstone.store.energy >= TOMBSTONE_MINIMUM_ENERGY
+        );
         const ruins = MemoryApi.getRuins(room, (ruin: Ruin) => ruin.store.energy >= RUIN_MINIMUM_ENERGY);
 
         if (tombstones.length === 0 && ruins.length === 0) {

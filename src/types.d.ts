@@ -232,13 +232,8 @@ interface ICreepBodyOptsHelper {
         squadUUIDParam: number | null,
         rallyLocationParam: RoomPosition | null
     ) => (CreepOptionsCiv | undefined) | (CreepOptionsMili | undefined);
-    generateCreepBody: (tier: TierConstant) => BodyPartConstant[];
-    getTargetRoom: (
-        room: Room,
-        roleConst: RoleConstant,
-        creepBody: BodyPartConstant[],
-        creepName: string
-    ) => string;
+    generateCreepBody: (tier: TierConstant, room: Room) => BodyPartConstant[];
+    getTargetRoom: (room: Room, roleConst: RoleConstant, creepBody: BodyPartConstant[], creepName: string) => string;
     getHomeRoom: (room: Room) => string;
     getSpawnDirection: (centerSpawn: StructureSpawn, room: Room) => DirectionConstant[];
 }
@@ -770,6 +765,10 @@ interface RoomMemory {
      */
     defcon: number;
     /**
+     * Whether or not this room fired its towers last tick
+     */
+    shotLastTick?: boolean;
+    /**
      * Names of all rooms flagged to attack
      */
     attackRooms?: AttackRoomMemory[];
@@ -793,12 +792,18 @@ interface RoomMemory {
      * memory for the custom in room events
      */
     events: CustomEvent[];
+    /**
+     * The last tick we had a scout spawn
+     */
+    lastScoutSpawn?: number;
 }
 
 interface Memory {
     empire: EmpireMemory;
     structures: { [structureID: string]: StructureMemory };
+    debug: StringMap;
 }
+
 interface EmpireMemory {
     /**
      * messages to display in each room's alert box
@@ -807,9 +812,12 @@ interface EmpireMemory {
     /**
      * PathfindingApi empire-wide memory
      */
-    movementData?: RoomMovementData[];
+    movementData?: MovementData;
 }
 
+interface MovementData {
+    [key: string]: RoomMovementData
+}
 /**
  * Contains pathfinding information about a room
  */
@@ -1081,6 +1089,10 @@ interface DomesticCreepLimits {
      */
     worker: number;
     /**
+     * limit for manager
+     */
+    manager: number;
+    /**
      * limit for domestic power upgraders
      */
     powerUpgrader: number;
@@ -1088,6 +1100,10 @@ interface DomesticCreepLimits {
      * limit for domestic lorries
      */
     lorry: number;
+    /**
+     * limit for scout
+     */
+    scout: number;
 }
 
 /**

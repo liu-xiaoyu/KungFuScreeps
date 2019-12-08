@@ -3,6 +3,7 @@ import { MINERS_GET_CLOSEST_SOURCE } from "Utils/Config/config";
 import { MemoryHelper } from "Memory/MemoryHelper";
 import { RoomHelper } from "Room/RoomHelper";
 import { CreepAllHelper } from "./Creep.All.Helper";
+import { CreepCivHelper } from "./Creep.Civ.Helper";
 
 export class CreepCivApi {
 
@@ -167,7 +168,7 @@ export class CreepCivApi {
             // get a container job based on the filter function returned from the helper
             const containerJobs = MemoryApi.getContainerJobs(
                 room,
-                CreepAllHelper.getContainerJobFilterFunction(room, creep)
+                CreepCivHelper.getContainerJobFilterFunction(room, creep)
             );
 
             if (containerJobs.length > 0) {

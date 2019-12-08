@@ -1,4 +1,6 @@
 import { ROLE_REMOTE_MINER, MemoryApi, CreepAllApi, CreepAllHelper } from "Utils/Imports/internals";
+import { CreepCivApi } from "Creeps/Creep.Civ.Api";
+import { CreepCivHelper } from "Creeps/Creep.Civ.Helper";
 
 // Manager for the miner creep role
 export class RemoteMinerCreepManager implements ICivCreepRoleManager {
@@ -50,9 +52,9 @@ export class RemoteMinerCreepManager implements ICivCreepRoleManager {
     public getNewJob(creep: Creep): BaseJob | undefined {
         if (creep.room.name === creep.memory.targetRoom) {
             const targetRoom = Game.rooms[creep.memory.targetRoom];
-            return CreepAllApi.getNewSourceJob(creep, targetRoom);
+            return CreepCivApi.getNewSourceJob(creep, targetRoom);
         } else if (creep.room.name !== creep.memory.targetRoom) {
-            return CreepAllApi.newMovePartJob(creep, creep.memory.targetRoom);
+            return CreepCivApi.newMovePartJob(creep, creep.memory.targetRoom);
         }
 
         return undefined;
@@ -70,7 +72,7 @@ export class RemoteMinerCreepManager implements ICivCreepRoleManager {
         MemoryApi.updateJobMemory(creep, targetRoom);
 
         const isSource: boolean = true;
-        const miningContainer = CreepAllHelper.getMiningContainer(
+        const miningContainer = CreepCivHelper.getMiningContainer(
             creep.memory.job as GetEnergyJob,
             Game.rooms[creep.memory.targetRoom],
             isSource

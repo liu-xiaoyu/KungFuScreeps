@@ -1,4 +1,5 @@
 import { CreepAllHelper, CreepAllApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException, RoomHelper } from "Utils/Imports/internals";
+import { CreepCivHelper } from "Creeps/Creep.Civ.Helper";
 
 export class ClaimPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "claimPartJob";
@@ -42,7 +43,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
             }
             deleteOnSuccess = false; // don't delete job since we do this until death
         } else if (job.actionType === "sign" && target instanceof StructureController) {
-            returnCode = creep.signController(target, CreepAllHelper.getSigningText());
+            returnCode = creep.signController(target, CreepCivHelper.getSigningText());
         } else if (job.actionType === "attack" && target instanceof StructureController) {
             returnCode = creep.attackController(target);
             deleteOnSuccess = false; // Do this until death

@@ -1,4 +1,5 @@
 import { ROLE_HARVESTER, MemoryApi, CreepAllApi, MemoryHelper, CreepAllHelper } from "Utils/Imports/internals";
+import { CreepCivApi } from "Creeps/Creep.Civ.Api";
 
 // Manager for the miner creep role
 export class HarvesterCreepManager implements ICivCreepRoleManager {
@@ -19,7 +20,7 @@ export class HarvesterCreepManager implements ICivCreepRoleManager {
     public getNewJob(creep: Creep, room: Room): BaseJob | undefined {
         // if creep is empty, get a GetEnergyJob
         if (creep.carry.energy === 0) {
-            return CreepAllApi.newGetEnergyJob(creep, room);
+            return CreepCivApi.newGetEnergyJob(creep, room);
         } else {
             let job: BaseJob | undefined = this.newCarryPartJob(creep, room);
             if (job === undefined && CreepAllHelper.bodyPartExists(creep, WORK)) {

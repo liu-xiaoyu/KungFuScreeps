@@ -11,6 +11,24 @@ import {
     TOWER_MAX_DAMAGE_THRESHOLD
 } from "Utils/Imports/internals";
 
+/*
+    Split ideas:
+
+    Structure -
+        Relates to running structures and related functions for that, runX functions,
+        and any helpers to get a target for a structure
+    State -
+        Relating to the state of the room. Anything that checks what kind of room it is,
+        checks the memory for the room, does high level checks on anything relating to
+        how an aspect of the room is currently sitting
+    Tasks -
+        Things like getting repair targets, ie like things that need to be done in the room, and
+        methods relating to making sure the room carries on normal functions
+    Dependent -
+        Anything relating to depedent rooms. Number of remtoe rooms, number of whatever assiged
+        just anything dealing with an unowned room
+
+*/
 // helper functions for rooms
 export class RoomHelper {
     /**
@@ -552,6 +570,9 @@ export class RoomHelper {
      * @param room The room to check
      */
     public static numSources(room: Room): number {
+        if (!Memory.rooms[room.name].sources) {
+            return room.find(FIND_SOURCES).length;
+        }
         return Memory.rooms[room.name].sources.data.length;
     }
     /**
@@ -592,6 +613,7 @@ export class RoomHelper {
 
     /**
      * get number of remote defenders we need
+     * TODO move to spawn helper
      * @param room The room to check the dependencies of
      */
     public static numRemoteDefenders(room: Room): number {
@@ -646,6 +668,7 @@ export class RoomHelper {
 
     /**
      * get the number of domestic defenders by the defcon number
+     * TODO move to spawn helper
      * @param defcon the defcon level of the room
      * @param isTowers boolean representing if tower exists in room
      * @returns the number of defenders to spawn
@@ -664,6 +687,7 @@ export class RoomHelper {
 
     /**
      * convert a room object to a room position object
+     * TODO move to utils/normalize prolly
      * @param roomObj the room object we are converting
      */
     public static convertRoomObjToRoomPosition(roomObj: RoomObject): RoomPosition | null {

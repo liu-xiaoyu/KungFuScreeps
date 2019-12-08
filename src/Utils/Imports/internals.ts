@@ -8,7 +8,7 @@ export * from "Utils/UtilHelpers/UtilHelper";
 export * from "Utils/UtilHelpers/Normalize";
 // -----------------------------
 // Import All API
-export * from "Room/AutoConstruction/AutoConstruction.Api";
+export * from "AutoConstruction/AutoConstruction.Api";
 export * from "Creeps/Creep.Api";
 export * from "Creeps/CreepMili.Api";
 export * from "Empire/Empire.Api";
@@ -19,7 +19,7 @@ export * from "Room/Room.Api";
 export * from "Spawn/Spawn.Api";
 // ----------------------------
 // Export All Helpers
-export * from "Room/AutoConstruction/AutoConstructionHelper";
+export * from "AutoConstruction/AutoConstructionHelper";
 export * from "Utils/UtilHelpers/ConsoleCommands";
 export * from "Creeps/CreepHelper";
 export * from "Empire/EmpireHelper";

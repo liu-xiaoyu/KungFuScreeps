@@ -1,6 +1,7 @@
 import { CONTROLLER_SIGNING_TEXT } from "Utils/Config/config";
 import { MemoryApi } from "Memory/Memory.Api";
 import { UserException } from "Utils/Imports/internals";
+import { ROLE_HARVESTER, ROLE_MINER } from "utils/Imports/constants";
 
 export class CreepCivHelper {
 

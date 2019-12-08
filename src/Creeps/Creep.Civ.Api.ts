@@ -4,6 +4,7 @@ import { MemoryHelper } from "Memory/MemoryHelper";
 import { RoomHelper } from "Room/RoomHelper";
 import { CreepAllHelper } from "./Creep.All.Helper";
 import { CreepCivHelper } from "./Creep.Civ.Helper";
+import { ROLE_POWER_UPGRADER } from "utils/Imports/constants";
 
 export class CreepCivApi {
 

@@ -1,4 +1,5 @@
-import { ROLE_REMOTE_HARVESTER, MemoryApi, CreepApi, MemoryHelper, PathfindingApi, UserException, ERROR_ERROR } from "Utils/Imports/internals";
+import { ROLE_REMOTE_HARVESTER, MemoryApi, CreepAllApi, MemoryHelper, PathfindingApi, UserException, ERROR_ERROR } from "Utils/Imports/internals";
+import { CreepCivApi } from "Creeps/Creep.Civ.Api";
 
 // Manager for the miner creep role
 export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
@@ -27,21 +28,21 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
         if (creep.carry.energy === 0 && creep.room.name === creep.memory.targetRoom) {
 
             // If creep is empty and in targetRoom - get energy
-            return CreepApi.newGetEnergyJob(creep, targetRoom!);
+            return CreepCivApi.newGetEnergyJob(creep, targetRoom!);
         }
         else if (creep.carry.energy === 0 && creep.room.name !== creep.memory.targetRoom) {
 
             // If creep is empty and not in targetRoom - Go to targetRoom
-            return CreepApi.newMovePartJob(creep, creep.memory.targetRoom);
+            return CreepCivApi.newMovePartJob(creep, creep.memory.targetRoom);
         }
         else if (creep.carry.energy > 0 && creep.room.name === creep.memory.targetRoom) {
 
             // If creep has energy and is in targetRoom - Get workpartJob
-            let job = CreepApi.newWorkPartJob(creep, targetRoom!) as BaseJob;
+            let job = CreepCivApi.newWorkPartJob(creep, targetRoom!) as BaseJob;
 
             // if no work part job - Go to homeRoom
             if (job === undefined) {
-                job = CreepApi.newMovePartJob(creep, creep.memory.homeRoom) as BaseJob;
+                job = CreepCivApi.newMovePartJob(creep, creep.memory.homeRoom) as BaseJob;
             }
 
             return job;
@@ -53,7 +54,7 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
 
             // If no carryJob, get a workPartJob in homeroom
             if (job === undefined) {
-                job = CreepApi.newWorkPartJob(creep, homeRoom);
+                job = CreepCivApi.newWorkPartJob(creep, homeRoom);
             }
 
             return job;

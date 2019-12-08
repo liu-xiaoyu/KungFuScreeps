@@ -1,4 +1,4 @@
-import { CREEP_CIV_MANAGERS, CREEP_MILI_MANAGERS, ALL_CIVILIAN_ROLES, ALL_REMOTE_ROLES, ALL_MILITARY_ROLES, ERROR_ERROR, UtilHelper, UserException, CreepApi } from "Utils/Imports/internals";
+import { CREEP_CIV_MANAGERS, CREEP_MILI_MANAGERS, ALL_CIVILIAN_ROLES, ALL_REMOTE_ROLES, ALL_MILITARY_ROLES, ERROR_ERROR, UtilHelper, UserException, CreepAllApi } from "Utils/Imports/internals";
 
 // Call the creep manager for each role
 export class CreepManager {
@@ -81,8 +81,8 @@ export class CreepManager {
 
         // Check if the remote creep should flee
         if (ALL_REMOTE_ROLES.includes(role)) {
-            if (CreepApi.creepShouldFlee(creep)) {
-                CreepApi.fleeRemoteRoom(creep, homeRoom);
+            if (CreepAllApi.creepShouldFlee(creep)) {
+                CreepAllApi.fleeRemoteRoom(creep, homeRoom);
             }
         }
 
@@ -99,11 +99,11 @@ export class CreepManager {
         }
 
         if (!creep.memory.working) {
-            CreepApi.travelTo(creep, creep.memory.job);
+            CreepAllApi.travelTo(creep, creep.memory.job);
         }
 
         if (creep.memory.working) {
-            CreepApi.doWork(creep, creep.memory.job);
+            CreepAllApi.doWork(creep, creep.memory.job);
             return;
         }
     }

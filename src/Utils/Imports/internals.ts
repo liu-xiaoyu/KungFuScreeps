@@ -9,8 +9,8 @@ export * from "Utils/UtilHelpers/Normalize";
 // -----------------------------
 // Import All API
 export * from "Room/AutoConstruction/AutoConstruction.Api";
-export * from "Creeps/Creep.Api";
-export * from "Creeps/CreepMili.Api";
+export * from "Creeps/Creep.All.Api";
+export * from "Creeps/Creep.Mili.Api";
 export * from "Empire/Empire.Api";
 export * from "Events/Event.Api";
 export * from "Memory/Memory.Api";
@@ -21,14 +21,14 @@ export * from "Spawn/Spawn.Api";
 // Export All Helpers
 export * from "Room/AutoConstruction/AutoConstructionHelper";
 export * from "Utils/UtilHelpers/ConsoleCommands";
-export * from "Creeps/CreepHelper";
+export * from "Creeps/Creep.All.Helper";
 export * from "Empire/EmpireHelper";
 export * from "Events/EventHelper";
 export * from "Room/RoomHelper";
 export * from "Spawn/SpawnHelper";
 export * from "Memory/MemoryHelper";
 export * from "Memory/MemoryHelper_Room";
-export * from "Creeps/MiliHelper";
+export * from "Creeps/Creep.Mili.Helper";
 // -----------------------------
 // Body/Option Helper Implementations
 export * from "Creeps/RoleHelpers/MinerBodyOptsHelper";

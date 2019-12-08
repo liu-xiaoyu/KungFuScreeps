@@ -1,7 +1,7 @@
-import { MemoryApi, CreepApi, MiliHelper, UserException, RoomHelper, PathfindingApi } from "Utils/Imports/internals";
+import { MemoryApi, CreepAllApi, CreepMiliHelper, UserException, RoomHelper, PathfindingApi } from "Utils/Imports/internals";
 
 // Api for military creep's
-export class MiliApi {
+export class CreepMiliApi {
     /**
      * check if we're still waiting on creeps to rally
      * @param creepOptions the options for the military creep
@@ -253,7 +253,7 @@ export class MiliApi {
         }
 
         // No squad members, find closest creep
-        const creepsInRoom: Creep[] = MiliApi.getAllyCreepsInRoom(creep.room);
+        const creepsInRoom: Creep[] = this.getAllyCreepsInRoom(creep.room);
         return creep.pos.findClosestByPath(creepsInRoom, { filter: (c: Creep) => c.hits < c.hitsMax });
     }
 
@@ -348,7 +348,7 @@ export class MiliApi {
         }
 
         // If creep is on exit tile, move them off
-        if (CreepApi.moveCreepOffExit(creep)) {
+        if (CreepAllApi.moveCreepOffExit(creep)) {
             return true;
         }
 
@@ -386,7 +386,7 @@ export class MiliApi {
      * @param room the room we are in
      */
     public static getAllyCreepsInRoom(room: Room): Creep[] {
-        return _.filter(room.find(FIND_CREEPS), (creep: Creep) => MiliHelper.isAllyCreep(creep));
+        return _.filter(room.find(FIND_CREEPS), (creep: Creep) => CreepMiliHelper.isAllyCreep(creep));
     }
 
     /**

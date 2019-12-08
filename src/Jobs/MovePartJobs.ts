@@ -1,4 +1,4 @@
-import { CreepHelper, CreepApi, PathfindingApi } from "utils/internals";
+import { CreepAllHelper, CreepAllApi, PathfindingApi } from "Utils/Imports/internals";
 
 export class MovePartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "movePartJob";
@@ -12,9 +12,9 @@ export class MovePartJobs implements IJobTypeHelper {
      * Travel to the target provided by MovePartJob in creep.memory.job
      */
     public travelTo(creep: Creep, job: BaseJob) {
-        const moveTarget = CreepHelper.getMoveTarget(creep, job);
+        const moveTarget = CreepAllHelper.getMoveTarget(creep, job);
 
-        CreepApi.nullCheck_target(creep, moveTarget);
+        CreepAllApi.nullCheck_target(creep, moveTarget);
 
         const moveOpts = PathfindingApi.GetDefaultMoveOpts();
 

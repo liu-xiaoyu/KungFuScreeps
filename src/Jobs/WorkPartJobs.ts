@@ -1,4 +1,4 @@
-import { RoomApi, MemoryApi, CreepApi, CreepHelper, PathfindingApi } from "utils/internals";
+import { RoomApi, MemoryApi, CreepAllApi, CreepAllHelper, PathfindingApi } from "Utils/Imports/internals";
 
 export class WorkPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "workPartJob";
@@ -14,7 +14,7 @@ export class WorkPartJobs implements IJobTypeHelper {
     public doWork(creep: Creep, job: BaseJob) {
         const target: any = Game.getObjectById(job.targetID);
 
-        CreepApi.nullCheck_target(creep, target);
+        CreepAllApi.nullCheck_target(creep, target);
 
         let returnCode: number;
         let deleteOnSuccess: boolean = false;
@@ -35,7 +35,7 @@ export class WorkPartJobs implements IJobTypeHelper {
                 deleteOnSuccess = true;
             }
         } else {
-            throw CreepApi.badTarget_Error(creep, job);
+            throw CreepAllApi.badTarget_Error(creep, job);
         }
 
         // Can handle the return code here - e.g. display an error if we expect creep to be in range but it's not
@@ -67,9 +67,9 @@ export class WorkPartJobs implements IJobTypeHelper {
      * Travel to the target provided by WorkPartJob in creep.memory.job
      */
     public travelTo(creep: Creep, job: BaseJob) {
-        const moveTarget = CreepHelper.getMoveTarget(creep, job);
+        const moveTarget = CreepAllHelper.getMoveTarget(creep, job);
 
-        CreepApi.nullCheck_target(creep, moveTarget);
+        CreepAllApi.nullCheck_target(creep, moveTarget);
 
         // Move options for target
         const moveOpts = PathfindingApi.GetDefaultMoveOpts();

@@ -792,6 +792,10 @@ interface RoomMemory {
      * memory for the custom in room events
      */
     events: CustomEvent[];
+    /**
+     * The last tick we had a scout spawn
+     */
+    lastScoutSpawn?: number;
 }
 
 interface Memory {
@@ -799,6 +803,7 @@ interface Memory {
     structures: { [structureID: string]: StructureMemory };
     debug: StringMap;
 }
+
 interface EmpireMemory {
     /**
      * messages to display in each room's alert box
@@ -807,9 +812,12 @@ interface EmpireMemory {
     /**
      * PathfindingApi empire-wide memory
      */
-    movementData?: RoomMovementData[];
+    movementData?: MovementData;
 }
 
+interface MovementData {
+    [key: string]: RoomMovementData
+}
 /**
  * Contains pathfinding information about a room
  */
@@ -1081,6 +1089,10 @@ interface DomesticCreepLimits {
      */
     worker: number;
     /**
+     * limit for manager
+     */
+    manager: number;
+    /**
      * limit for domestic power upgraders
      */
     powerUpgrader: number;
@@ -1088,6 +1100,10 @@ interface DomesticCreepLimits {
      * limit for domestic lorries
      */
     lorry: number;
+    /**
+     * limit for scout
+     */
+    scout: number;
 }
 
 /**

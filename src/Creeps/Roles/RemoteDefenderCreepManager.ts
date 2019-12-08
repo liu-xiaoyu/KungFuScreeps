@@ -1,4 +1,4 @@
-import { ROLE_REMOTE_DEFENDER, MiliApi } from "Utils/Imports/internals";
+import { ROLE_REMOTE_DEFENDER, CreepMiliApi } from "Utils/Imports/internals";
 
 // Manager for the miner creep role
 export class RemoteDefenderCreepManager implements IMiliCreepRoleManager {
@@ -17,7 +17,7 @@ export class RemoteDefenderCreepManager implements IMiliCreepRoleManager {
         const creepOptions: CreepOptionsMili = creep.memory.options as CreepOptionsMili;
         const CREEP_RANGE: number = 3;
         // Carry out the basics of a military creep before moving on to specific logic
-        if (MiliApi.checkMilitaryCreepBasics(creep, creepOptions)) {
+        if (CreepMiliApi.checkMilitaryCreepBasics(creep, creepOptions)) {
             if (creep.hits < creep.hitsMax && _.some(creep.body, (b: BodyPartDefinition) => b.type === "heal")) {
                 creep.heal(creep);
             }
@@ -25,7 +25,7 @@ export class RemoteDefenderCreepManager implements IMiliCreepRoleManager {
         }
 
         // Find a target for the creep
-        let target: Creep | Structure<StructureConstant> | undefined = MiliApi.getAttackTarget(
+        let target: Creep | Structure<StructureConstant> | undefined = CreepMiliApi.getAttackTarget(
             creep,
             creepOptions,
             CREEP_RANGE
@@ -45,14 +45,14 @@ export class RemoteDefenderCreepManager implements IMiliCreepRoleManager {
             return; // idle if no current target
         }
         // If we aren't in attack range, move towards the attack target
-        if (!MiliApi.isInAttackRange(creep, target.pos, isMelee)) {
+        if (!CreepMiliApi.isInAttackRange(creep, target.pos, isMelee)) {
             creep.moveTo(target);
             if (creep.hits < creep.hitsMax) {
                 creep.heal(creep);
             }
             return;
         } else {
-            MiliApi.kiteEnemyCreep(creep);
+            CreepMiliApi.kiteEnemyCreep(creep);
         }
 
         // We are in attack range and healthy, attack the target

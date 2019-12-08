@@ -1,4 +1,5 @@
-import { ROLE_WORKER, MemoryApi, CreepApi } from "Utils/Imports/internals";
+import { ROLE_WORKER, MemoryApi, CreepAllApi } from "Utils/Imports/internals";
+import { CreepCivApi } from "Creeps/Creep.Civ.Api";
 
 // Manager for the miner creep role
 export class WorkerCreepManager implements ICivCreepRoleManager {
@@ -17,7 +18,7 @@ export class WorkerCreepManager implements ICivCreepRoleManager {
         if (creep.carry.energy === 0) {
             return this.newGetEnergyJob(creep, room);
         } else {
-            let job: BaseJob | undefined = CreepApi.newWorkPartJob(creep, room);
+            let job: BaseJob | undefined = CreepCivApi.newWorkPartJob(creep, room);
             if (job === undefined) {
                 job = this.newCarryPartJob(creep, room);
             }

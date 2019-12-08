@@ -1,7 +1,7 @@
 import { ERROR_WARN, UserException, MemoryApi, CONTROLLER_SIGNING_TEXT, Normalize, ROLE_MINER, ROLE_HARVESTER } from "Utils/Imports/internals";
 
 // helper function for creeps
-export class CreepHelper {
+export class CreepAllHelper {
     /**
      * get the mining container for a specific job
      * @param job the job we are getting the mining container from

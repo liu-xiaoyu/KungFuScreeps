@@ -5,7 +5,7 @@ import {
     STIMULATE_FLAG,
     UserException,
     TOWER_ALLOWED_TO_REPAIR,
-    CreepHelper,
+    CreepAllHelper,
     TOWER_MIN_DAMAGE_THRESHOLD,
     SpawnHelper,
     TOWER_MAX_DAMAGE_THRESHOLD
@@ -301,11 +301,11 @@ export class RoomHelper {
         }
 
         // Take out creeps with heal parts
-        const healCreeps = _.remove(hostileCreeps, (c: Creep) => CreepHelper.bodyPartExists(c, HEAL));
+        const healCreeps = _.remove(hostileCreeps, (c: Creep) => CreepAllHelper.bodyPartExists(c, HEAL));
 
         // Take out creeps that can attack
         const attackCreeps = _.remove(hostileCreeps, (c: Creep) =>
-            CreepHelper.bodyPartExists(c, ATTACK, RANGED_ATTACK)
+            CreepAllHelper.bodyPartExists(c, ATTACK, RANGED_ATTACK)
         );
 
         // rename for clarity, all creeps leftover should be civilian

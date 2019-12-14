@@ -1,4 +1,4 @@
-import { MemoryApi, EmpireHelper } from "Utils/Imports/internals";
+import {   EmpireHelper, MemoryApi_Room, MemoryApi_Empire } from "Utils/Imports/internals";
 
 export class ProcessDefaultAttackFlag implements IFlagProcesser {
     public primaryColor: ColorConstant = COLOR_RED;
@@ -34,7 +34,7 @@ export class ProcessDefaultAttackFlag implements IFlagProcesser {
 
         // If the dependent room already has this room covered, just push this flag onto the existing structure
         const existingDepedentAttackRoomMem: AttackRoomMemory | undefined = _.find(
-            MemoryApi.getAttackRooms(dependentRoom),
+            MemoryApi_Room.getAttackRooms(dependentRoom),
             (rr: AttackRoomMemory) => {
                 if (rr) {
                     return rr.roomName === roomName;
@@ -44,7 +44,7 @@ export class ProcessDefaultAttackFlag implements IFlagProcesser {
         );
 
         if (existingDepedentAttackRoomMem) {
-            MemoryApi.createEmpireAlertNode(
+            MemoryApi_Empire.createEmpireAlertNode(
                 "Attack Flag [" +
                 flag.name +
                 "] processed. Added to existing Host Room: [" +
@@ -64,7 +64,7 @@ export class ProcessDefaultAttackFlag implements IFlagProcesser {
             flags: [attackFlagMemory]
         };
 
-        MemoryApi.createEmpireAlertNode(
+        MemoryApi_Empire.createEmpireAlertNode(
             "Attack Flag [" + flag.name + "] processed. Host Room: [" + dependentRoom.name + "]",
             10
         );

@@ -1,4 +1,4 @@
-import { RoomApi, MemoryApi, CreepAllApi, CreepAllHelper, PathfindingApi } from "Utils/Imports/internals";
+import { RoomApi,   CreepAllApi, CreepAllHelper, PathfindingApi, MemoryApi_Creep, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class WorkPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "workPartJob";
@@ -115,7 +115,7 @@ export class WorkPartJobs implements IJobTypeHelper {
                 isTaken: false
             };
 
-            const creepTargeting = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+            const creepTargeting = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                 return (
                     creep.memory.job !== undefined &&
                     creep.memory.job.targetID === structure.id &&
@@ -144,7 +144,7 @@ export class WorkPartJobs implements IJobTypeHelper {
      * [Accurate-Restore] Chooses the lower of two values
      */
     public static createBuildJobs(room: Room): WorkPartJob[] {
-        const constructionSites = MemoryApi.getConstructionSites(room.name);
+        const constructionSites = MemoryApi_Room.getConstructionSites(room.name);
 
         if (constructionSites.length === 0) {
             return [];
@@ -162,7 +162,7 @@ export class WorkPartJobs implements IJobTypeHelper {
                 isTaken: false
             };
 
-            const creepsTargeting = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+            const creepsTargeting = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                 return creep.memory.job !== undefined && creep.memory.job.targetID === cs.id;
             });
 

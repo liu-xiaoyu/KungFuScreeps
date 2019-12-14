@@ -1,11 +1,8 @@
-import {
-    ROLE_TOWER_TANK,
-} from "Utils/Imports/constants";
-import { RoomHelper, MemoryApi } from "Utils/Imports/internals";
+import { ROLE_TOWER_TANK } from "Utils/Imports/constants";
+import { RoomHelper, MemoryApi_Creep } from "Utils/Imports/internals";
 
 // Manager for the miner creep role
 export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
-
     public name: RoleConstant = ROLE_TOWER_TANK;
 
     constructor() {
@@ -37,13 +34,14 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
             return false;
         }
 
-        const enemyTowers: StructureTower[] | null = creep.room.memory.structures.data[STRUCTURE_TOWER] as StructureTower[];
+        const enemyTowers: StructureTower[] | null = creep.room.memory.structures.data[
+            STRUCTURE_TOWER
+        ] as StructureTower[];
         if (!enemyTowers) {
             return false;
         }
 
-        if ((this.calculateTowerDamage(enemyTowers, creep.pos) * 3) >= creep.hits) {
-
+        if (this.calculateTowerDamage(enemyTowers, creep.pos) * 3 >= creep.hits) {
             // Skip if we're in the enemy room
             if (creep.room.name === creep.memory.targetRoom) {
                 return true;
@@ -104,7 +102,7 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
      */
     private getTowerMedicsInSquad(creep: Creep): Creep[] | null {
         const creepOptions: CreepOptionsMili = creep.memory.options as CreepOptionsMili;
-        return MemoryApi.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
+        return MemoryApi_Creep.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
     }
 
     /**
@@ -113,7 +111,6 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
      * @returns boolean saying if the creep is on an exit tile
      */
     private isOnExitTile(creepPos: RoomPosition): boolean {
-        return (creepPos.x === 49 || creepPos.x === 0 || creepPos.y === 0 || creepPos.y === 49);
+        return creepPos.x === 49 || creepPos.x === 0 || creepPos.y === 0 || creepPos.y === 49;
     }
-
 }

@@ -1,4 +1,4 @@
-import { MemoryApi, UserException, EmpireHelper } from "Utils/Imports/internals";
+import {   UserException, EmpireHelper, MemoryApi_Room, MemoryApi_Empire } from "Utils/Imports/internals";
 
 export class ProcessDefaultRemoteRoom implements IFlagProcesser {
     public primaryColor: ColorConstant = COLOR_YELLOW;
@@ -33,7 +33,7 @@ export class ProcessDefaultRemoteRoom implements IFlagProcesser {
 
         // If the dependent room already has this room covered, set the flag to be deleted and throw a warning
         const existingDepedentRemoteRoomMem: RemoteRoomMemory | undefined = _.find(
-            MemoryApi.getRemoteRooms(dependentRoom),
+            MemoryApi_Room.getRemoteRooms(dependentRoom),
             (rr: RemoteRoomMemory) => {
                 if (rr) {
                     return rr.roomName === roomName;
@@ -47,7 +47,7 @@ export class ProcessDefaultRemoteRoom implements IFlagProcesser {
             throw new UserException(
                 "Already working this dependent room!",
                 "The room you placed the remote flag in is already being worked by " +
-                existingDepedentRemoteRoomMem.roomName,
+                    existingDepedentRemoteRoomMem.roomName,
                 ERROR_WARN
             );
         }
@@ -62,7 +62,7 @@ export class ProcessDefaultRemoteRoom implements IFlagProcesser {
             reserveTTL: 0
         };
 
-        MemoryApi.createEmpireAlertNode(
+        MemoryApi_Empire.createEmpireAlertNode(
             "Remote Flag [" + flag.name + "] processed. Host Room: [" + dependentRoom.name + "]",
             10
         );

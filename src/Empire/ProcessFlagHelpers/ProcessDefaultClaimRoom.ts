@@ -1,4 +1,4 @@
-import { MemoryApi, EmpireHelper, UserException } from "Utils/Imports/internals";
+import {   EmpireHelper, UserException, MemoryApi_Room, MemoryApi_Empire } from "Utils/Imports/internals";
 
 export class ProcessDefaultClaimRoom implements IFlagProcesser {
     public primaryColor: ColorConstant = COLOR_WHITE;
@@ -33,7 +33,7 @@ export class ProcessDefaultClaimRoom implements IFlagProcesser {
 
         // If the dependent room already has this room covered, set the flag to be deleted and throw a warning
         const existingDepedentClaimRoomMem: ClaimRoomMemory | undefined = _.find(
-            MemoryApi.getClaimRooms(dependentRoom),
+            MemoryApi_Room.getClaimRooms(dependentRoom),
             (rr: ClaimRoomMemory) => {
                 if (rr) {
                     return rr.roomName === roomName;
@@ -47,7 +47,7 @@ export class ProcessDefaultClaimRoom implements IFlagProcesser {
             throw new UserException(
                 "Already working this dependent room!",
                 "The room you placed the claim flag in is already being worked by " +
-                existingDepedentClaimRoomMem.roomName,
+                    existingDepedentClaimRoomMem.roomName,
                 ERROR_WARN
             );
         }
@@ -58,7 +58,7 @@ export class ProcessDefaultClaimRoom implements IFlagProcesser {
             flags: [claimFlagMemory]
         };
 
-        MemoryApi.createEmpireAlertNode(
+        MemoryApi_Empire.createEmpireAlertNode(
             "Claim Flag [" + flag.name + "] processed. Host Room: [" + dependentRoom.name + "]",
             10
         );

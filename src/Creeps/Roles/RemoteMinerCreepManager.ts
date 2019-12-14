@@ -1,4 +1,4 @@
-import { ROLE_REMOTE_MINER, MemoryApi, CreepAllApi, CreepAllHelper } from "Utils/Imports/internals";
+import { ROLE_REMOTE_MINER,   CreepAllApi, CreepAllHelper, MemoryApi_Jobs } from "Utils/Imports/internals";
 import { CreepCivApi } from "Creeps/Creep.Civ.Api";
 import { CreepCivHelper } from "Creeps/Creep.Civ.Helper";
 
@@ -69,7 +69,7 @@ export class RemoteMinerCreepManager implements ICivCreepRoleManager {
             return;
         }
 
-        MemoryApi.updateJobMemory(creep, targetRoom);
+        MemoryApi_Jobs.updateJobMemory(creep, targetRoom);
 
         const isSource: boolean = true;
         const miningContainer = CreepCivHelper.getMiningContainer(

@@ -1,4 +1,4 @@
-import { EmpireHelper, RoomVisualHelper, MemoryApi } from "Utils/Imports/internals";
+import { EmpireHelper, RoomVisualHelper, MemoryApi_Empire } from "Utils/Imports/internals";
 
 export class ProcessDependentRoomOverride implements IFlagProcesser {
     public primaryColor: ColorConstant = COLOR_GREEN;
@@ -22,12 +22,12 @@ export class ProcessDependentRoomOverride implements IFlagProcesser {
         Memory.flags[flag.name].flagName = flag.name;
         Memory.flags[flag.name].spawnProcessed = false;
 
-        MemoryApi.createEmpireAlertNode(
+        MemoryApi_Empire.createEmpireAlertNode(
             "Option Flag [" +
-            flag.name +
-            "] processed. Flag Type: [" +
-            RoomVisualHelper.convertFlagTypeToString(flagTypeConst) +
-            "]",
+                flag.name +
+                "] processed. Flag Type: [" +
+                RoomVisualHelper.convertFlagTypeToString(flagTypeConst) +
+                "]",
             10
         );
     }

@@ -1,9 +1,9 @@
 import {
     ROOM_OVERLAY_GRAPH_ON,
-    MemoryApi,
     RoomVisualApi,
     ROOM_OVERLAY_ON,
-    ROOM_DEBUG_OVERLAY_ON
+    ROOM_DEBUG_OVERLAY_ON,
+    MemoryApi_Empire
 } from "Utils/Imports/internals";
 
 // Manager for room visuals
@@ -18,7 +18,7 @@ export class RoomVisualManager {
      * run the manager for each room
      */
     public static runRoomVisualManager(): void {
-        const ownedRooms = MemoryApi.getOwnedRooms();
+        const ownedRooms = MemoryApi_Empire.getOwnedRooms();
 
         _.forEach(ownedRooms, (room: Room) => this.runSingleRoomVisualManager(room));
     }

@@ -18,10 +18,9 @@ import {
     ROLE_TOWER_MEDIC,
     ERROR_ERROR
 } from "Utils/Imports/constants";
-import { SpawnHelper, EventHelper, UserException, SpawnApi, MemoryApi } from "Utils/Imports/internals";
+import { SpawnHelper, EventHelper, UserException, SpawnApi, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
-
     public name: RoleConstant = ROLE_TOWER_MEDIC;
 
     constructor() {
@@ -40,24 +39,23 @@ export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
         const opts: CreepBodyOptions = { mixType: GROUPED };
 
         switch (tier) {
-
-            case TIER_4:     // Total Cost: 1100
+            case TIER_4: // Total Cost: 1100
                 body = { heal: 4, move: 2 };
                 break;
 
-            case TIER_5:    // Total Cost: 1700
+            case TIER_5: // Total Cost: 1700
                 body = { heal: 6, move: 4 };
                 break;
 
-            case TIER_6:    // Total Cost: 2300
+            case TIER_6: // Total Cost: 2300
                 body = { heal: 8, move: 6 };
                 break;
 
-            case TIER_7:    // Total Cost: 3400
+            case TIER_7: // Total Cost: 3400
                 body = { heal: 12, move: 8 };
                 break;
 
-            case TIER_8:    // Total Cost: 3750
+            case TIER_8: // Total Cost: 3750
                 body = { heal: 13, move: 10 };
                 break;
         }
@@ -82,7 +80,6 @@ export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
         squadUUIDParam: number | null,
         rallyLocationParam: RoomPosition | null
     ): CreepOptionsMili | undefined {
-
         let creepOptions: CreepOptionsMili = SpawnHelper.getDefaultCreepOptionsMili();
         switch (roomState) {
             case ROOM_STATE_INTRO:
@@ -97,7 +94,7 @@ export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
                     squadUUID: squadUUIDParam,
                     rallyLocation: rallyLocationParam,
                     rallyDone: false,
-                    healer: true,
+                    healer: true
                 };
 
                 break;
@@ -113,7 +110,12 @@ export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
      * @param creepBody the body of the creep
      * @param creepName the name of the creep spawning
      */
-    public getTargetRoom(room: Room, roleConst: RoleConstant, creepBody: BodyPartConstant[], creepName: string): string {
+    public getTargetRoom(
+        room: Room,
+        roleConst: RoleConstant,
+        creepBody: BodyPartConstant[],
+        creepName: string
+    ): string {
         const requestingFlag: AttackFlagMemory | undefined = EventHelper.getMiliRequestingFlag(
             room,
             roleConst,
@@ -145,8 +147,17 @@ export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
      * @param room the room we are spawning in
      */
     public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
-        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
-        const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        const roomCenter: RoomPosition = MemoryApi_Room.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [
+            TOP,
+            TOP_RIGHT,
+            RIGHT,
+            BOTTOM_RIGHT,
+            BOTTOM,
+            BOTTOM_LEFT,
+            LEFT,
+            TOP_LEFT
+        ];
         const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter!.x, roomCenter!.y);
         directions.splice(directions.indexOf(managerDirection), 1);
         return directions;

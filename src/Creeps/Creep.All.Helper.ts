@@ -1,4 +1,4 @@
-import { ERROR_WARN, UserException, MemoryApi, CONTROLLER_SIGNING_TEXT, Normalize, ROLE_MINER, ROLE_HARVESTER } from "Utils/Imports/internals";
+import { UserException, Normalize } from "Utils/Imports/internals";
 
 // helper function for creeps
 export class CreepAllHelper {

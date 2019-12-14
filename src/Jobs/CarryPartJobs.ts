@@ -1,4 +1,13 @@
-import { CreepAllHelper, CreepAllApi, PathfindingApi, RoomApi, MemoryApi, RoomHelper } from "Utils/Imports/internals";
+import {
+    CreepAllHelper,
+    CreepAllApi,
+    PathfindingApi,
+    RoomApi,
+    MemoryApi_Room,
+    MemoryApi_Empire,
+    RoomHelper,
+    MemoryApi_Creep
+} from "Utils/Imports/internals";
 
 export class CarryPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "carryPartJob";
@@ -88,7 +97,7 @@ export class CarryPartJobs implements IJobTypeHelper {
     public static createFillJobs(room: Room): CarryPartJob[] {
         const lowSpawnsAndExtensions = RoomApi.getLowSpawnAndExtensions(room);
         const lowTowers = RoomApi.getTowersNeedFilled(room);
-        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink;
+        const upgraderLink: StructureLink | null = MemoryApi_Room.getUpgraderLink(room) as StructureLink;
         if (lowSpawnsAndExtensions.length === 0 && lowTowers.length === 0 && !upgraderLink) {
             return [];
         }
@@ -96,7 +105,7 @@ export class CarryPartJobs implements IJobTypeHelper {
         const fillJobs: CarryPartJob[] = [];
 
         _.forEach(lowSpawnsAndExtensions, (structure: StructureSpawn | StructureExtension) => {
-            const creepsUsing = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+            const creepsUsing = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                 return (
                     creep.memory.job !== undefined &&
                     creep.memory.job.targetID === structure.id &&
@@ -120,7 +129,7 @@ export class CarryPartJobs implements IJobTypeHelper {
             fillJobs.push(fillJob);
         });
         _.forEach(lowTowers, (structure: StructureTower) => {
-            const creepsUsing = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+            const creepsUsing = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                 if (
                     creep.memory.job &&
                     creep.memory.job.targetID === structure.id &&
@@ -152,9 +161,13 @@ export class CarryPartJobs implements IJobTypeHelper {
         if (!upgraderLink) {
             return fillJobs;
         }
-        const nonUpgraderLinks: StructureLink[] = MemoryApi.getStructureOfType(room.name, STRUCTURE_LINK, (l: StructureLink) => l.id !== upgraderLink.id) as StructureLink[];
+        const nonUpgraderLinks: StructureLink[] = MemoryApi_Room.getStructureOfType(
+            room.name,
+            STRUCTURE_LINK,
+            (l: StructureLink) => l.id !== upgraderLink.id
+        ) as StructureLink[];
         _.forEach(nonUpgraderLinks, (structure: StructureLink) => {
-            const creepsUsing = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+            const creepsUsing = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                 return (
                     creep.memory.job !== undefined &&
                     creep.memory.job.targetID === structure.id &&
@@ -215,10 +228,10 @@ export class CarryPartJobs implements IJobTypeHelper {
             storeJobs.push(terminalJob);
         }
 
-        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink | null;
+        const upgraderLink: StructureLink | null = MemoryApi_Room.getUpgraderLink(room) as StructureLink | null;
 
         if (upgraderLink) {
-            const nonUpgraderLinks: StructureLink[] = MemoryApi.getStructureOfType(
+            const nonUpgraderLinks: StructureLink[] = MemoryApi_Room.getStructureOfType(
                 room.name,
                 STRUCTURE_LINK,
                 (link: StructureLink) => link.id !== upgraderLink!.id && link.energy < link.energyCapacity

@@ -15,12 +15,14 @@ import {
     OVERRIDE_D_ROOM_FLAG,
     STIMULATE_FLAG,
     ROOM_OVERLAY_GRAPH_ON,
-    MemoryApi,
+
     RoomVisualHelper,
     RoomHelper,
     CreepAllHelper,
     TOWER_MIN_DAMAGE_THRESHOLD,
-    TOWER_MAX_DAMAGE_THRESHOLD
+    TOWER_MAX_DAMAGE_THRESHOLD,
+    MemoryApi_Creep,
+    MemoryApi_Room
 } from "Utils/Imports/internals";
 
 // Api for room visuals
@@ -76,8 +78,8 @@ export class RoomVisualApi {
      */
     public static createCreepCountVisual(room: Room, x: number, y: number): number {
         // Get the info we need to display
-        const creepsInRoom = MemoryApi.getMyCreeps(room.name);
-        const creepLimits = MemoryApi.getCreepLimits(room);
+        const creepsInRoom = MemoryApi_Creep.getMyCreeps(room.name);
+        const creepLimits = MemoryApi_Room.getCreepLimits(room);
         const roles: StringMap = {
             miner: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_MINER).length,
             harvester: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_HARVESTER).length,
@@ -91,9 +93,9 @@ export class RoomVisualApi {
             colonizer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_COLONIZER).length,
             remoteDefender: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_DEFENDER).length,
             manager: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_MANAGER).length,
-            scout: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_SCOUT).length,
+            scout: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_SCOUT).length
         };
-        const spawningCreep: Creep[] = _.filter(MemoryApi.getMyCreeps(room.name), (c: Creep) => c.spawning);
+        const spawningCreep: Creep[] = _.filter(MemoryApi_Creep.getMyCreeps(room.name), (c: Creep) => c.spawning);
         let spawningRole: string;
         const lines: string[] = [];
         lines.push("");
@@ -106,7 +108,7 @@ export class RoomVisualApi {
             spawningRole = creep.memory.role;
             lines.push("Spawning: [ " + spawningRole + " ]");
         }
-        lines.push("Creeps in Room:     " + MemoryApi.getCreepCount(room));
+        lines.push("Creeps in Room:     " + MemoryApi_Room.getCreepCount(room));
 
         if (creepLimits["domesticLimits"]) {
             // Add creeps to the lines array
@@ -126,7 +128,12 @@ export class RoomVisualApi {
                 lines.push("Managers:    " + roles[ROLE_MANAGER] + " / " + creepLimits.domesticLimits.manager);
             }
             if (creepLimits.domesticLimits.powerUpgrader > 0) {
-                lines.push("Power Upgraders:    " + roles[ROLE_POWER_UPGRADER] + " / " + creepLimits.domesticLimits.powerUpgrader);
+                lines.push(
+                    "Power Upgraders:    " +
+                        roles[ROLE_POWER_UPGRADER] +
+                        " / " +
+                        creepLimits.domesticLimits.powerUpgrader
+                );
             }
             if (creepLimits.domesticLimits.scout > 0) {
                 lines.push("Scouts:    " + roles[ROLE_SCOUT] + " / " + creepLimits.domesticLimits.scout);
@@ -142,17 +149,17 @@ export class RoomVisualApi {
             if (creepLimits.remoteLimits.remoteHarvester > 0) {
                 lines.push(
                     "Remote Harvesters:    " +
-                    roles[ROLE_REMOTE_HARVESTER] +
-                    " / " +
-                    creepLimits.remoteLimits.remoteHarvester
+                        roles[ROLE_REMOTE_HARVESTER] +
+                        " / " +
+                        creepLimits.remoteLimits.remoteHarvester
                 );
             }
             if (creepLimits.remoteLimits.remoteReserver > 0) {
                 lines.push(
                     "Remote Reservers:    " +
-                    roles[ROLE_REMOTE_RESERVER] +
-                    " / " +
-                    creepLimits.remoteLimits.remoteReserver
+                        roles[ROLE_REMOTE_RESERVER] +
+                        " / " +
+                        creepLimits.remoteLimits.remoteReserver
                 );
             }
             if (creepLimits.remoteLimits.remoteColonizer > 0) {
@@ -163,9 +170,9 @@ export class RoomVisualApi {
             if (creepLimits.remoteLimits.remoteDefender > 0) {
                 lines.push(
                     "Remote Defenders:    " +
-                    roles[ROLE_REMOTE_DEFENDER] +
-                    " / " +
-                    creepLimits.remoteLimits.remoteDefender
+                        roles[ROLE_REMOTE_DEFENDER] +
+                        " / " +
+                        creepLimits.remoteLimits.remoteDefender
                 );
             }
             if (creepLimits.remoteLimits.claimer > 0) {
@@ -249,7 +256,7 @@ export class RoomVisualApi {
      * @param y the y coord for the visual
      */
     public static createRemoteFlagVisual(room: Room, x: number, y: number): number {
-        const dependentRemoteRooms: Array<RemoteRoomMemory | undefined> = MemoryApi.getRemoteRooms(room);
+        const dependentRemoteRooms: Array<RemoteRoomMemory | undefined> = MemoryApi_Room.getRemoteRooms(room);
 
         // Draw the text
         const lines: string[] = [];
@@ -292,7 +299,7 @@ export class RoomVisualApi {
      * @param y the y coord for the visual
      */
     public static createClaimFlagVisual(room: Room, x: number, y: number): number {
-        const dependentRemoteRooms: Array<ClaimRoomMemory | undefined> = MemoryApi.getClaimRooms(room);
+        const dependentRemoteRooms: Array<ClaimRoomMemory | undefined> = MemoryApi_Room.getClaimRooms(room);
 
         // Draw the text
         const lines: string[] = [];
@@ -335,7 +342,7 @@ export class RoomVisualApi {
      * @param y the y coord for the visual
      */
     public static createAttackFlagVisual(room: Room, x: number, y: number): number {
-        const dependentRemoteRooms: Array<AttackRoomMemory | undefined> = MemoryApi.getAttackRooms(room);
+        const dependentRemoteRooms: Array<AttackRoomMemory | undefined> = MemoryApi_Room.getAttackRooms(room);
         // Draw the text
         const lines: string[] = [];
         lines.push("");
@@ -593,7 +600,7 @@ export class RoomVisualApi {
         if (Memory.debug.towerDebug === undefined) {
             Memory.debug.towerDebug = new Array(50);
 
-            const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER);
+            const towers = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_TOWER);
 
             for (let x = 0; x < 50; x++) {
                 Memory.debug.towerDebug[x] = new Array(50);
@@ -636,7 +643,7 @@ export class RoomVisualApi {
      */
     public static debug_towerDamageOverlay_perCreep(room: Room): void {
         // All hostiles
-        const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
+        const hostileCreeps = MemoryApi_Creep.getHostileCreeps(room.name);
 
         // Quit early if no creeps
         if (hostileCreeps.length === 0) {
@@ -656,8 +663,8 @@ export class RoomVisualApi {
         const civilianCreeps = hostileCreeps;
 
         // All towers in the room
-        // const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
-        const towers = MemoryApi.getStructureOfType(
+        // const towers = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
+        const towers = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_TOWER,
             (tower: StructureTower) => tower.energy > 0

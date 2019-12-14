@@ -1,5 +1,4 @@
 import {
-    MemoryApi,
     WALL_LIMIT,
     ERROR_WARN,
     STIMULATE_FLAG,
@@ -8,7 +7,11 @@ import {
     CreepAllHelper,
     TOWER_MIN_DAMAGE_THRESHOLD,
     SpawnHelper,
-    TOWER_MAX_DAMAGE_THRESHOLD
+    TOWER_MAX_DAMAGE_THRESHOLD,
+    MemoryApi_Room,
+    MemoryApi_Empire,
+    MemoryApi_Creep,
+    MemoryApi_Jobs
 } from "Utils/Imports/internals";
 
 // helper functions for rooms
@@ -71,8 +74,7 @@ export class RoomHelper {
         const xOffset = parsedName[1] % 10;
         const yOffset = parsedName[2] % 10;
         // If x & y === 5 it's not SK, but both must be between 4 and 6
-        const isSK =
-            !(xOffset === 5 && xOffset === 5) && (xOffset >= 4 && xOffset <= 6) && (yOffset >= 4 && yOffset <= 6);
+        const isSK = !(xOffset === 5 && xOffset === 5) && xOffset >= 4 && xOffset <= 6 && yOffset >= 4 && yOffset <= 6;
         return isSK;
     }
 
@@ -109,7 +111,7 @@ export class RoomHelper {
      * @param objectConst the object we want to check for
      */
     public static isExistInRoom(room: Room, objectConst: StructureConstant): boolean {
-        return MemoryApi.getStructures(room.name, s => s.structureType === objectConst).length > 0;
+        return MemoryApi_Room.getStructures(room.name, s => s.structureType === objectConst).length > 0;
     }
 
     /**
@@ -260,7 +262,7 @@ export class RoomHelper {
             );
         }
 
-        return MemoryApi.getUpgraderLink(room) !== null;
+        return MemoryApi_Room.getUpgraderLink(room) !== null;
     }
 
     /**
@@ -293,7 +295,7 @@ export class RoomHelper {
      */
     public static chooseTowerAttackTarget(room: Room): Creep | null {
         // All hostiles
-        const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
+        const hostileCreeps = MemoryApi_Creep.getHostileCreeps(room.name);
 
         // Quit early if no creeps
         if (hostileCreeps.length === 0) {
@@ -313,8 +315,8 @@ export class RoomHelper {
         const civilianCreeps = hostileCreeps;
 
         // All towers in the room
-        // const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
-        const towers = MemoryApi.getStructureOfType(
+        // const towers = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
+        const towers = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_TOWER,
             (tower: StructureTower) => tower.energy > 0
@@ -451,7 +453,7 @@ export class RoomHelper {
      */
     public static chooseTowerTargetRepair(room: Room): Structure | undefined | null {
         // Check for non-priority repair jobs of an allowed type
-        const repairJobs = MemoryApi.getRepairJobs(
+        const repairJobs = MemoryApi_Jobs.getRepairJobs(
             room,
             (j: WorkPartJob) => j.targetType === STRUCTURE_CONTAINER || j.targetType === STRUCTURE_ROAD
         );
@@ -517,7 +519,7 @@ export class RoomHelper {
      * @param room The room to check
      */
     public static numHostileCreeps(room: Room): number {
-        const hostiles = MemoryApi.getHostileCreeps(room.name);
+        const hostiles = MemoryApi_Creep.getHostileCreeps(room.name);
         return hostiles.length;
     }
     /**
@@ -525,7 +527,7 @@ export class RoomHelper {
      * @param room
      */
     public static numRemoteRooms(room: Room): number {
-        const remoteRooms = MemoryApi.getRemoteRooms(room);
+        const remoteRooms = MemoryApi_Room.getRemoteRooms(room);
         return remoteRooms.length;
     }
 
@@ -534,7 +536,7 @@ export class RoomHelper {
      * @param room
      */
     public static numClaimRooms(room: Room): number {
-        const claimRooms = MemoryApi.getClaimRooms(room);
+        const claimRooms = MemoryApi_Room.getClaimRooms(room);
         return claimRooms.length;
     }
 
@@ -543,7 +545,7 @@ export class RoomHelper {
      * @param room
      */
     public static numAttackRooms(room: Room): number {
-        const attackRooms = MemoryApi.getAttackRooms(room);
+        const attackRooms = MemoryApi_Room.getAttackRooms(room);
         return attackRooms.length;
     }
 
@@ -619,8 +621,8 @@ export class RoomHelper {
      * @param room the room we are checking for
      */
     public static numCurrentlyUnclaimedClaimRooms(room: Room): number {
-        const allClaimRooms: Array<ClaimRoomMemory | undefined> = MemoryApi.getClaimRooms(room);
-        const ownedRooms: Room[] = MemoryApi.getOwnedRooms();
+        const allClaimRooms: Array<ClaimRoomMemory | undefined> = MemoryApi_Room.getClaimRooms(room);
+        const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
         let sum: number = 0;
 
         // No existing claim rooms
@@ -682,9 +684,9 @@ export class RoomHelper {
     public static isRemoteRoomOf(dependentRoomName: string, hostRoomName?: string): boolean {
         // early returns
         if (!hostRoomName) {
-            const ownedRooms: Room[] = MemoryApi.getOwnedRooms();
+            const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
             for (const room of ownedRooms) {
-                const remoteRooms: RemoteRoomMemory[] = MemoryApi.getRemoteRooms(room);
+                const remoteRooms: RemoteRoomMemory[] = MemoryApi_Room.getRemoteRooms(room);
                 if (_.some(remoteRooms, (rr: RemoteRoomMemory) => rr.roomName === dependentRoomName)) {
                     return true;
                 }
@@ -698,7 +700,7 @@ export class RoomHelper {
             return false;
         }
 
-        const remoteRooms: RemoteRoomMemory[] = MemoryApi.getRemoteRooms(Game.rooms[hostRoomName]);
+        const remoteRooms: RemoteRoomMemory[] = MemoryApi_Room.getRemoteRooms(Game.rooms[hostRoomName]);
         return _.some(remoteRooms, (rr: RemoteRoomMemory) => rr.roomName === dependentRoomName);
     }
 
@@ -740,5 +742,4 @@ export class RoomHelper {
         }
         return storageLevels;
     }
-
 }

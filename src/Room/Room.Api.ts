@@ -13,11 +13,12 @@ import {
     WALL_LIMIT,
     ERROR_WARN,
     UserException,
-    MemoryApi,
     REPAIR_THRESHOLD,
     PRIORITY_REPAIR_THRESHOLD,
     RUN_RESERVE_TTL_TIMER,
-    TOWER_REPAIR_THRESHOLD
+    TOWER_REPAIR_THRESHOLD,
+    MemoryApi_Room,
+    MemoryApi_Creep
 } from "Utils/Imports/internals";
 
 // an api used for functions related to the room
@@ -27,7 +28,7 @@ export class RoomApi {
      * @param room the room we are checking
      */
     public static isHostilesInRoom(room: Room): boolean {
-        const hostilesInRoom = MemoryApi.getHostileCreeps(room.name);
+        const hostilesInRoom = MemoryApi_Creep.getHostileCreeps(room.name);
         return hostilesInRoom.length > 0;
     }
 
@@ -54,7 +55,7 @@ export class RoomApi {
         if (RoomHelper.excecuteEveryTicks(1000)) {
             const incomingNukes = room.find(FIND_NUKES);
             if (incomingNukes.length > 0) {
-                MemoryApi.updateRoomState(ROOM_STATE_NUKE_INBOUND, room);
+                MemoryApi_Room.updateRoomState(ROOM_STATE_NUKE_INBOUND, room);
                 return;
             }
         }
@@ -62,16 +63,16 @@ export class RoomApi {
 
         // check if we are in intro room state
         // 3 or less creeps so we need to (re)start the room
-        const creeps: Array<Creep | null> = MemoryApi.getMyCreeps(room.name);
+        const creeps: Array<Creep | null> = MemoryApi_Creep.getMyCreeps(room.name);
         if (creeps.length < 3) {
-            MemoryApi.updateRoomState(ROOM_STATE_INTRO, room);
+            MemoryApi_Room.updateRoomState(ROOM_STATE_INTRO, room);
             return;
         }
         // ----------
 
         const storage: StructureStorage | undefined = room.storage;
-        const containers: Array<Structure | null> = MemoryApi.getStructureOfType(room.name, STRUCTURE_CONTAINER);
-        const sources: Array<Source | null> = MemoryApi.getSources(room.name);
+        const containers: Array<Structure | null> = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_CONTAINER);
+        const sources: Array<Source | null> = MemoryApi_Room.getSources(room.name);
         if (room.controller!.level >= 6) {
             // check if we are in upgrader room state
             // container mining and storage set up, and we got links online
@@ -81,11 +82,11 @@ export class RoomApi {
                 storage !== undefined
             ) {
                 if (RoomHelper.isStimulateRoom(room)) {
-                    MemoryApi.updateRoomState(ROOM_STATE_STIMULATE, room);
+                    MemoryApi_Room.updateRoomState(ROOM_STATE_STIMULATE, room);
                     return;
                 }
                 // otherwise, just upgrader room state
-                MemoryApi.updateRoomState(ROOM_STATE_UPGRADER, room);
+                MemoryApi_Room.updateRoomState(ROOM_STATE_UPGRADER, room);
                 return;
             }
         }
@@ -97,12 +98,12 @@ export class RoomApi {
             // then check if we are flagged for sitmulate state
             if (RoomHelper.isContainerMining(room, sources, containers) && storage !== undefined) {
                 if (RoomHelper.isStimulateRoom(room)) {
-                    MemoryApi.updateRoomState(ROOM_STATE_STIMULATE, room);
+                    MemoryApi_Room.updateRoomState(ROOM_STATE_STIMULATE, room);
                     return;
                 }
 
                 // otherwise, just advanced room state
-                MemoryApi.updateRoomState(ROOM_STATE_ADVANCED, room);
+                MemoryApi_Room.updateRoomState(ROOM_STATE_ADVANCED, room);
                 return;
             }
         }
@@ -112,7 +113,7 @@ export class RoomApi {
             // check if we are in intermediate room state
             // container mining set up, but no storage
             if (RoomHelper.isContainerMining(room, sources, containers) && storage === undefined) {
-                MemoryApi.updateRoomState(ROOM_STATE_INTER, room);
+                MemoryApi_Room.updateRoomState(ROOM_STATE_INTER, room);
                 return;
             }
         }
@@ -121,7 +122,7 @@ export class RoomApi {
         // check if we are in beginner room state
         // no containers set up at sources so we are just running a bare knuckle room
         if (creeps.length >= 3) {
-            MemoryApi.updateRoomState(ROOM_STATE_BEGINNER, room);
+            MemoryApi_Room.updateRoomState(ROOM_STATE_BEGINNER, room);
             return;
         }
         // ----------
@@ -132,7 +133,10 @@ export class RoomApi {
      * @param room the room we are defending
      */
     public static runTowersDefense(room: Room): void {
-        const towers: StructureTower[] = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER) as StructureTower[];
+        const towers: StructureTower[] = MemoryApi_Room.getStructureOfType(
+            room.name,
+            STRUCTURE_TOWER
+        ) as StructureTower[];
         // choose the most ideal target and have every tower attack it
         const idealTarget: Creep | undefined | null = RoomHelper.chooseTowerAttackTarget(room);
         if (!idealTarget) {
@@ -156,7 +160,10 @@ export class RoomApi {
      * @param room the room we are repairing structures in
      */
     public static runTowersRepair(room: Room): void {
-        const towers: StructureTower[] = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER) as StructureTower[];
+        const towers: StructureTower[] = MemoryApi_Room.getStructureOfType(
+            room.name,
+            STRUCTURE_TOWER
+        ) as StructureTower[];
         // choose the most ideal target and have every tower attack it
         const idealTarget: Structure | undefined | null = RoomHelper.chooseTowerTargetRepair(room);
         if (!idealTarget) {
@@ -176,7 +183,7 @@ export class RoomApi {
      * @param rampart the rampart we are targeting
      */
     public static runTowersEmergecyRampartRepair(rampart: StructureRampart): void {
-        const towers: StructureTower[] = MemoryApi.getStructureOfType(
+        const towers: StructureTower[] = MemoryApi_Room.getStructureOfType(
             rampart.room.name,
             STRUCTURE_TOWER
         ) as StructureTower[];
@@ -193,7 +200,7 @@ export class RoomApi {
      * @param room the room we are setting defcon for
      */
     public static setDefconLevel(room: Room): void {
-        const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
+        const hostileCreeps = MemoryApi_Creep.getHostileCreeps(room.name);
         const hostileStructures = room.find(FIND_HOSTILE_STRUCTURES, {
             filter: s => s.structureType === STRUCTURE_INVADER_CORE
         });
@@ -258,7 +265,7 @@ export class RoomApi {
      * @param room the room we are checking for repair targets
      */
     public static getRepairTargets(room: Room): Array<Structure<StructureConstant>> {
-        return MemoryApi.getStructures(room.name, (struct: Structure<StructureConstant>) => {
+        return MemoryApi_Room.getStructures(room.name, (struct: Structure<StructureConstant>) => {
             if (struct.structureType !== STRUCTURE_RAMPART && struct.structureType !== STRUCTURE_WALL) {
                 return struct.hits < struct.hitsMax * REPAIR_THRESHOLD;
             } else {
@@ -272,7 +279,7 @@ export class RoomApi {
      * @param room The room we are checking for repair targets
      */
     public static getPriorityRepairTargets(room: Room): Array<Structure<StructureConstant>> {
-        return MemoryApi.getStructures(room.name, (struct: Structure<StructureConstant>) => {
+        return MemoryApi_Room.getStructures(room.name, (struct: Structure<StructureConstant>) => {
             if (struct.structureType !== STRUCTURE_RAMPART && struct.structureType !== STRUCTURE_WALL) {
                 return struct.hits < struct.hitsMax * PRIORITY_REPAIR_THRESHOLD;
             } else {
@@ -286,7 +293,7 @@ export class RoomApi {
      * @param room the room we are getting spawns/extensions to be filled from
      */
     public static getLowSpawnAndExtensions(room: Room): Array<StructureSpawn | StructureExtension> {
-        const extensionsNeedFilled: StructureExtension[] = MemoryApi.getStructureOfType(
+        const extensionsNeedFilled: StructureExtension[] = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_EXTENSION,
             (e: StructureExtension) => {
@@ -294,7 +301,7 @@ export class RoomApi {
             }
         ) as StructureExtension[];
 
-        const spawnsNeedFilled: StructureSpawn[] = (MemoryApi.getStructureOfType(
+        const spawnsNeedFilled: StructureSpawn[] = (MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_SPAWN,
             (e: StructureSpawn) => {
@@ -313,7 +320,7 @@ export class RoomApi {
      * @param room the room we are getting towers that need to be filled from
      */
     public static getTowersNeedFilled(room: Room): StructureTower[] {
-        const unsortedTowerList: StructureTower[] = <StructureTower[]>MemoryApi.getStructureOfType(
+        const unsortedTowerList: StructureTower[] = <StructureTower[]>MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_TOWER,
             (t: StructureTower) => {
@@ -331,8 +338,12 @@ export class RoomApi {
     public static getWallRepairTargets(room: Room): Array<Structure<StructureConstant>> {
         // returns all walls and ramparts under the current wall/rampart limit
         const hpLimit: number = this.getWallHpLimit(room);
-        const walls = MemoryApi.getStructureOfType(room.name, STRUCTURE_WALL, (s: StructureWall) => s.hits < hpLimit);
-        const ramparts = MemoryApi.getStructureOfType(
+        const walls = MemoryApi_Room.getStructureOfType(
+            room.name,
+            STRUCTURE_WALL,
+            (s: StructureWall) => s.hits < hpLimit
+        );
+        const ramparts = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_RAMPART,
             (s: StructureRampart) => s.hits < hpLimit
@@ -346,7 +357,7 @@ export class RoomApi {
      * @param room the room we are checking
      */
     public static getOpenSources(room: Room): Array<Source | null> {
-        const sources = MemoryApi.getSources(room.name);
+        const sources = MemoryApi_Room.getSources(room.name);
         // ? this assumes that we are only using this for domestic rooms
         // ? if we use it on domestic rooms then I'll need to distinguish between ROLE_REMOTE_MINER
         const miners = MemoryHelper.getCreepOfRole(room, ROLE_MINER);
@@ -378,7 +389,7 @@ export class RoomApi {
      * @param source the source we are considering
      */
     public static getMiningContainer(room: Room, source: Source): Structure<StructureConstant> | undefined {
-        const containers: Array<Structure<StructureConstant>> = MemoryApi.getStructureOfType(
+        const containers: Array<Structure<StructureConstant>> = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_CONTAINER
         );
@@ -436,7 +447,7 @@ export class RoomApi {
      */
     public static runLinks(room: Room): void {
         // If we don't have an upgrader link, cancel early
-        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink | null;
+        const upgraderLink: StructureLink | null = MemoryApi_Room.getUpgraderLink(room) as StructureLink | null;
         if (!upgraderLink) {
             return;
         }
@@ -445,7 +456,7 @@ export class RoomApi {
         }
 
         // Get non-upgrader links above 100 energy to fill the upgrader link
-        const nonUpgraderLinks: StructureLink[] = MemoryApi.getStructureOfType(
+        const nonUpgraderLinks: StructureLink[] = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_LINK,
             (link: StructureLink) => link.id !== upgraderLink.id && link.energy >= 100
@@ -491,7 +502,7 @@ export class RoomApi {
      * @param room the room we are updating the remote rooms for
      */
     public static simulateReserveTTL(room: Room): void {
-        const remoteRooms = MemoryApi.getRemoteRooms(room);
+        const remoteRooms = MemoryApi_Room.getRemoteRooms(room);
         for (const remoteRoom of remoteRooms) {
             // Handle unreserved and undefined rooms
             if (!remoteRoom) {
@@ -526,11 +537,11 @@ export class RoomApi {
      */
     public static runSetRampartStatus(room: Room): void {
         // If defcon is on in the room, set to private, otherwise, public
-        const rampartsInRoom: StructureRampart[] = MemoryApi.getStructureOfType(
+        const rampartsInRoom: StructureRampart[] = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_RAMPART
         ) as StructureRampart[];
-        const shouldBePublic: boolean = !(MemoryApi.getDefconLevel(room) > 0);
+        const shouldBePublic: boolean = !(MemoryApi_Room.getDefconLevel(room) > 0);
         for (const i in rampartsInRoom) {
             const rampart: StructureRampart = rampartsInRoom[i];
             if (rampart.isPublic !== shouldBePublic) {
@@ -548,7 +559,7 @@ export class RoomApi {
         if (!target) {
             return null;
         }
-        const rampartsInRoom: StructureRampart[] = MemoryApi.getStructureOfType(
+        const rampartsInRoom: StructureRampart[] = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_RAMPART
         ) as StructureRampart[];
@@ -574,7 +585,7 @@ export class RoomApi {
         }
 
         // If we are under attack and our towers have no energy, trigger a safe mode
-        const towerEnergy = _.sum(MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER), "energy");
+        const towerEnergy = _.sum(MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_TOWER), "energy");
         if (defcon >= 3 && towerEnergy === 0) {
             if (room.controller!.safeModeAvailable) {
                 room.controller!.activateSafeMode();

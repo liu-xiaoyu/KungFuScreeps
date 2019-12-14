@@ -1,4 +1,4 @@
-import { ROLE_REMOTE_RESERVER, MemoryApi, CreepAllApi } from "Utils/Imports/internals";
+import { ROLE_REMOTE_RESERVER, CreepAllApi, MemoryApi_Jobs } from "Utils/Imports/internals";
 
 // Manager for the miner creep role
 export class RemoteReserverCreepManager implements ICivCreepRoleManager {
@@ -19,7 +19,7 @@ export class RemoteReserverCreepManager implements ICivCreepRoleManager {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
 
         if (creepOptions.claim) {
-            const reserveJob = MemoryApi.getReserveJobs(room,
+            const reserveJob = MemoryApi_Jobs.getReserveJobs(room,
                 (sjob: ClaimPartJob) => !sjob.isTaken && sjob.targetID === creep.memory.targetRoom);
             if (reserveJob.length > 0) {
                 return reserveJob[0];
@@ -32,6 +32,6 @@ export class RemoteReserverCreepManager implements ICivCreepRoleManager {
      * Handle initalizing a new job
      */
     public handleNewJob(creep: Creep, room: Room): void {
-        MemoryApi.updateJobMemory(creep, room);
+        MemoryApi_Jobs.updateJobMemory(creep, room);
     }
 }

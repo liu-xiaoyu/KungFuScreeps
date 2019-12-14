@@ -8,12 +8,15 @@ import {
     STANDARD_SQUAD_ARRAY,
     ZEALOT_SOLO_ARRAY,
     STALKER_SOLO_ARRAY,
-    MemoryApi,
+
     MemoryHelper_Room,
     UserException,
     SpawnHelper,
     Normalize,
-    RoomHelper
+    RoomHelper,
+    MemoryApi_Empire,
+    MemoryApi_Room,
+    MemoryApi_Creep
 } from "Utils/Imports/internals";
 
 export class EventHelper {
@@ -40,9 +43,9 @@ export class EventHelper {
             throw new UserException(
                 "The event for spawning a military creep was improperly handled.",
                 "The creep couldn't increment the correct flags memory, meaning the attack flag\n" +
-                "will not be removed properly and must be done manually. [ " +
-                creep.name +
-                " ].",
+                    "will not be removed properly and must be done manually. [ " +
+                    creep.name +
+                    " ].",
                 ERROR_ERROR
             );
         }
@@ -72,7 +75,7 @@ export class EventHelper {
         creepName: string
     ): AttackFlagMemory | undefined {
         // Get all attack flag memory associated with the room (should only be 1, but plan for multiple possible in future)
-        const attackRoomFlags: AttackFlagMemory[] = MemoryApi.getAllAttackFlagMemoryForHost(room.name);
+        const attackRoomFlags: AttackFlagMemory[] = MemoryApi_Room.getAllAttackFlagMemoryForHost(room.name);
 
         // Find the one that requested this creep to be returned
         for (const attackFlag of attackRoomFlags) {
@@ -110,7 +113,7 @@ export class EventHelper {
         let requestingRoleArray: RoleConstant[] = [];
         switch (flagType) {
             case STANDARD_SQUAD:
-                const creepsInSquad: Creep[] | null = MemoryApi.getCreepsInSquad(roomName, attackFlag.squadUUID);
+                const creepsInSquad: Creep[] | null = MemoryApi_Creep.getCreepsInSquad(roomName, attackFlag.squadUUID);
                 if (creepsInSquad) {
                     const numRoleRequested: number = this.getNumRoleRequestedFromSquadFlag(
                         STANDARD_SQUAD_ARRAY,
@@ -146,7 +149,7 @@ export class EventHelper {
     public static scanForCreepSpawnedEvents(room: Room): void {
         // Get all creeps who spawned this turn
         const spawnedCreeps: Creep[] = _.filter(
-            MemoryApi.getMyCreeps(room.name, undefined, true),
+            MemoryApi_Creep.getMyCreeps(room.name, undefined, true),
             (creep: Creep) => creep.ticksToLive && creep.ticksToLive === 1499
         );
 

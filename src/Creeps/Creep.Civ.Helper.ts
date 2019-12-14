@@ -1,7 +1,4 @@
-import { CONTROLLER_SIGNING_TEXT } from "Utils/Config/config";
-import { MemoryApi } from "Memory/Memory.Api";
-import { UserException } from "Utils/Imports/internals";
-import { ROLE_HARVESTER, ROLE_MINER } from "utils/Imports/constants";
+import { CONTROLLER_SIGNING_TEXT, UserException, ROLE_HARVESTER, ROLE_MINER, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class CreepCivHelper {
 
@@ -36,7 +33,7 @@ export class CreepCivHelper {
         }
 
         // Get containers and find the closest one to the source
-        const containers: StructureContainer[] = MemoryApi.getStructureOfType(
+        const containers: StructureContainer[] = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_CONTAINER
         ) as StructureContainer[];
@@ -77,7 +74,7 @@ export class CreepCivHelper {
         if (creep.memory.role !== ROLE_HARVESTER) {
             return normalCaseContainerQualifier;
         }
-        const numMiners: number = MemoryApi.getCreepCount(room, ROLE_MINER);
+        const numMiners: number = MemoryApi_Room.getCreepCount(room, ROLE_MINER);
         const minerLimit: number = room.memory.creepLimit!['domesticLimits'].miner;
         return numMiners < minerLimit ? harvesterNeedsEnergyNowQualifier : normalCaseContainerQualifier;
     }

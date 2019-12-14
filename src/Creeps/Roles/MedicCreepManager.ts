@@ -1,4 +1,4 @@
-import { ROLE_MEDIC, MemoryApi, CreepMiliApi, PathfindingApi } from "Utils/Imports/internals";
+import { ROLE_MEDIC,   CreepMiliApi, PathfindingApi, MemoryApi_Creep } from "Utils/Imports/internals";
 
 // Manager for the miner creep role
 export class MedicCreepManager implements IMiliCreepRoleManager {
@@ -24,7 +24,7 @@ export class MedicCreepManager implements IMiliCreepRoleManager {
         // Get a healing target
         const healingTarget: Creep | null = CreepMiliApi.getHealingTarget(creep, creepOptions);
         if (creepOptions.squadUUID) {
-            const squadMembers: Creep[] | null = MemoryApi.getCreepsInSquad(creep.room.name, creepOptions.squadUUID);
+            const squadMembers: Creep[] | null = MemoryApi_Creep.getCreepsInSquad(creep.room.name, creepOptions.squadUUID);
             // No healing target, move towards closest squad member
             if (!healingTarget && squadMembers) {
                 const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadMembers);

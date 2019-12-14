@@ -10,7 +10,6 @@ import {
     ZEALOT_SOLO,
     STANDARD_SQUAD,
     UserException,
-    MemoryApi,
     RoomHelper,
     ZEALOT_SOLO_ARRAY,
     STANDARD_SQUAD_ARRAY,
@@ -25,7 +24,9 @@ import {
     NUM_LIFESPANS_FOR_EXTRA_CREEP,
     MAX_WORKERS_UPGRADER_STATE,
     WALL_LIMIT,
-    SCOUT_SPAWN_TICKS
+    SCOUT_SPAWN_TICKS,
+    MemoryApi_Room,
+    MemoryApi_Creep
 } from "Utils/Imports/internals";
 
 /**
@@ -157,7 +158,7 @@ export class SpawnHelper {
         // Please improve this if possible lol. Had to get around type guards as we don't actually know what a creeps memory has in it unless we explicitly know the type i think
         // We're going to run into this everytime we use creep memory so we need to find a nicer way around it if possible but if not casting it as a memory type
         // Isn't the worst solution in the world
-        const militaryCreeps: Array<Creep | null> = MemoryApi.getMyCreeps(room.name, creep =>
+        const militaryCreeps: Array<Creep | null> = MemoryApi_Creep.getMyCreeps(room.name, creep =>
             this.isMilitaryRole(creep.memory.role)
         );
         return _.filter(militaryCreeps, creep => {
@@ -199,7 +200,7 @@ export class SpawnHelper {
         roleConst: RoleConstant,
         creepBody: BodyPartConstant[]
     ): ClaimRoomMemory | undefined {
-        const allClaimRooms: Array<ClaimRoomMemory | undefined> = MemoryApi.getClaimRooms(room);
+        const allClaimRooms: Array<ClaimRoomMemory | undefined> = MemoryApi_Room.getClaimRooms(room);
         const tickLimit: number = creepBody.length * 3;
         // Get all claim rooms in which the specified role does not yet have
         const unfulfilledClaimRooms: Array<ClaimRoomMemory | undefined> = _.filter(
@@ -245,7 +246,7 @@ export class SpawnHelper {
         roleConst: RoleConstant,
         creepBody: BodyPartConstant[]
     ): RemoteRoomMemory | undefined {
-        const allRemoteRooms: Array<RemoteRoomMemory | undefined> = MemoryApi.getRemoteRooms(room);
+        const allRemoteRooms: Array<RemoteRoomMemory | undefined> = MemoryApi_Room.getRemoteRooms(room);
         const tickLimit = creepBody.length * 3;
         // Get all claim rooms in which the specified role does not yet have
         const unfulfilledRemoteRooms: Array<RemoteRoomMemory | undefined> = _.filter(allRemoteRooms, remoteRoom => {
@@ -293,7 +294,7 @@ export class SpawnHelper {
         ticksToLiveLimit: number
     ): number {
         // Get all creeps above the ticks to live limit with the specified role
-        const allCreepsOfRole: Array<Creep | null> = MemoryApi.getMyCreeps(
+        const allCreepsOfRole: Array<Creep | null> = MemoryApi_Creep.getMyCreeps(
             room.name,
             creep =>
                 creep.memory.role === roleConst && (creep.ticksToLive ? creep.ticksToLive : 1600) > ticksToLiveLimit
@@ -388,7 +389,7 @@ export class SpawnHelper {
      * @param room the room we are checking for
      */
     public static getNumAccessTilesToSources(room: Room): number {
-        const sources: Source[] = MemoryApi.getSources(room.name);
+        const sources: Source[] = MemoryApi_Room.getSources(room.name);
         let accessibleTiles: number = 0;
         const roomTerrain: RoomTerrain = new Room.Terrain(room.name);
         _.forEach(sources, (source: Source) => {
@@ -424,7 +425,7 @@ export class SpawnHelper {
      */
     public static isCreepCountSpawnedAndQueueAtLimit(room: Room, roleConst: RoleConstant, limit: number): boolean {
         const roleArray: RoleConstant[] = room.memory.creepLimit!["militaryLimits"];
-        const creepsInRoom: Creep[] = MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === roleConst);
+        const creepsInRoom: Creep[] = MemoryApi_Creep.getMyCreeps(room.name, (c: Creep) => c.memory.role === roleConst);
         let sum = 0;
 
         // Get all the defenders in queue to be spawned
@@ -485,7 +486,7 @@ export class SpawnHelper {
      * @param room the room we are checking the remote rooms for
      */
     public static getRemoteReserverLimitForRoom(room: Room): number {
-        const remoteRooms: Array<RemoteRoomMemory | undefined> = MemoryApi.getRemoteRooms(room);
+        const remoteRooms: Array<RemoteRoomMemory | undefined> = MemoryApi_Room.getRemoteRooms(room);
         let numReserversNeeded: number = 0;
         for (const remoteRoom of remoteRooms) {
             // Handle undefined rooms
@@ -517,7 +518,7 @@ export class SpawnHelper {
      * @returns the bool result on if there is a remote reserver set to this room arleady
      */
     public static reserverExistsForRoomCurrently(room: Room, remoteRoom: RemoteRoomMemory): boolean {
-        const creepsInRemoteRoom: Creep[] = MemoryApi.getMyCreeps(room.name,
+        const creepsInRemoteRoom: Creep[] = MemoryApi_Creep.getMyCreeps(room.name,
             (c: Creep) => c.memory.role === ROLE_REMOTE_RESERVER
                 && c.memory.targetRoom === remoteRoom.roomName
                 && c.ticksToLive !== undefined && c.ticksToLive >= 50);
@@ -556,8 +557,8 @@ export class SpawnHelper {
      * get a remote room that needs a remote reserver
      */
     public static getRemoteRoomNeedingRemoteReserver(room: Room): RemoteRoomMemory | undefined {
-        const reserversInRoom: Creep[] = MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_REMOTE_RESERVER);
-        const remoteRooms: RemoteRoomMemory[] = MemoryApi.getRemoteRooms(room, (rr: RemoteRoomMemory) => rr.reserveTTL < RESERVER_MIN_TTL);
+        const reserversInRoom: Creep[] = MemoryApi_Creep.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_REMOTE_RESERVER);
+        const remoteRooms: RemoteRoomMemory[] = MemoryApi_Room.getRemoteRooms(room, (rr: RemoteRoomMemory) => rr.reserveTTL < RESERVER_MIN_TTL);
         return _.find(remoteRooms, (rr: RemoteRoomMemory) => !_.some(reserversInRoom, (c: Creep) => c.memory.targetRoom === rr.roomName));
     }
 
@@ -566,7 +567,7 @@ export class SpawnHelper {
      */
     public static getRemoteRoomNeedingRemoteDefender(room: Room): RemoteRoomMemory | undefined {
         return _.first(
-            MemoryApi.getRemoteRooms(room, (rr: RemoteRoomMemory) => {
+            MemoryApi_Room.getRemoteRooms(room, (rr: RemoteRoomMemory) => {
                 if (Memory.rooms[rr.roomName]) {
                     return Memory.rooms[rr.roomName].defcon > 1;
                 }
@@ -589,7 +590,7 @@ export class SpawnHelper {
             room.memory.roomState > ROOM_STATE_INTRO // Never a priority in intro state
         ) {
             const harvester: Creep | undefined = _.find(
-                MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER)
+                MemoryApi_Creep.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER)
             );
 
             // If theres no harvester, and we are outside of ROOM_STATE_INTRO, we need one
@@ -613,7 +614,7 @@ export class SpawnHelper {
 
         // Each work part repairs 100, assumes they'll be repairing for 90% of their lifespan. Precision isn't important
         const creepRepairPerLife: number = (numWorkParts * 100 * 1500) * .90;
-        const ramparts: StructureRampart[] = MemoryApi.getStructureOfType(room.name, STRUCTURE_RAMPART) as StructureRampart[];
+        const ramparts: StructureRampart[] = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_RAMPART) as StructureRampart[];
         const totalRampartHits: number = _.sum(ramparts, (r: StructureRampart) => r.hits);
         const maxRampartHits: number = WALL_LIMIT[room.controller.level] * ramparts.length;
         const neededLifetimes: number = Math.ceil((maxRampartHits - totalRampartHits) / creepRepairPerLife);
@@ -648,7 +649,7 @@ export class SpawnHelper {
      */
     public static getScoutSpawnLimit(room: Room): number {
         // Returns -1 if one has never been spawned, so check for that case as well in the if
-        const lastTickScoutSpawned: number = MemoryApi.getLastTickScoutSpawned(room);
+        const lastTickScoutSpawned: number = MemoryApi_Room.getLastTickScoutSpawned(room);
         const differenceCheck: number = Game.time - lastTickScoutSpawned
         return (differenceCheck > SCOUT_SPAWN_TICKS || lastTickScoutSpawned === -1) ? 1 : 0;
     }

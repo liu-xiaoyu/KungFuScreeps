@@ -1,5 +1,5 @@
 // @ts-ignore
-import { MemoryApi } from "Utils/Imports/internals";
+import {   MemoryApi_All, MemoryApi_Empire, MemoryApi_Room } from "Utils/Imports/internals";
 
 // manager for the memory of the empire
 export class MemoryManager {
@@ -9,21 +9,21 @@ export class MemoryManager {
     public static runMemoryManager(): void {
         this.initMainMemory();
 
-        MemoryApi.garbageCollection();
+        MemoryApi_All.garbageCollection();
 
-        const ownedRooms: Room[] = MemoryApi.getOwnedRooms();
+        const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
         // Init memory for all owned rooms
         _.forEach(ownedRooms, (room: Room) => {
             const isOwnedRoom: boolean = true;
-            MemoryApi.initRoomMemory(room.name, isOwnedRoom);
-            MemoryApi.cleanDependentRoomMemory(room);
+            MemoryApi_Room.initRoomMemory(room.name, isOwnedRoom);
+            MemoryApi_Room.cleanDependentRoomMemory(room);
         });
 
-        const dependentRooms: Room[] = MemoryApi.getVisibleDependentRooms();
+        const dependentRooms: Room[] = MemoryApi_Room.getVisibleDependentRooms();
         // Init memory for all visible dependent rooms
         _.forEach(dependentRooms, (room: Room) => {
             const isOwnedRoom: boolean = false;
-            MemoryApi.initRoomMemory(room.name, isOwnedRoom);
+            MemoryApi_Room.initRoomMemory(room.name, isOwnedRoom);
         });
     }
 

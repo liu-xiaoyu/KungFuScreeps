@@ -1,4 +1,4 @@
-import { ROLE_MANAGER, MemoryApi, CreepAllApi, MemoryHelper } from "Utils/Imports/internals";
+import { ROLE_MANAGER, MemoryApi_Jobs, CreepAllApi, MemoryHelper } from "Utils/Imports/internals";
 
 // Manager for the miner creep role
 export class ManagerCreepManager implements ICivCreepRoleManager {
@@ -47,7 +47,7 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
         // Check for energy in the terminal
         if (creepOptions.getFromTerminal) {
             // All backupStructures with enough energy to fill creep.carry, and not taken
-            const backupStructures = MemoryApi.getBackupStructuresJobs(
+            const backupStructures = MemoryApi_Jobs.getBackupStructuresJobs(
                 room,
                 (job: GetEnergyJob) =>
                     !job.isTaken && job.resources.energy >= creep.carryCapacity &&
@@ -66,7 +66,7 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
         // Second check it to make sure we don't get out energy just to put it back in
         if (creepOptions.getFromStorage && this.isNonStorageJob(creep, room)) {
             // All backupStructures with enough energy to fill creep.carry, and not taken
-            const backupStructures = MemoryApi.getBackupStructuresJobs(
+            const backupStructures = MemoryApi_Jobs.getBackupStructuresJobs(
                 room,
                 (job: GetEnergyJob) =>
                     !job.isTaken && job.resources.energy >= creep.carryCapacity &&
@@ -92,7 +92,7 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
     private getCarryJob(creep: Creep, room: Room): CarryPartJob | undefined {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
         if (creepOptions.fillSpawn) {
-            const spawnJobs = MemoryApi.getFillJobs(
+            const spawnJobs = MemoryApi_Jobs.getFillJobs(
                 room,
                 (fJob: CarryPartJob) => !fJob.isTaken && fJob.targetType === STRUCTURE_SPAWN,
                 true
@@ -121,7 +121,7 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
         }
 
         if (creepOptions.fillTower) {
-            const towerJobs = MemoryApi.getFillJobs(
+            const towerJobs = MemoryApi_Jobs.getFillJobs(
                 room,
                 (fJob: CarryPartJob) => !fJob.isTaken && fJob.targetType === STRUCTURE_TOWER,
                 true
@@ -150,7 +150,7 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
         }
 
         if (creepOptions.fillLink) {
-            const linkJobs = MemoryApi.getFillJobs(
+            const linkJobs = MemoryApi_Jobs.getFillJobs(
                 room,
                 (fJob: CarryPartJob) => !fJob.isTaken && fJob.targetType === STRUCTURE_LINK,
                 true
@@ -179,7 +179,7 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
         }
 
         if (creepOptions.fillStorage) {
-            const storeJobs = MemoryApi.getStoreJobs(room, (bsJob: CarryPartJob) =>
+            const storeJobs = MemoryApi_Jobs.getStoreJobs(room, (bsJob: CarryPartJob) =>
                 !bsJob.isTaken && bsJob.targetType === STRUCTURE_STORAGE
             );
 
@@ -214,6 +214,6 @@ export class ManagerCreepManager implements ICivCreepRoleManager {
      * @param room the room we are in
      */
     public handleNewJob(creep: Creep, room: Room): void {
-        MemoryApi.updateJobMemory(creep, room);
+        MemoryApi_Jobs.updateJobMemory(creep, room);
     }
 }

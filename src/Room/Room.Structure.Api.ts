@@ -1,132 +1,15 @@
 import {
-    MemoryHelper,
-    RoomHelper,
-    ERROR_ERROR,
-    ROLE_MINER,
-    ROOM_STATE_INTRO,
-    ROOM_STATE_BEGINNER,
-    ROOM_STATE_INTER,
-    ROOM_STATE_ADVANCED,
-    ROOM_STATE_NUKE_INBOUND,
-    ROOM_STATE_STIMULATE,
-    ROOM_STATE_UPGRADER,
-    WALL_LIMIT,
-    ERROR_WARN,
     UserException,
     MemoryApi,
-    REPAIR_THRESHOLD,
+    RoomHelper_Structure,
     PRIORITY_REPAIR_THRESHOLD,
-    RUN_RESERVE_TTL_TIMER,
-    TOWER_REPAIR_THRESHOLD
+    REPAIR_THRESHOLD,
+    TOWER_REPAIR_THRESHOLD,
+    MemoryHelper,
+    WALL_LIMIT
 } from "Utils/Imports/internals";
 
-// an api used for functions related to the room
-export class RoomApi {
-    /**
-     * check if there are hostile creeps in the room
-     * @param room the room we are checking
-     */
-    public static isHostilesInRoom(room: Room): boolean {
-        const hostilesInRoom = MemoryApi.getHostileCreeps(room.name);
-        return hostilesInRoom.length > 0;
-    }
-
-    /**
-     * set the room's state
-     * Essentially backbone of the room, decides what flow
-     * of action will be taken at the beginning of each tick
-     * (note: assumes defcon already being found for simplicity sake)
-     * @param room the room we are setting state for
-     */
-    public static setRoomState(room: Room): void {
-        // If theres no controller, throw an error
-        if (!room.controller) {
-            throw new UserException(
-                "Can't set room state for room with no controller!",
-                "You attempted to call setRoomState on room [" + room.name + "]. Theres no controller here.",
-                ERROR_WARN
-            );
-        }
-        // ----------
-
-        // check if we are in nuke inbound room state
-        // nuke is coming in and we need to gtfo, but they take like 20k ticks, so only check every 1000 or so
-        if (RoomHelper.excecuteEveryTicks(1000)) {
-            const incomingNukes = room.find(FIND_NUKES);
-            if (incomingNukes.length > 0) {
-                MemoryApi.updateRoomState(ROOM_STATE_NUKE_INBOUND, room);
-                return;
-            }
-        }
-        // ----------
-
-        // check if we are in intro room state
-        // 3 or less creeps so we need to (re)start the room
-        const creeps: Array<Creep | null> = MemoryApi.getMyCreeps(room.name);
-        if (creeps.length < 3) {
-            MemoryApi.updateRoomState(ROOM_STATE_INTRO, room);
-            return;
-        }
-        // ----------
-
-        const storage: StructureStorage | undefined = room.storage;
-        const containers: Array<Structure | null> = MemoryApi.getStructureOfType(room.name, STRUCTURE_CONTAINER);
-        const sources: Array<Source | null> = MemoryApi.getSources(room.name);
-        if (room.controller!.level >= 6) {
-            // check if we are in upgrader room state
-            // container mining and storage set up, and we got links online
-            if (
-                RoomHelper.isContainerMining(room, sources, containers) &&
-                RoomHelper.isUpgraderLink(room) &&
-                storage !== undefined
-            ) {
-                if (RoomHelper.isStimulateRoom(room)) {
-                    MemoryApi.updateRoomState(ROOM_STATE_STIMULATE, room);
-                    return;
-                }
-                // otherwise, just upgrader room state
-                MemoryApi.updateRoomState(ROOM_STATE_UPGRADER, room);
-                return;
-            }
-        }
-        // ----------
-
-        if (room.controller!.level >= 4) {
-            // check if we are in advanced room state
-            // container mining and storage set up
-            // then check if we are flagged for sitmulate state
-            if (RoomHelper.isContainerMining(room, sources, containers) && storage !== undefined) {
-                if (RoomHelper.isStimulateRoom(room)) {
-                    MemoryApi.updateRoomState(ROOM_STATE_STIMULATE, room);
-                    return;
-                }
-
-                // otherwise, just advanced room state
-                MemoryApi.updateRoomState(ROOM_STATE_ADVANCED, room);
-                return;
-            }
-        }
-        // ----------
-
-        if (room.controller!.level >= 3) {
-            // check if we are in intermediate room state
-            // container mining set up, but no storage
-            if (RoomHelper.isContainerMining(room, sources, containers) && storage === undefined) {
-                MemoryApi.updateRoomState(ROOM_STATE_INTER, room);
-                return;
-            }
-        }
-        // ----------
-
-        // check if we are in beginner room state
-        // no containers set up at sources so we are just running a bare knuckle room
-        if (creeps.length >= 3) {
-            MemoryApi.updateRoomState(ROOM_STATE_BEGINNER, room);
-            return;
-        }
-        // ----------
-    }
-
+export class RoomApi_Structure {
     /**
      * run the towers in the room for the purpose of defense
      * @param room the room we are defending
@@ -134,7 +17,7 @@ export class RoomApi {
     public static runTowersDefense(room: Room): void {
         const towers: StructureTower[] = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER) as StructureTower[];
         // choose the most ideal target and have every tower attack it
-        const idealTarget: Creep | undefined | null = RoomHelper.chooseTowerAttackTarget(room);
+        const idealTarget: Creep | undefined | null = RoomHelper_Structure.chooseTowerAttackTarget(room);
         if (!idealTarget) {
             room.memory.shotLastTick = false;
             return;
@@ -158,7 +41,7 @@ export class RoomApi {
     public static runTowersRepair(room: Room): void {
         const towers: StructureTower[] = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER) as StructureTower[];
         // choose the most ideal target and have every tower attack it
-        const idealTarget: Structure | undefined | null = RoomHelper.chooseTowerTargetRepair(room);
+        const idealTarget: Structure | undefined | null = RoomHelper_Structure.chooseTowerTargetRepair(room);
         if (!idealTarget) {
             return;
         }
@@ -186,71 +69,6 @@ export class RoomApi {
                 t.repair(rampart);
             }
         });
-    }
-
-    /**
-     * set the rooms defcon level
-     * @param room the room we are setting defcon for
-     */
-    public static setDefconLevel(room: Room): void {
-        const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
-        const hostileStructures = room.find(FIND_HOSTILE_STRUCTURES, {
-            filter: s => s.structureType === STRUCTURE_INVADER_CORE
-        });
-        // check level 0 first to reduce cpu drain as it will be the most common scenario
-        // level 0 -- no danger
-        if (hostileCreeps.length === 0 && hostileStructures.length === 0) {
-            room.memory.defcon = 0;
-            return;
-        }
-
-        // now define the variables we will need to check the other cases in the event
-        // we are not dealing with a level 0 defcon scenario
-        const hostileBodyParts: number = _.sum(hostileCreeps, (c: Creep) => c.body.length);
-        const hostileDamageParts: number = _.sum(hostileCreeps, (c: Creep) => {
-            return _.filter(c.body, (part: BodyPartDefinition) => {
-                if (part.type === ATTACK || part.type === RANGED_ATTACK) {
-                    return true;
-                }
-                return false;
-            }).length;
-        });
-        const boostedHostileBodyParts: number = _.filter(_.flatten(_.map(hostileCreeps, "body")), (p: any) => !!p.boost)
-            .length;
-
-        // level 6 -- nuke inbound
-        if (room.find(FIND_NUKES).length > 0) {
-            room.memory.defcon = 6;
-            return;
-        }
-
-        // level 5 full seige, 50+ boosted parts
-        if (boostedHostileBodyParts >= 50) {
-            room.memory.defcon = 5;
-            return;
-        }
-
-        // level 4 -- 150+ body parts OR any boosted body parts
-        if (boostedHostileBodyParts > 0 || hostileBodyParts >= 150) {
-            room.memory.defcon = 4;
-            return;
-        }
-
-        // level 3 -- 50 - 150 body parts
-        if (hostileBodyParts < 150 && hostileBodyParts > 50) {
-            room.memory.defcon = 3;
-            return;
-        }
-
-        // level 2 -- Any damaging parts
-        if (hostileDamageParts > 0 || hostileStructures.length > 0) {
-            room.memory.defcon = 2;
-            return;
-        }
-
-        // level 1 -- less than 50 body parts, no attack parts
-        room.memory.defcon = 1;
-        return;
     }
 
     /**
@@ -414,7 +232,7 @@ export class RoomApi {
             // % of way to next level
             const controllerProgress: number = room.controller.progress / room.controller.progressTotal;
             // difference between this levels max and last levels max
-            const wallLevelHpDiff: number = RoomHelper.getWallLevelDifference(room.controller.level);
+            const wallLevelHpDiff: number = RoomHelper_Structure.getWallLevelDifference(room.controller.level);
             // Minimum hp chunk to increase limit
             const chunkSize: number = 10000;
             // The adjusted hp difference for controller progress and chunking
@@ -487,40 +305,6 @@ export class RoomApi {
     }
 
     /**
-     * simulate or update the reserve TTL for all remote rooms in that room
-     * @param room the room we are updating the remote rooms for
-     */
-    public static simulateReserveTTL(room: Room): void {
-        const remoteRooms = MemoryApi.getRemoteRooms(room);
-        for (const remoteRoom of remoteRooms) {
-            // Handle unreserved and undefined rooms
-            if (!remoteRoom) {
-                continue;
-            }
-
-            const currentRoom: Room = Game.rooms[remoteRoom.roomName];
-            if (currentRoom === undefined) {
-                continue;
-            }
-
-            if (currentRoom === undefined) {
-                // Simulate the dropping of reserve timer by the number of ticks between checks
-                remoteRoom.reserveTTL -= RUN_RESERVE_TTL_TIMER;
-                if (remoteRoom.reserveTTL < 0) {
-                    remoteRoom.reserveTTL = 0;
-                }
-            } else if (currentRoom.controller) {
-                // Get the actual value of the reserve timer
-                if (currentRoom.controller!.reservation) {
-                    remoteRoom.reserveTTL = Game.rooms[remoteRoom.roomName].controller!.reservation!.ticksToEnd;
-                } else {
-                    remoteRoom.reserveTTL = 0;
-                }
-            }
-        }
-    }
-
-    /**
      * sets the ramparts status in the room to public or private
      * @param room the room we are setting ramparts for
      */
@@ -558,27 +342,5 @@ export class RoomApi {
             return !foundCreeps && !foundStructures;
         });
         return target!.pos.findClosestByRange(openRamparts);
-    }
-
-    /**
-     * Activate safemode if we need to
-     * @param room the room we are checking safemode for
-     * @param defcon the defcon level of the room
-     */
-    public static runSafeMode(room: Room, defcon: number): void {
-        // If we are under attack before we have a tower, trigger a safe mode
-        if (defcon >= 2 && !RoomHelper.isExistInRoom(room, STRUCTURE_TOWER)) {
-            if (room.controller!.safeModeAvailable) {
-                room.controller!.activateSafeMode();
-            }
-        }
-
-        // If we are under attack and our towers have no energy, trigger a safe mode
-        const towerEnergy = _.sum(MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER), "energy");
-        if (defcon >= 3 && towerEnergy === 0) {
-            if (room.controller!.safeModeAvailable) {
-                room.controller!.activateSafeMode();
-            }
-        }
     }
 }

@@ -1,10 +1,10 @@
 import { MemoryApi } from "Memory/Memory.Api";
 import { MINERS_GET_CLOSEST_SOURCE } from "Utils/Config/config";
 import { MemoryHelper } from "Memory/MemoryHelper";
-import { RoomHelper } from "Room/RoomHelper";
 import { CreepAllHelper } from "./Creep.All.Helper";
 import { CreepCivHelper } from "./Creep.Civ.Helper";
 import { ROLE_POWER_UPGRADER } from "utils/Imports/constants";
+import { RoomHelper_Structure } from "Utils/Imports/internals";
 
 export class CreepCivApi {
 
@@ -106,7 +106,7 @@ export class CreepCivApi {
                     // ! but will not have enough accessTiles to be assigned. Creep needs to target the "not suitable" source in this case.
                     // Get rid of any sources that are out of access tiles
                     _.forEach(sourceObjects, (source: Source) => {
-                        const numAccessTiles = RoomHelper.getNumAccessTilesForTarget(source);
+                        const numAccessTiles = RoomHelper_Structure.getNumAccessTilesForTarget(source);
                         const numCreepsTargeting = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
                             return (
                                 creep.memory.job !== undefined &&

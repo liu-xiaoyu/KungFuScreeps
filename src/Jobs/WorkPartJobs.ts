@@ -1,4 +1,4 @@
-import { RoomApi, MemoryApi, CreepAllApi, CreepAllHelper, PathfindingApi } from "Utils/Imports/internals";
+import { MemoryApi, CreepAllApi, CreepAllHelper, PathfindingApi, RoomApi_Structure } from "Utils/Imports/internals";
 
 export class WorkPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "workPartJob";
@@ -97,7 +97,7 @@ export class WorkPartJobs implements IJobTypeHelper {
      * [Accurate-Restore] Chooses the lower of two values
      */
     public static createRepairJobs(room: Room): WorkPartJob[] {
-        const repairTargets = RoomApi.getRepairTargets(room);
+        const repairTargets = RoomApi_Structure.getRepairTargets(room);
 
         if (repairTargets.length === 0) {
             return [];

@@ -17,10 +17,10 @@ import {
     ROOM_OVERLAY_GRAPH_ON,
     MemoryApi,
     RoomVisualHelper,
-    RoomHelper,
     CreepAllHelper,
     TOWER_MIN_DAMAGE_THRESHOLD,
-    TOWER_MAX_DAMAGE_THRESHOLD
+    TOWER_MAX_DAMAGE_THRESHOLD,
+    RoomHelper_Structure
 } from "Utils/Imports/internals";
 
 // Api for room visuals
@@ -602,7 +602,7 @@ export class RoomVisualApi {
                     Memory.debug.towerDebug[x][y] = 0;
                     _.forEach(towers, (tower: StructureTower) => {
                         const distance = tower.pos.getRangeTo(x, y);
-                        Memory.debug.towerDebug[x][y] += RoomHelper.getTowerDamageAtRange(distance, 15, false);
+                        Memory.debug.towerDebug[x][y] += RoomHelper_Structure.getTowerDamageAtRange(distance, 15, false);
                     });
                 }
             }
@@ -663,15 +663,15 @@ export class RoomVisualApi {
             (tower: StructureTower) => tower.energy > 0
         ) as StructureTower[];
 
-        const creepHealData = RoomHelper.getCreepHealData(healCreeps, attackCreeps);
+        const creepHealData = RoomHelper_Structure.getCreepHealData(healCreeps, attackCreeps);
 
         // Damage array should be populated at this point
 
         const roomVisual = new RoomVisual(room.name);
 
         for (const data of creepHealData) {
-            const distance = RoomHelper.getAverageDistanceToTarget(towers, data.creep);
-            const damage = RoomHelper.getTowerDamageAtRange(distance);
+            const distance = RoomHelper_Structure.getAverageDistanceToTarget(towers, data.creep);
+            const damage = RoomHelper_Structure.getTowerDamageAtRange(distance);
 
             const netDamage = damage - data.healAmount;
 

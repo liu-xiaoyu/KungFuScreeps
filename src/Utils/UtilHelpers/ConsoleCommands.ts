@@ -1,4 +1,4 @@
-import { RoomHelper } from "Utils/Imports/internals";
+import { RoomHelper_Structure } from "Utils/Imports/internals";
 
 export class ConsoleCommands {
     public static init() {
@@ -44,7 +44,7 @@ export class ConsoleCommands {
             _.forEach(Game.rooms, (currentRoom: Room) => {
                 console.log(`Room: ${currentRoom.name} -----------`);
                 console.log(`State: ${currentRoom.memory.roomState}`);
-                console.log(`Storage: ${RoomHelper.getStoredAmount(currentRoom.storage, RESOURCE_ENERGY)}`);
+                console.log(`Storage: ${RoomHelper_Structure.getStoredAmount(currentRoom.storage, RESOURCE_ENERGY)}`);
                 console.log("----------------------------");
             });
         } else {
@@ -52,7 +52,7 @@ export class ConsoleCommands {
             console.log(`Room: ${room.name} -----------`);
             console.log(`State: ${room.memory.roomState}`);
             if (room.storage) {
-                console.log(`Storage: ${RoomHelper.getStoredAmount(room.storage, RESOURCE_ENERGY)}`);
+                console.log(`Storage: ${RoomHelper_Structure.getStoredAmount(room.storage, RESOURCE_ENERGY)}`);
             }
             console.log("----------------------------");
         }

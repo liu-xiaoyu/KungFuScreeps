@@ -1,12 +1,12 @@
 import {
-    RoomHelper,
     ROOM_STATUS_SOURCE_KEEPER,
     ROOM_STATUS_HIGHWAY,
     ROOM_STATUS_ALLY,
     ROOM_STATUS_HOSTILE,
     ROOM_STATUS_NEUTRAL,
     ROOM_STATUS_UNKNOWN,
-    ROOM_STATUS_HOSTILE_REMOTE
+    ROOM_STATUS_HOSTILE_REMOTE,
+    RoomHelper_State
 } from "Utils/Imports/internals";
 
 export class PathfindingApi {
@@ -34,12 +34,12 @@ export class PathfindingApi {
         let roomStatus: RoomStatusType;
 
         if (room.controller === undefined) {
-            if (RoomHelper.isSourceKeeperRoom(room)) {
+            if (RoomHelper_State.isSourceKeeperRoom(room)) {
                 roomStatus = ROOM_STATUS_SOURCE_KEEPER;
             } else {
                 roomStatus = ROOM_STATUS_HIGHWAY;
             }
-        } else if (room.controller.my || RoomHelper.isAllyRoom(room)) {
+        } else if (room.controller.my || RoomHelper_State.isAllyRoom(room)) {
             roomStatus = ROOM_STATUS_ALLY;
         } else if (!room.controller.my && room.controller.owner) {
             roomStatus = ROOM_STATUS_HOSTILE;

@@ -12,7 +12,6 @@ import {
     USE_STUCK_VISUAL,
     MemoryHelper,
     RoomVisualHelper,
-    RoomHelper,
     MemoryHelper_Room,
     PathfindingApi
 } from "Utils/Imports/internals";

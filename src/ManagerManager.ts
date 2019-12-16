@@ -8,7 +8,6 @@ import {
     EVENT_MANAGER_BUCKET_LIMIT,
     ROOM_OVERLAY_BUCKET_LIMIT,
     EventManager,
-    RoomHelper,
     ConsoleCommands,
     CreepManager,
     RoomVisualManager,
@@ -16,12 +15,13 @@ import {
     SpawnManager,
     RoomManager,
     MemoryManager,
-    EmpireManager
+    EmpireManager,
+    RoomHelper_Structure
 } from "Utils/Imports/internals";
 
 export class ManagerManager {
     public static runManagerManager(): void {
-        if (RoomHelper.excecuteEveryTicks(1000)) {
+        if (RoomHelper_Structure.excecuteEveryTicks(1000)) {
             ConsoleCommands.init();
         }
 
@@ -46,7 +46,7 @@ export class ManagerManager {
         // run spawning
         if (
             !Game.cpu["bucket"] ||
-            (Game.cpu["bucket"] > SPAWN_MANAGER_BUCKET_LIMIT && RoomHelper.excecuteEveryTicks(3))
+            (Game.cpu["bucket"] > SPAWN_MANAGER_BUCKET_LIMIT && RoomHelper_Structure.excecuteEveryTicks(3))
         ) {
             try {
                 SpawnManager.runSpawnManager();

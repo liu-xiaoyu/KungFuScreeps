@@ -1,6 +1,6 @@
 import {
-    CreepHelper,
-    CreepApi,
+    CreepAllHelper,
+    CreepAllApi,
     PathfindingApi,
     RoomApi,
     MemoryApi,
@@ -26,7 +26,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
     public doWork(creep: Creep, job: BaseJob) {
         const target: any = Game.getObjectById(job.targetID);
 
-        CreepApi.nullCheck_target(creep, target);
+        CreepAllApi.nullCheck_target(creep, target);
 
         let returnCode: number;
 
@@ -46,7 +46,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
         ) {
             returnCode = creep.withdraw(target, RESOURCE_ENERGY);
         } else {
-            throw CreepApi.badTarget_Error(creep, job);
+            throw CreepAllApi.badTarget_Error(creep, job);
         }
 
         // Can handle the return code here - e.g. display an error if we expect creep to be in range but it's not
@@ -75,9 +75,9 @@ export class GetEnergyJobs implements IJobTypeHelper {
      * Travel to the target provided by GetEnergyJob in creep.memory.job
      */
     public travelTo(creep: Creep, job: BaseJob) {
-        const moveTarget = CreepHelper.getMoveTarget(creep, job);
+        const moveTarget = CreepAllHelper.getMoveTarget(creep, job);
 
-        CreepApi.nullCheck_target(creep, moveTarget);
+        CreepAllApi.nullCheck_target(creep, moveTarget);
 
         // Move options target
         const moveOpts: MoveToOpts = PathfindingApi.GetDefaultMoveOpts();

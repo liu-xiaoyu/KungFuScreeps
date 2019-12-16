@@ -1,6 +1,6 @@
 import { ALLY_LIST } from "Utils/Imports/internals";
 
-export class MiliHelper {
+export class CreepMiliHelper {
     /**
      * check if the creep belongs to an alliance member
      * @param creep the creep we are evaluating

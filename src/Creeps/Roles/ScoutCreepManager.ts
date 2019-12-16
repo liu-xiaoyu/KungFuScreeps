@@ -1,4 +1,4 @@
-import { ROLE_SCOUT, CreepApi, PathfindingApi, UserException, MOVEMENT_CACHE_TTL } from "Utils/Imports/internals";
+import { ROLE_SCOUT, CreepAllApi, PathfindingApi, UserException, MOVEMENT_CACHE_TTL } from "Utils/Imports/internals";
 
 export class ScoutCreepManager implements ICivCreepRoleManager {
     public name: RoleConstant = ROLE_SCOUT;
@@ -102,7 +102,7 @@ export class ScoutCreepManager implements ICivCreepRoleManager {
 
         // Move to the target room. If we are already in the room, this ensures that we update the room data,
         //     if we are not in the room yet, then it will just move in that direction.
-        CreepApi.travelTo(creep, creep.memory.job);
+        CreepAllApi.travelTo(creep, creep.memory.job);
 
         // If creep is in the target room
         if (creep.room.name === creep.memory.job.targetID) {

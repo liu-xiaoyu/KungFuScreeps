@@ -1,4 +1,5 @@
-import { CreepHelper, CreepApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException, RoomHelper } from "Utils/Imports/internals";
+import { CreepAllHelper, CreepAllApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException, RoomHelper } from "Utils/Imports/internals";
+import { CreepCivHelper } from "Creeps/Creep.Civ.Helper";
 
 export class ClaimPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "claimPartJob";
@@ -24,7 +25,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
             target = Game.getObjectById(job.targetID);
         }
 
-        CreepApi.nullCheck_target(creep, target);
+        CreepAllApi.nullCheck_target(creep, target);
 
         let deleteOnSuccess = true;
 
@@ -42,12 +43,12 @@ export class ClaimPartJobs implements IJobTypeHelper {
             }
             deleteOnSuccess = false; // don't delete job since we do this until death
         } else if (job.actionType === "sign" && target instanceof StructureController) {
-            returnCode = creep.signController(target, CreepHelper.getSigningText());
+            returnCode = creep.signController(target, CreepCivHelper.getSigningText());
         } else if (job.actionType === "attack" && target instanceof StructureController) {
             returnCode = creep.attackController(target);
             deleteOnSuccess = false; // Do this until death
         } else {
-            throw CreepApi.badTarget_Error(creep, job);
+            throw CreepAllApi.badTarget_Error(creep, job);
         }
 
         // Can handle the return code here - e.g. display an error if we expect creep to be in range but it's not
@@ -80,9 +81,9 @@ export class ClaimPartJobs implements IJobTypeHelper {
         }
 
         // Will return a roomPosition in this case, or controller if we have that targeted instead
-        const moveTarget = CreepHelper.getMoveTarget(creep, job);
+        const moveTarget = CreepAllHelper.getMoveTarget(creep, job);
 
-        CreepApi.nullCheck_target(creep, moveTarget);
+        CreepAllApi.nullCheck_target(creep, moveTarget);
 
         // Move options for target
         const moveOpts = PathfindingApi.GetDefaultMoveOpts();
@@ -97,7 +98,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
         // If target is roomPosition then we know we want the controller
         // So as soon as we get in room we set supplementaryTarget
         if (job.targetType === "roomName" && creep.pos.roomName === job.targetID) {
-            if (CreepApi.moveCreepOffExit(creep)) {
+            if (CreepAllApi.moveCreepOffExit(creep)) {
                 return;
             }
 

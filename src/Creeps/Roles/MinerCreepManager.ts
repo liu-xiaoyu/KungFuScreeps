@@ -1,4 +1,6 @@
-import { ROLE_MINER, CreepHelper, CreepApi, MemoryApi } from "Utils/Imports/internals";
+import { ROLE_MINER, CreepAllHelper, CreepAllApi, MemoryApi } from "Utils/Imports/internals";
+import { CreepCivApi } from "Creeps/Creep.Civ.Api";
+import { CreepCivHelper } from "Creeps/Creep.Civ.Helper";
 
 // Manager for the miner creep role
 export class MinerCreepManager implements ICivCreepRoleManager {
@@ -16,7 +18,7 @@ export class MinerCreepManager implements ICivCreepRoleManager {
      * @param room
      */
     public getNewJob(creep: Creep, room: Room): BaseJob | undefined {
-        return CreepApi.getNewSourceJob(creep, room);
+        return CreepCivApi.getNewSourceJob(creep, room);
     }
 
     /**
@@ -29,7 +31,7 @@ export class MinerCreepManager implements ICivCreepRoleManager {
         MemoryApi.updateJobMemory(creep, room);
 
         const isSource: boolean = true;
-        const miningContainer = CreepHelper.getMiningContainer(
+        const miningContainer = CreepCivHelper.getMiningContainer(
             creep.memory.job as GetEnergyJob,
             Game.rooms[creep.memory.homeRoom],
             isSource

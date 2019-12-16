@@ -1,4 +1,4 @@
-import { ROLE_DOMESTIC_DEFENDER, MiliApi, RoomApi } from "Utils/Imports/internals";
+import { ROLE_DOMESTIC_DEFENDER, CreepMiliApi, RoomApi } from "Utils/Imports/internals";
 
 // Manager for the Domestic Defender Creep Role
 export class DomesticDefenderCreepManager implements IMiliCreepRoleManager {
@@ -22,12 +22,12 @@ export class DomesticDefenderCreepManager implements IMiliCreepRoleManager {
         const CREEP_RANGE: number = 1;
 
         // Carry out the basics of a military creep before moving on to specific logic
-        if (MiliApi.checkMilitaryCreepBasics(creep, creepOptions)) {
+        if (CreepMiliApi.checkMilitaryCreepBasics(creep, creepOptions)) {
             return;
         }
 
         // Find a target for the creep
-        const target: Creep | null = MiliApi.getDomesticDefenseAttackTarget(creep, creepOptions, CREEP_RANGE);
+        const target: Creep | null = CreepMiliApi.getDomesticDefenseAttackTarget(creep, creepOptions, CREEP_RANGE);
         const defendingRampart: StructureRampart | null = RoomApi.getDefenseRampart(creep.room, target);
         const isMelee: boolean = false;
         if (!target) {
@@ -40,11 +40,11 @@ export class DomesticDefenderCreepManager implements IMiliCreepRoleManager {
             }
         } else {
             // If we aren't in attack range, move towards the attack target
-            if (!MiliApi.isInAttackRange(creep, target.pos, isMelee)) {
+            if (!CreepMiliApi.isInAttackRange(creep, target.pos, isMelee)) {
                 creep.moveTo(target);
                 return;
             } else {
-                MiliApi.kiteEnemyCreep(creep);
+                CreepMiliApi.kiteEnemyCreep(creep);
             }
         }
 

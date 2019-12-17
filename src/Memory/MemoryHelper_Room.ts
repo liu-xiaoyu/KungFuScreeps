@@ -2,11 +2,11 @@ import {
     GetEnergyJobs,
     ALL_STRUCTURE_TYPES,
     ClaimPartJobs,
-    RoomApi,
     WorkPartJobs,
     CarryPartJobs,
     CreepMiliHelper,
-    RoomHelper
+    RoomHelper_Structure,
+    RoomApi_State,
 } from "Utils/Imports/internals";
 
 /**
@@ -163,7 +163,7 @@ export class MemoryHelper_Room {
         Memory.rooms[roomName].sources.data = _.map(sources, (source: Source) => {
             return {
                 id: source.id,
-                numAccessTiles: RoomHelper.getNumAccessTilesForTarget(source)
+                numAccessTiles: RoomHelper_Structure.getNumAccessTilesForTarget(source)
             };
         });
         Memory.rooms[roomName].sources.cache = Game.time;
@@ -232,7 +232,7 @@ export class MemoryHelper_Room {
      * @param stateConst the state we are applying to the room
      */
     public static updateRoomState(room: Room): void {
-        RoomApi.setRoomState(room);
+        RoomApi_State.setRoomState(room);
         return;
     }
 
@@ -242,7 +242,7 @@ export class MemoryHelper_Room {
      * @param stateConst the defcon we are applying to the room
      */
     public static updateDefcon(room: Room): void {
-        RoomApi.setDefconLevel(room);
+        RoomApi_State.setDefconLevel(room);
         return;
     }
 
@@ -584,7 +584,7 @@ export class MemoryHelper_Room {
             return spawns[0];
         }
         // If there can be multiple spawns, try as many ways as we can to find the center spawn
-        if (RoomHelper.isExistInRoom(room, STRUCTURE_TERMINAL)) {
+        if (RoomHelper_Structure.isExistInRoom(room, STRUCTURE_TERMINAL)) {
             return room.terminal!.pos.findClosestByRange(spawns);
         }
 

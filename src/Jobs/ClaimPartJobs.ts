@@ -1,4 +1,4 @@
-import { CreepAllHelper, CreepAllApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException, RoomHelper } from "Utils/Imports/internals";
+import { CreepAllHelper, CreepAllApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException, RoomHelper_State } from "Utils/Imports/internals";
 import { CreepCivHelper } from "Creeps/Creep.Civ.Helper";
 
 export class ClaimPartJobs implements IJobTypeHelper {
@@ -35,7 +35,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
             returnCode = creep.claimController(target);
         } else if (job.actionType === "reserve" && target instanceof StructureController) {
             // this handles enemy reserved controller as well
-            if (RoomHelper.isAllyReserved(target.room) || RoomHelper.isNoReservation(target.room)) {
+            if (RoomHelper_State.isAllyReserved(target.room) || RoomHelper_State.isNoReservation(target.room)) {
                 returnCode = creep.reserveController(target);
             }
             else {

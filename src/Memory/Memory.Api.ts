@@ -1,7 +1,6 @@
 import {
     MemoryHelper,
     MemoryHelper_Room,
-    RoomHelper,
     NO_CACHING_MEMORY,
     PRIORITY_REPAIR_THRESHOLD,
     BACKUP_JOB_CACHE_TTL,
@@ -30,9 +29,10 @@ import {
     ERROR_ERROR,
     MINERAL_CACHE_TTL,
     UserException,
-    RoomApi,
     RUINS_CACHE_TTL,
-    LOOT_JOB_CACHE_TTL
+    LOOT_JOB_CACHE_TTL,
+    RoomHelper_State,
+    RoomApi_Structure
 } from "Utils/Imports/internals";
 
 // the api for the memory class
@@ -89,7 +89,7 @@ export class MemoryApi {
      */
     public static getUpgraderLink(room: Room): Structure<StructureConstant> | null {
         // Throw warning if we do not own this room
-        if (!RoomHelper.isOwnedRoom(room)) {
+        if (!RoomHelper_State.isOwnedRoom(room)) {
             throw new UserException(
                 "Stimulate flag check on non-owned room",
                 "You attempted to check for a stimulate flag in a room we do not own. Room [" + room.name + "]",
@@ -899,9 +899,9 @@ export class MemoryApi {
      */
     public static getOwnedRooms(filterFunction?: (room: Room) => boolean): Room[] {
         if (filterFunction) {
-            return _.filter(Game.rooms, currentRoom => RoomHelper.isOwnedRoom(currentRoom) && filterFunction);
+            return _.filter(Game.rooms, currentRoom => RoomHelper_State.isOwnedRoom(currentRoom) && filterFunction);
         }
-        return _.filter(Game.rooms, currentRoom => RoomHelper.isOwnedRoom(currentRoom));
+        return _.filter(Game.rooms, currentRoom => RoomHelper_State.isOwnedRoom(currentRoom));
     }
 
     /**
@@ -1376,7 +1376,7 @@ export class MemoryApi {
             if (obj.structureType !== STRUCTURE_WALL && obj.structureType !== STRUCTURE_RAMPART) {
                 return obj.hits < obj.hitsMax * PRIORITY_REPAIR_THRESHOLD;
             } else {
-                return obj.hits < RoomApi.getWallHpLimit(room) * PRIORITY_REPAIR_THRESHOLD;
+                return obj.hits < RoomApi_Structure.getWallHpLimit(room) * PRIORITY_REPAIR_THRESHOLD;
             }
         });
 
@@ -1919,7 +1919,7 @@ export class MemoryApi {
 
         for (const hustler of creepsInRoomWhoAreHustling) {
             const job: BaseJob = hustler.memory.job!;
-            if (!RoomHelper.verifyObjectByID(job.targetID)) {
+            if (!RoomHelper_State.verifyObjectByID(job.targetID)) {
                 delete hustler.memory.job;
             }
         }

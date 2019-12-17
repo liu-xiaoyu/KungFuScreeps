@@ -10,9 +10,10 @@ import {
     SpawnHelper,
     SpawnApi,
     MemoryApi,
-    RoomHelper,
     STORAGE_LEVEL_MINI_UPGRADERS,
     MINI_UPGRADER_WORK_PARTS,
+    RoomHelper_State,
+    RoomHelper_Structure,
 } from "Utils/Imports/internals";
 
 export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
@@ -32,9 +33,9 @@ export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
         // Default Values for Power Upgrader
         let body: CreepBodyDescriptor = { work: 18, carry: 8, move: 4 };
         const opts: CreepBodyOptions = { mixType: GROUPED };
-        const numRemoteSources = RoomHelper.numRemoteSources(room);
+        const numRemoteSources = RoomHelper_State.numRemoteSources(room);
         let numWorkParts: number = (numRemoteSources * 2);
-        const storageLevel: number = RoomHelper.getStorageLevel(room);
+        const storageLevel: number = RoomHelper_Structure.getStorageLevel(room);
 
         switch (tier) {
             case TIER_6:

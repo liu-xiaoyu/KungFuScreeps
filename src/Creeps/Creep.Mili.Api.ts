@@ -1,4 +1,4 @@
-import { MemoryApi, CreepAllApi, CreepMiliHelper, UserException, RoomHelper, PathfindingApi } from "Utils/Imports/internals";
+import { MemoryApi, CreepAllApi, CreepMiliHelper, UserException, PathfindingApi, RoomHelper_State } from "Utils/Imports/internals";
 
 // Api for military creep's
 export class CreepMiliApi {
@@ -197,7 +197,7 @@ export class CreepMiliApi {
         }
 
         // Neutral structures
-        if (RoomHelper.isAllyRoom(creep.room) === false) {
+        if (RoomHelper_State.isAllyRoom(creep.room) === false) {
             const neutralStructure: Structure<StructureConstant> = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: (struct: Structure) =>
                     struct.structureType === STRUCTURE_CONTAINER || struct.structureType === STRUCTURE_ROAD

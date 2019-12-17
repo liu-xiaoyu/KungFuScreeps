@@ -13,12 +13,12 @@ import {
     ROLE_REMOTE_DEFENDER,
     ROOM_STATE_UPGRADER,
     ROLE_MANAGER,
-    RoomHelper,
     SpawnHelper,
     MemoryApi,
     STORAGE_ADDITIONAL_WORKER_THRESHOLD,
     STORAGE_ADDITIONAL_UPGRADER_THRESHOLD,
-    SpawnApi
+    SpawnApi,
+    RoomHelper_State
 } from "Utils/Imports/internals";
 
 export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
@@ -94,16 +94,16 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
             claimer: 0
         };
 
-        const numRemoteRooms: number = RoomHelper.numRemoteRooms(room);
-        const numClaimRooms: number = RoomHelper.numClaimRooms(room);
+        const numRemoteRooms: number = RoomHelper_State.numRemoteRooms(room);
+        const numClaimRooms: number = RoomHelper_State.numClaimRooms(room);
         // If we do not have any remote rooms, return the initial remote limits (Empty)
         if (numRemoteRooms <= 0 && numClaimRooms <= 0) {
             return remoteLimits;
         }
         // Gather the rest of the data only if we have a remote room or a claim room
-        const numRemoteDefenders: number = RoomHelper.numRemoteDefenders(room);
-        const numRemoteSources: number = RoomHelper.numRemoteSources(room);
-        const numCurrentlyUnclaimedClaimRooms: number = RoomHelper.numCurrentlyUnclaimedClaimRooms(room);
+        const numRemoteDefenders: number = RoomHelper_State.numRemoteDefenders(room);
+        const numRemoteSources: number = RoomHelper_State.numRemoteSources(room);
+        const numCurrentlyUnclaimedClaimRooms: number = RoomHelper_State.numCurrentlyUnclaimedClaimRooms(room);
 
         // Generate Limits -----
         remoteLimits[ROLE_REMOTE_MINER] = SpawnHelper.getLimitPerRemoteRoomForRolePerSource(

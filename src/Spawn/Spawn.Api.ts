@@ -34,11 +34,11 @@ import {
     CREEP_BODY_OPT_HELPERS,
     ROOM_STATE_CREEP_LIMITS,
     MemoryHelper_Room,
-    RoomHelper,
     MemoryApi,
     UserException,
     EventHelper,
-    RoomApi
+    RoomHelper_Structure,
+    RoomHelper_State,
 } from "Utils/Imports/internals";
 
 /**
@@ -99,8 +99,8 @@ export class SpawnApi {
 
         // Check for Domestic Defenders
         const defconLevel: number = MemoryApi.getDefconLevel(room);
-        const isTowers: boolean = RoomHelper.isExistInRoom(room, STRUCTURE_TOWER);
-        const limit: number = RoomHelper.getDomesticDefenderLimitByDefcon(defconLevel, isTowers);
+        const isTowers: boolean = RoomHelper_Structure.isExistInRoom(room, STRUCTURE_TOWER);
+        const limit: number = RoomHelper_State.getDomesticDefenderLimitByDefcon(defconLevel, isTowers);
 
         if (
             // Need to not spawn defenders at beginner roomstate

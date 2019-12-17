@@ -1,7 +1,7 @@
 import {
     ROLE_TOWER_TANK,
 } from "Utils/Imports/constants";
-import { RoomHelper, MemoryApi } from "Utils/Imports/internals";
+import { MemoryApi, RoomHelper_Structure } from "Utils/Imports/internals";
 
 // Manager for the miner creep role
 export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
@@ -92,7 +92,7 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
     private calculateTowerDamage(enemyTowers: StructureTower[], creepPos: RoomPosition): number {
         let damage: number = 0;
         for (const tower of enemyTowers) {
-            damage += RoomHelper.getTowerDamageAtRange(tower.pos.getRangeTo(creepPos));
+            damage += RoomHelper_Structure.getTowerDamageAtRange(tower.pos.getRangeTo(creepPos));
         }
         return damage;
     }

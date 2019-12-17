@@ -13,10 +13,10 @@ import {
     REMOTE_FLAG,
     OVERRIDE_D_ROOM_FLAG,
     STIMULATE_FLAG,
-    RoomHelper,
     STUCK_COUNT_LIMIT,
     STUCK_VISUAL_COLORS,
-    RoomManager
+    RoomManager,
+    RoomHelper_Structure
 } from "Utils/Imports/internals";
 
 const textColor = "#bab8ba";
@@ -127,7 +127,7 @@ export class RoomVisualHelper {
         }
 
         // Every 50 ticks, update the time and find the new seconds per tick
-        if (RoomHelper.excecuteEveryTicks(TIME_BETWEEN_CHECKS)) {
+        if (RoomHelper_Structure.excecuteEveryTicks(TIME_BETWEEN_CHECKS)) {
             const updatedTime: number = Date.now();
             const oldTime: number = Memory.rooms[room.name].visual!.time;
             const avgTimePerTick = (updatedTime - oldTime) / TIME_BETWEEN_CHECKS / 1000;

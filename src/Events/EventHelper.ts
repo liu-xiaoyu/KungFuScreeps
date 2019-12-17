@@ -13,7 +13,6 @@ import {
     UserException,
     SpawnHelper,
     Normalize,
-    RoomHelper
 } from "Utils/Imports/internals";
 
 export class EventHelper {

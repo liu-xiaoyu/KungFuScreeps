@@ -3,6 +3,13 @@ import {
     MemoryApi,
     RUN_RESERVE_TTL_TIMER,
     RoomHelper_State,
+    ROOM_STATE_INTRO,
+    ROOM_STATE_NUKE_INBOUND,
+    ROOM_STATE_STIMULATE,
+    ROOM_STATE_UPGRADER,
+    ROOM_STATE_ADVANCED,
+    ROOM_STATE_INTER,
+    ROOM_STATE_BEGINNER,
     RoomHelper_Structure,
 
 } from "Utils/Imports/internals";

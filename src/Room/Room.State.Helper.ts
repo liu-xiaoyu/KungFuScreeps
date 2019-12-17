@@ -1,4 +1,9 @@
-import { UserException, MemoryApi, SpawnHelper } from "Utils/Imports/internals";
+import {
+    UserException,
+    MemoryApi,
+    SpawnHelper,
+    STIMULATE_FLAG
+} from "Utils/Imports/internals";
 
 export class RoomHelper_State {
 

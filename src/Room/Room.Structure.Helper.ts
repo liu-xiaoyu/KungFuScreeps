@@ -1,4 +1,12 @@
-import { UserException, MemoryApi, CreepAllHelper, TOWER_MIN_DAMAGE_THRESHOLD, TOWER_MAX_DAMAGE_THRESHOLD, TOWER_ALLOWED_TO_REPAIR, WALL_LIMIT } from "Utils/Imports/internals";
+import {
+    UserException,
+    MemoryApi,
+    CreepAllHelper,
+    TOWER_MIN_DAMAGE_THRESHOLD,
+    TOWER_MAX_DAMAGE_THRESHOLD,
+    TOWER_ALLOWED_TO_REPAIR,
+    WALL_LIMIT
+} from "Utils/Imports/internals";
 
 export class RoomHelper_Structure {
 

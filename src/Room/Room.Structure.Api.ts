@@ -6,7 +6,8 @@ import {
     REPAIR_THRESHOLD,
     TOWER_REPAIR_THRESHOLD,
     MemoryHelper,
-    WALL_LIMIT
+    WALL_LIMIT,
+    ROLE_MINER,
 } from "Utils/Imports/internals";
 
 export class RoomApi_Structure {

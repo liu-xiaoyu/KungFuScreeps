@@ -18,9 +18,13 @@ export class CreepCivApi {
     public static newWorkPartJob(creep: Creep, room: Room): WorkPartJob | undefined {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
         const upgradeJobs = MemoryApi.getUpgradeJobs(room, (job: WorkPartJob) => !job.isTaken);
+        const isPowerUpgrader: boolean = !!(room.memory.creepLimit && room.memory.creepLimit.domesticLimits[ROLE_POWER_UPGRADER] > 0);
         const isCurrentUpgrader: boolean = _.some(
             MemoryApi.getMyCreeps(room.name),
-            (c: Creep) => (c.memory.job && c.memory.job!.actionType === "upgrade") || c.memory.role === ROLE_POWER_UPGRADER
+            (c: Creep) => (
+                c.memory.job &&
+                c.memory.job!.actionType === "upgrade") ||
+                c.memory.role === ROLE_POWER_UPGRADER
         );
 
         // Assign upgrade job is one isn't currently being worked
@@ -61,7 +65,7 @@ export class CreepCivApi {
             }
         }
 
-        if (creepOptions.upgrade) {
+        if (creepOptions.upgrade && !isPowerUpgrader) {
             if (upgradeJobs.length > 0) {
                 return upgradeJobs[0];
             }

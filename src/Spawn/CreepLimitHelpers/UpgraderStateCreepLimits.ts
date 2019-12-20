@@ -18,7 +18,8 @@ import {
     STORAGE_ADDITIONAL_WORKER_THRESHOLD,
     STORAGE_ADDITIONAL_UPGRADER_THRESHOLD,
     SpawnApi,
-    RoomHelper_State
+    RoomHelper_State,
+    TIER_8
 } from "Utils/Imports/internals";
 
 export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
@@ -55,13 +56,14 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
         const creepBody: BodyPartConstant[] = SpawnApi.generateCreepBody(roomTier, ROLE_WORKER, room);
         const numWorkParts: number = _.filter(creepBody, (p: BodyPartConstant) => p === WORK).length;
         const needExtraWorker: boolean = SpawnHelper.needExtraWorkerUpgrader(room, numWorkParts);
+        const currentLevel: number = room.controller!.level;
 
         // If we have more than 100k energy in storage, we want another worker to help whittle it down
         if (room.storage && room.storage!.store[RESOURCE_ENERGY] > STORAGE_ADDITIONAL_WORKER_THRESHOLD && needExtraWorker) {
             numWorkers++;
         }
         // If we have more than 300k energy in storage, get another power ugprader out to help with that
-        if (room.storage && room.storage!.store[RESOURCE_ENERGY] > STORAGE_ADDITIONAL_UPGRADER_THRESHOLD) {
+        if (room.storage && room.storage!.store[RESOURCE_ENERGY] > STORAGE_ADDITIONAL_UPGRADER_THRESHOLD && currentLevel < 8) {
             numPowerUpgraders++;
         }
         // If we have a fair amount of construction sites in the room, pump out some extra workers

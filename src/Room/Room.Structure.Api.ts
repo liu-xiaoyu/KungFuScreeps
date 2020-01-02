@@ -231,7 +231,8 @@ export class RoomApi_Structure {
         // only do so if the room has a controller otherwise we have an exception
         if (room.controller !== undefined) {
             // % of way to next level
-            const controllerProgress: number = room.controller.progress / room.controller.progressTotal;
+            // If we're at rcl 8, simulate 99% controller progress for maxiumum repairage!
+            const controllerProgress: number = room.controller.level < 8 ? room.controller.progress / room.controller.progressTotal : .99;
             // difference between this levels max and last levels max
             const wallLevelHpDiff: number = RoomHelper_Structure.getWallLevelDifference(room.controller.level);
             // Minimum hp chunk to increase limit

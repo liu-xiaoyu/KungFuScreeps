@@ -665,6 +665,10 @@ interface WorkPartJobListing {
      * Jobs to upgrade controllers
      */
     upgradeJobs?: Cache;
+    /**
+     * Jobs to repair walls
+     */
+    wallRepairJobs?: Cache;
 }
 
 /**

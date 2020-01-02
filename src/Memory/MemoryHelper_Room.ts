@@ -443,6 +443,7 @@ export class MemoryHelper_Room {
      */
     public static updateWorkPart_allJobs(room: Room) {
         this.updateWorkPart_repairJobs(room);
+        this.updateWorkPart_wallRepairJobs(room);
         this.updateWorkPart_buildJobs(room);
         this.updateWorkPart_upgradeJobs(room);
     }
@@ -458,6 +459,21 @@ export class MemoryHelper_Room {
 
         Memory.rooms[room.name].jobs!.workPartJobs!.repairJobs = {
             data: WorkPartJobs.createRepairJobs(room),
+            cache: Game.time
+        };
+    }
+
+    /**
+     * Update the room's WallWorkPartJobListing_repairJobs
+     * @param room The room to update the memory of
+     */
+    public static updateWorkPart_wallRepairJobs(room: Room) {
+        if (Memory.rooms[room.name].jobs!.workPartJobs === undefined) {
+            Memory.rooms[room.name].jobs!.workPartJobs = {};
+        }
+
+        Memory.rooms[room.name].jobs!.workPartJobs!.wallRepairJobs = {
+            data: WorkPartJobs.createWallRepairJobs(room),
             cache: Game.time
         };
     }

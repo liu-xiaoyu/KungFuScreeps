@@ -35,7 +35,7 @@ export class CreepCivApi {
         }
 
         // Priority Repair Only
-        if (creepOptions.repair || creepOptions.wallRepair) {
+        if (creepOptions.repair) {
             const priorityRepairJobs = MemoryApi.getPriorityRepairJobs(room);
             if (priorityRepairJobs.length > 0) {
                 return priorityRepairJobs[0];
@@ -59,9 +59,9 @@ export class CreepCivApi {
 
         // Wall Repair
         if (creepOptions.wallRepair) {
-            const repairJobs = MemoryApi.getRepairJobs(room, (job: WorkPartJob) => !job.isTaken && job.targetType === STRUCTURE_RAMPART);
-            if (repairJobs.length > 0) {
-                return repairJobs[0];
+            const wallRepairJobs = MemoryApi.getWallRepairJobs(room, (job: WorkPartJob) => !job.isTaken);
+            if (wallRepairJobs.length > 0) {
+                return wallRepairJobs[0];
             }
         }
 

@@ -107,7 +107,7 @@ export const WALL_LIMIT: number[] = [
     100000, // RCL 5
     200000, // RCL 6
     400000, // RCL 7
-    100000 // RCL 8
+    1000000 // RCL 8
 ];
 
 // Cache Tick Limits

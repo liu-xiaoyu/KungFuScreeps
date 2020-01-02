@@ -1345,6 +1345,36 @@ export class MemoryApi {
     }
 
     /**
+     * Get the list of WorkPartJobs.repairJobs
+     * @param room The room to get the jobs from
+     * @param filterFunction [Optional] A function to filter the WorkPartJobs list
+     * @param forceUpdate [Optional] Forcibly invalidate the cache
+     */
+    public static getWallRepairJobs(
+        room: Room,
+        filterFunction?: (object: WorkPartJob) => boolean,
+        forceUpdate?: boolean
+    ): WorkPartJob[] {
+        if (
+            NO_CACHING_MEMORY ||
+            forceUpdate ||
+            !Memory.rooms[room.name].jobs!.workPartJobs ||
+            !Memory.rooms[room.name].jobs!.workPartJobs!.wallRepairJobs ||
+            Memory.rooms[room.name].jobs!.workPartJobs!.wallRepairJobs!.cache < Game.time - REPAIR_JOB_CACHE_TTL
+        ) {
+            MemoryHelper_Room.updateWorkPart_wallRepairJobs(room);
+        }
+
+        let wallRepairJobs: WorkPartJob[] = Memory.rooms[room.name].jobs!.workPartJobs!.wallRepairJobs!.data;
+
+        if (filterFunction !== undefined) {
+            wallRepairJobs = _.filter(wallRepairJobs, filterFunction);
+        }
+
+        return wallRepairJobs;
+    }
+
+    /**
      * Get the list of WorkPartJobs.repairJobs where hp% < config:PRIORITY_REPAIR_THRESHOLD
      * @param room The room to get the jobs from
      * @param filterFunction [Optional] A function to filter the WorkPartJobs list
@@ -1375,9 +1405,8 @@ export class MemoryApi {
 
             if (obj.structureType !== STRUCTURE_WALL && obj.structureType !== STRUCTURE_RAMPART) {
                 return obj.hits < obj.hitsMax * PRIORITY_REPAIR_THRESHOLD;
-            } else {
-                return obj.hits < RoomApi_Structure.getWallHpLimit(room) * PRIORITY_REPAIR_THRESHOLD;
             }
+            return false;
         });
 
         if (filterFunction !== undefined) {

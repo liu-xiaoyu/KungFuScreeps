@@ -12,7 +12,6 @@ import {
     ROLE_REMOTE_DEFENDER,
     ROOM_STATE_ADVANCED,
     ROLE_SCOUT,
-    RoomHelper,
     SpawnHelper,
     SpawnApi,
     Normalize,

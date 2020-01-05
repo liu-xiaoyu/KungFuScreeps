@@ -1,4 +1,4 @@
-import { MemoryHelper, RoomHelper, UserException, MemoryApi_All, NO_CACHING_MEMORY, STRUCT_CACHE_TTL, MemoryHelper_Room, CONSTR_CACHE_TTL, TOMBSTONE_CACHE_TTL, RUINS_CACHE_TTL, DROPS_CACHE_TTL, SOURCE_CACHE_TTL, MINERAL_CACHE_TTL, MemoryApi_Creep, MemoryApi_Jobs, MemoryApi_Empire } from "Utils/Imports/internals";
+import { MemoryHelper, UserException, MemoryApi_All, NO_CACHING_MEMORY, STRUCT_CACHE_TTL, MemoryHelper_Room, CONSTR_CACHE_TTL, TOMBSTONE_CACHE_TTL, RUINS_CACHE_TTL, DROPS_CACHE_TTL, SOURCE_CACHE_TTL, MINERAL_CACHE_TTL, MemoryApi_Creep, MemoryApi_Jobs, MemoryApi_Empire, RoomHelper_State } from "Utils/Imports/internals";
 
 export class MemoryApi_Room {
     /**
@@ -16,7 +16,7 @@ export class MemoryApi_Room {
      */
     public static getUpgraderLink(room: Room): Structure<StructureConstant> | null {
         // Throw warning if we do not own this room
-        if (!RoomHelper.isOwnedRoom(room)) {
+        if (!RoomHelper_State.isOwnedRoom(room)) {
             throw new UserException(
                 "Stimulate flag check on non-owned room",
                 "You attempted to check for a stimulate flag in a room we do not own. Room [" + room.name + "]",

@@ -1,4 +1,4 @@
-import { RoomHelper, MemoryApi_Creep, RoomHelper_Structure } from "Utils/Imports/internals";
+import { MemoryApi_Creep, RoomHelper_Structure } from "Utils/Imports/internals";
 import {
     ROLE_TOWER_TANK,
 } from "Utils/Imports/constants";

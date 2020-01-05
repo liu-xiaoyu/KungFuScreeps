@@ -9,7 +9,6 @@ import {
     ROLE_POWER_UPGRADER,
     SpawnHelper,
     SpawnApi,
-    RoomHelper,
     MemoryApi_Room,
     STORAGE_LEVEL_MINI_UPGRADERS,
     MINI_UPGRADER_WORK_PARTS,

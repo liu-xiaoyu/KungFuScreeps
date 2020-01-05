@@ -1,6 +1,5 @@
 import {
     UserException,
-    MemoryApi,
     RUN_RESERVE_TTL_TIMER,
     RoomHelper_State,
     ROOM_STATE_INTRO,
@@ -11,6 +10,9 @@ import {
     ROOM_STATE_INTER,
     ROOM_STATE_BEGINNER,
     RoomHelper_Structure,
+    MemoryApi_Creep,
+    MemoryApi_Room,
+    MemoryApi_Empire,
 
 } from "Utils/Imports/internals";
 
@@ -21,7 +23,7 @@ export class RoomApi_State {
      * @param room the room we are checking
      */
     public static isHostilesInRoom(room: Room): boolean {
-        const hostilesInRoom = MemoryApi.getHostileCreeps(room.name);
+        const hostilesInRoom = MemoryApi_Creep.getHostileCreeps(room.name);
         return hostilesInRoom.length > 0;
     }
 
@@ -48,7 +50,7 @@ export class RoomApi_State {
         if (RoomHelper_Structure.excecuteEveryTicks(1000)) {
             const incomingNukes = room.find(FIND_NUKES);
             if (incomingNukes.length > 0) {
-                MemoryApi.updateRoomState(ROOM_STATE_NUKE_INBOUND, room);
+                MemoryApi_Room.updateRoomState(ROOM_STATE_NUKE_INBOUND, room);
                 return;
             }
         }
@@ -56,16 +58,16 @@ export class RoomApi_State {
 
         // check if we are in intro room state
         // 3 or less creeps so we need to (re)start the room
-        const creeps: Array<Creep | null> = MemoryApi.getMyCreeps(room.name);
+        const creeps: Array<Creep | null> = MemoryApi_Creep.getMyCreeps(room.name);
         if (creeps.length < 3) {
-            MemoryApi.updateRoomState(ROOM_STATE_INTRO, room);
+            MemoryApi_Room.updateRoomState(ROOM_STATE_INTRO, room);
             return;
         }
         // ----------
 
         const storage: StructureStorage | undefined = room.storage;
-        const containers: Array<Structure | null> = MemoryApi.getStructureOfType(room.name, STRUCTURE_CONTAINER);
-        const sources: Array<Source | null> = MemoryApi.getSources(room.name);
+        const containers: Array<Structure | null> = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_CONTAINER);
+        const sources: Array<Source | null> = MemoryApi_Room.getSources(room.name);
         if (room.controller!.level >= 6) {
             // check if we are in upgrader room state
             // container mining and storage set up, and we got links online
@@ -75,11 +77,11 @@ export class RoomApi_State {
                 storage !== undefined
             ) {
                 if (RoomHelper_State.isStimulateRoom(room)) {
-                    MemoryApi.updateRoomState(ROOM_STATE_STIMULATE, room);
+                    MemoryApi_Room.updateRoomState(ROOM_STATE_STIMULATE, room);
                     return;
                 }
                 // otherwise, just upgrader room state
-                MemoryApi.updateRoomState(ROOM_STATE_UPGRADER, room);
+                MemoryApi_Room.updateRoomState(ROOM_STATE_UPGRADER, room);
                 return;
             }
         }
@@ -91,12 +93,12 @@ export class RoomApi_State {
             // then check if we are flagged for sitmulate state
             if (RoomHelper_State.isContainerMining(room, sources, containers) && storage !== undefined) {
                 if (RoomHelper_State.isStimulateRoom(room)) {
-                    MemoryApi.updateRoomState(ROOM_STATE_STIMULATE, room);
+                    MemoryApi_Room.updateRoomState(ROOM_STATE_STIMULATE, room);
                     return;
                 }
 
                 // otherwise, just advanced room state
-                MemoryApi.updateRoomState(ROOM_STATE_ADVANCED, room);
+                MemoryApi_Room.updateRoomState(ROOM_STATE_ADVANCED, room);
                 return;
             }
         }
@@ -106,7 +108,7 @@ export class RoomApi_State {
             // check if we are in intermediate room state
             // container mining set up, but no storage
             if (RoomHelper_State.isContainerMining(room, sources, containers) && storage === undefined) {
-                MemoryApi.updateRoomState(ROOM_STATE_INTER, room);
+                MemoryApi_Room.updateRoomState(ROOM_STATE_INTER, room);
                 return;
             }
         }
@@ -115,7 +117,7 @@ export class RoomApi_State {
         // check if we are in beginner room state
         // no containers set up at sources so we are just running a bare knuckle room
         if (creeps.length >= 3) {
-            MemoryApi.updateRoomState(ROOM_STATE_BEGINNER, room);
+            MemoryApi_Room.updateRoomState(ROOM_STATE_BEGINNER, room);
             return;
         }
         // ----------
@@ -126,7 +128,7 @@ export class RoomApi_State {
      * @param room the room we are setting defcon for
      */
     public static setDefconLevel(room: Room): void {
-        const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
+        const hostileCreeps = MemoryApi_Creep.getHostileCreeps(room.name);
         const hostileStructures = room.find(FIND_HOSTILE_STRUCTURES, {
             filter: s => s.structureType === STRUCTURE_INVADER_CORE
         });
@@ -191,7 +193,7 @@ export class RoomApi_State {
      * @param room the room we are updating the remote rooms for
      */
     public static simulateReserveTTL(room: Room): void {
-        const remoteRooms = MemoryApi.getRemoteRooms(room);
+        const remoteRooms = MemoryApi_Room.getRemoteRooms(room);
         for (const remoteRoom of remoteRooms) {
             // Handle unreserved and undefined rooms
             if (!remoteRoom) {
@@ -234,7 +236,7 @@ export class RoomApi_State {
         }
 
         // If we are under attack and our towers have no energy, trigger a safe mode
-        const towerEnergy = _.sum(MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER), "energy");
+        const towerEnergy = _.sum(MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_TOWER), "energy");
         if (defcon >= 3 && towerEnergy === 0) {
             if (room.controller!.safeModeAvailable) {
                 room.controller!.activateSafeMode();

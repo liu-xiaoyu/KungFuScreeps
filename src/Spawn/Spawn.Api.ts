@@ -34,8 +34,6 @@ import {
     CREEP_BODY_OPT_HELPERS,
     ROOM_STATE_CREEP_LIMITS,
     MemoryHelper_Room,
-    RoomHelper,
-    RoomApi,
     MemoryApi_Room,
     UserException,
     EventHelper,

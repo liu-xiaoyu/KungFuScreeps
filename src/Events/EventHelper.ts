@@ -12,7 +12,6 @@ import {
     UserException,
     SpawnHelper,
     Normalize,
-    RoomHelper,
     MemoryApi_Empire,
     MemoryApi_Room,
     MemoryApi_Creep

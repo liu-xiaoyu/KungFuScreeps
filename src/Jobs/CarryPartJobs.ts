@@ -4,7 +4,6 @@ import {
     PathfindingApi,
     MemoryApi_Room,
     MemoryApi_Empire,
-    RoomHelper,
     MemoryApi_Creep,
     RoomApi_Structure
 } from "Utils/Imports/internals";

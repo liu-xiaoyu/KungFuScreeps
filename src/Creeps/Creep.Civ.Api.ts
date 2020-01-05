@@ -1,4 +1,4 @@
-import { MemoryApi_All } from "Memory/Memory.Api";
+import { MemoryApi_All } from "Memory/Memory.All.Api";
 import { MINERS_GET_CLOSEST_SOURCE } from "Utils/Config/config";
 import { MemoryHelper } from "Memory/MemoryHelper";
 import { RoomHelper } from "Room/RoomHelper";

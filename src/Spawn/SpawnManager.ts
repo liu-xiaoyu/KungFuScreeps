@@ -1,11 +1,4 @@
-import {
-    ERROR_ERROR,
-    RoomHelper,
-    UserException,
-    SpawnHelper,
-    SpawnApi,
-    MemoryApi_Empire
-} from "Utils/Imports/internals";
+import { ERROR_ERROR, UserException, SpawnHelper, SpawnApi, MemoryApi_Empire } from "Utils/Imports/internals";
 
 // handles spawning for every room
 export class SpawnManager {
@@ -65,17 +58,17 @@ export class SpawnManager {
                     throw new UserException(
                         "Failure in Spawn Manager for [ " + name + " ]",
                         "Role: [ " +
-                            nextCreepRole +
-                            " ]\n" +
-                            "homeRoom: [ " +
-                            homeRoom +
-                            " ]\n" +
-                            "targetRoom: [ " +
-                            targetRoom +
-                            " ]\n" +
-                            "creepOptions: [ " +
-                            JSON.stringify(creepOptions) +
-                            " ]\n",
+                        nextCreepRole +
+                        " ]\n" +
+                        "homeRoom: [ " +
+                        homeRoom +
+                        " ]\n" +
+                        "targetRoom: [ " +
+                        targetRoom +
+                        " ]\n" +
+                        "creepOptions: [ " +
+                        JSON.stringify(creepOptions) +
+                        " ]\n",
                         ERROR_ERROR
                     );
                 }

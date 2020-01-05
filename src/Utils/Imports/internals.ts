@@ -7,8 +7,8 @@ export * from "Utils/Config/militaryConfig";
 export * from "Utils/UtilHelpers/UtilHelper";
 export * from "Utils/UtilHelpers/Normalize";
 // -----------------------------
-// Export All API
-export * from "Room/AutoConstruction/AutoConstruction.Api";
+// Import All API
+export * from "AutoConstruction/AutoConstruction.Api";
 export * from "Creeps/Creep.All.Api";
 export * from "Creeps/Creep.Mili.Api";
 export * from "Empire/Empire.Api";
@@ -19,16 +19,18 @@ export * from "Memory/Memory.Empire.Api";
 export * from "Memory/Memory.Jobs.Api";
 export * from "Memory/Memory.Room.Api";
 export * from "Pathfinding/Pathfinding.Api";
-export * from "Room/Room.Api";
+export * from "Room/Room.State.Api";
+export * from "Room/Room.Structure.Api";
 export * from "Spawn/Spawn.Api";
 // ----------------------------
 // Export All Helpers
-export * from "Room/AutoConstruction/AutoConstructionHelper";
+export * from "AutoConstruction/AutoConstructionHelper";
 export * from "Utils/UtilHelpers/ConsoleCommands";
 export * from "Creeps/Creep.All.Helper";
 export * from "Empire/EmpireHelper";
 export * from "Events/EventHelper";
-export * from "Room/RoomHelper";
+export * from "Room/Room.State.Helper";
+export * from "Room/Room.Structure.Helper";
 export * from "Spawn/SpawnHelper";
 export * from "Memory/MemoryHelper";
 export * from "Memory/Memory.Room.Helper";

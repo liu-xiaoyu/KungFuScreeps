@@ -52,6 +52,12 @@ export class CreepAllHelper {
         if (creep.memory.supplementary && creep.memory.supplementary.moveTargetID) {
             return Game.getObjectById(creep.memory.supplementary.moveTargetID);
         } else if (creep.memory.job && creep.memory.job.targetType === "roomName") {
+            // Patch a bug where the creep was for some reason getting an undefined room as the target
+            // TODO hunt down real reason this is occuring, and remove this patch?
+            // Note: adding this in seemed to have "restarted" the scout so it was successful
+            if (!creep.memory.job.targetID) {
+                return new RoomPosition(25, 25, creep.memory.homeRoom);
+            }
             return new RoomPosition(25, 25, creep.memory.job.targetID);
         } else if (creep.memory.job && creep.memory.job.targetType === "roomPosition") {
             // TODO Handle parsing a string into a roomPosition object here

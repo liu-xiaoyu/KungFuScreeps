@@ -1,4 +1,4 @@
-import { NO_CACHING_MEMORY, STORE_JOB_CACHE_TTL, MemoryHelper_Room, SOURCE_JOB_CACHE_TTL, ALL_STRUCTURE_TYPES, UserException, CONTAINER_JOB_CACHE_TTL, LINK_JOB_CACHE_TTL, BACKUP_JOB_CACHE_TTL, PICKUP_JOB_CACHE_TTL, LOOT_JOB_CACHE_TTL, CLAIM_JOB_CACHE_TTL, RESERVE_JOB_CACHE_TTL, SIGN_JOB_CACHE_TTL, ATTACK_JOB_CACHE_TTL, REPAIR_JOB_CACHE_TTL, PRIORITY_REPAIR_THRESHOLD, RoomApi, BUILD_JOB_CACHE_TTL, UPGRADE_JOB_CACHE_TTL, FILL_JOB_CACHE_TTL } from "Utils/Imports/internals";
+import { NO_CACHING_MEMORY, STORE_JOB_CACHE_TTL, MemoryHelper_Room, SOURCE_JOB_CACHE_TTL, ALL_STRUCTURE_TYPES, UserException, CONTAINER_JOB_CACHE_TTL, LINK_JOB_CACHE_TTL, BACKUP_JOB_CACHE_TTL, PICKUP_JOB_CACHE_TTL, LOOT_JOB_CACHE_TTL, CLAIM_JOB_CACHE_TTL, RESERVE_JOB_CACHE_TTL, SIGN_JOB_CACHE_TTL, ATTACK_JOB_CACHE_TTL, REPAIR_JOB_CACHE_TTL, PRIORITY_REPAIR_THRESHOLD, BUILD_JOB_CACHE_TTL, UPGRADE_JOB_CACHE_TTL, FILL_JOB_CACHE_TTL, RoomApi_Structure } from "Utils/Imports/internals";
 
 export class MemoryApi_Jobs {
     /**
@@ -21,6 +21,36 @@ export class MemoryApi_Jobs {
         _.forEach(this.getBackupStructuresJobs(room, filterFunction, forceUpdate), job => allGetEnergyJobs.push(job));
 
         return allGetEnergyJobs;
+    }
+
+    /**
+    * Get the list of WorkPartJobs.repairJobs
+    * @param room The room to get the jobs from
+    * @param filterFunction [Optional] A function to filter the WorkPartJobs list
+    * @param forceUpdate [Optional] Forcibly invalidate the cache
+    */
+    public static getWallRepairJobs(
+        room: Room,
+        filterFunction?: (object: WorkPartJob) => boolean,
+        forceUpdate?: boolean
+    ): WorkPartJob[] {
+        if (
+            NO_CACHING_MEMORY ||
+            forceUpdate ||
+            !Memory.rooms[room.name].jobs!.workPartJobs ||
+            !Memory.rooms[room.name].jobs!.workPartJobs!.wallRepairJobs ||
+            Memory.rooms[room.name].jobs!.workPartJobs!.wallRepairJobs!.cache < Game.time - REPAIR_JOB_CACHE_TTL
+        ) {
+            MemoryHelper_Room.updateWorkPart_wallRepairJobs(room);
+        }
+
+        let wallRepairJobs: WorkPartJob[] = Memory.rooms[room.name].jobs!.workPartJobs!.wallRepairJobs!.data;
+
+        if (filterFunction !== undefined) {
+            wallRepairJobs = _.filter(wallRepairJobs, filterFunction);
+        }
+
+        return wallRepairJobs;
     }
 
     /**
@@ -456,7 +486,7 @@ export class MemoryApi_Jobs {
             if (obj.structureType !== STRUCTURE_WALL && obj.structureType !== STRUCTURE_RAMPART) {
                 return obj.hits < obj.hitsMax * PRIORITY_REPAIR_THRESHOLD;
             } else {
-                return obj.hits < RoomApi.getWallHpLimit(room) * PRIORITY_REPAIR_THRESHOLD;
+                return obj.hits < RoomApi_Structure.getWallHpLimit(room) * PRIORITY_REPAIR_THRESHOLD;
             }
         });
 

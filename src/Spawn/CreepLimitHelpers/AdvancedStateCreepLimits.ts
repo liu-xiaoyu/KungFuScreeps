@@ -18,7 +18,9 @@ import {
     Normalize,
     STORAGE_ADDITIONAL_WORKER_THRESHOLD,
     MemoryApi_Room,
-    MemoryApi_Creep
+    MemoryApi_Creep,
+    RoomHelper_State,
+    RoomHelper_Structure
 } from "Utils/Imports/internals";
 
 export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
@@ -55,7 +57,7 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
         };
 
         const numLorries: number = SpawnHelper.getLorryLimitForRoom(room, room.memory.roomState!);
-        const numRemoteRooms: number = RoomHelper.numRemoteRooms(room);
+        const numRemoteRooms: number = RoomHelper_State.numRemoteRooms(room);
         const minerLimits: number = MemoryApi_Room.getSources(room.name).length;
         let numWorkers: number = 3 + numRemoteRooms;
 
@@ -89,16 +91,16 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
             claimer: 0
         };
 
-        const numRemoteRooms: number = RoomHelper.numRemoteRooms(room);
-        const numClaimRooms: number = RoomHelper.numClaimRooms(room);
+        const numRemoteRooms: number = RoomHelper_State.numRemoteRooms(room);
+        const numClaimRooms: number = RoomHelper_State.numClaimRooms(room);
         // If we do not have any remote rooms, return the initial remote limits (Empty)
         if (numRemoteRooms <= 0 && numClaimRooms <= 0) {
             return remoteLimits;
         }
         // Gather the rest of the data only if we have a remote room or a claim room
-        const numRemoteDefenders: number = RoomHelper.numRemoteDefenders(room);
-        const numRemoteSources: number = RoomHelper.numRemoteSources(room);
-        const numCurrentlyUnclaimedClaimRooms: number = RoomHelper.numCurrentlyUnclaimedClaimRooms(room);
+        const numRemoteDefenders: number = RoomHelper_State.numRemoteDefenders(room);
+        const numRemoteSources: number = RoomHelper_State.numRemoteSources(room);
+        const numCurrentlyUnclaimedClaimRooms: number = RoomHelper_State.numCurrentlyUnclaimedClaimRooms(room);
 
         // Generate Limits -----
         remoteLimits[ROLE_REMOTE_MINER] = SpawnHelper.getLimitPerRemoteRoomForRolePerSource(
@@ -125,7 +127,7 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
      */
     private getNumHarvesters(room: Room): number {
         // [Special Case], if we recovered a room and only have 1 harvester (they would be too small to keep up with room)
-        if (RoomHelper.excecuteEveryTicks(40)) {
+        if (RoomHelper_Structure.excecuteEveryTicks(40)) {
             const harvester: Creep | undefined = _.find(
                 MemoryApi_Creep.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER)
             );

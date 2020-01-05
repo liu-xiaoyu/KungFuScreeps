@@ -2,11 +2,11 @@ import {
     CreepAllHelper,
     CreepAllApi,
     PathfindingApi,
-    RoomApi,
     MemoryApi_Room,
     MemoryApi_Empire,
     RoomHelper,
-    MemoryApi_Creep
+    MemoryApi_Creep,
+    RoomApi_Structure
 } from "Utils/Imports/internals";
 
 export class CarryPartJobs implements IJobTypeHelper {
@@ -95,8 +95,8 @@ export class CarryPartJobs implements IJobTypeHelper {
      * [Accurate-Restore]
      */
     public static createFillJobs(room: Room): CarryPartJob[] {
-        const lowSpawnsAndExtensions = RoomApi.getLowSpawnAndExtensions(room);
-        const lowTowers = RoomApi.getTowersNeedFilled(room);
+        const lowSpawnsAndExtensions = RoomApi_Structure.getLowSpawnAndExtensions(room);
+        const lowTowers = RoomApi_Structure.getTowersNeedFilled(room);
         const upgraderLink: StructureLink | null = MemoryApi_Room.getUpgraderLink(room) as StructureLink;
         if (lowSpawnsAndExtensions.length === 0 && lowTowers.length === 0 && !upgraderLink) {
             return [];

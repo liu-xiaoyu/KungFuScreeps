@@ -15,12 +15,11 @@ import {
     OVERRIDE_D_ROOM_FLAG,
     STIMULATE_FLAG,
     ROOM_OVERLAY_GRAPH_ON,
-
     RoomVisualHelper,
-    RoomHelper,
     CreepAllHelper,
     TOWER_MIN_DAMAGE_THRESHOLD,
     TOWER_MAX_DAMAGE_THRESHOLD,
+    RoomHelper_Structure,
     MemoryApi_Creep,
     MemoryApi_Room
 } from "Utils/Imports/internals";
@@ -130,9 +129,9 @@ export class RoomVisualApi {
             if (creepLimits.domesticLimits.powerUpgrader > 0) {
                 lines.push(
                     "Power Upgraders:    " +
-                        roles[ROLE_POWER_UPGRADER] +
-                        " / " +
-                        creepLimits.domesticLimits.powerUpgrader
+                    roles[ROLE_POWER_UPGRADER] +
+                    " / " +
+                    creepLimits.domesticLimits.powerUpgrader
                 );
             }
             if (creepLimits.domesticLimits.scout > 0) {
@@ -149,17 +148,17 @@ export class RoomVisualApi {
             if (creepLimits.remoteLimits.remoteHarvester > 0) {
                 lines.push(
                     "Remote Harvesters:    " +
-                        roles[ROLE_REMOTE_HARVESTER] +
-                        " / " +
-                        creepLimits.remoteLimits.remoteHarvester
+                    roles[ROLE_REMOTE_HARVESTER] +
+                    " / " +
+                    creepLimits.remoteLimits.remoteHarvester
                 );
             }
             if (creepLimits.remoteLimits.remoteReserver > 0) {
                 lines.push(
                     "Remote Reservers:    " +
-                        roles[ROLE_REMOTE_RESERVER] +
-                        " / " +
-                        creepLimits.remoteLimits.remoteReserver
+                    roles[ROLE_REMOTE_RESERVER] +
+                    " / " +
+                    creepLimits.remoteLimits.remoteReserver
                 );
             }
             if (creepLimits.remoteLimits.remoteColonizer > 0) {
@@ -170,9 +169,9 @@ export class RoomVisualApi {
             if (creepLimits.remoteLimits.remoteDefender > 0) {
                 lines.push(
                     "Remote Defenders:    " +
-                        roles[ROLE_REMOTE_DEFENDER] +
-                        " / " +
-                        creepLimits.remoteLimits.remoteDefender
+                    roles[ROLE_REMOTE_DEFENDER] +
+                    " / " +
+                    creepLimits.remoteLimits.remoteDefender
                 );
             }
             if (creepLimits.remoteLimits.claimer > 0) {
@@ -609,7 +608,7 @@ export class RoomVisualApi {
                     Memory.debug.towerDebug[x][y] = 0;
                     _.forEach(towers, (tower: StructureTower) => {
                         const distance = tower.pos.getRangeTo(x, y);
-                        Memory.debug.towerDebug[x][y] += RoomHelper.getTowerDamageAtRange(distance, 15, false);
+                        Memory.debug.towerDebug[x][y] += RoomHelper_Structure.getTowerDamageAtRange(distance, 15, false);
                     });
                 }
             }
@@ -670,15 +669,15 @@ export class RoomVisualApi {
             (tower: StructureTower) => tower.energy > 0
         ) as StructureTower[];
 
-        const creepHealData = RoomHelper.getCreepHealData(healCreeps, attackCreeps);
+        const creepHealData = RoomHelper_Structure.getCreepHealData(healCreeps, attackCreeps);
 
         // Damage array should be populated at this point
 
         const roomVisual = new RoomVisual(room.name);
 
         for (const data of creepHealData) {
-            const distance = RoomHelper.getAverageDistanceToTarget(towers, data.creep);
-            const damage = RoomHelper.getTowerDamageAtRange(distance);
+            const distance = RoomHelper_Structure.getAverageDistanceToTarget(towers, data.creep);
+            const damage = RoomHelper_Structure.getTowerDamageAtRange(distance);
 
             const netDamage = damage - data.healAmount;
 

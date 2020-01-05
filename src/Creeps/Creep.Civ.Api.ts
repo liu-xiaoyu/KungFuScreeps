@@ -1,12 +1,12 @@
 import { MemoryApi_All } from "Memory/Memory.All.Api";
 import { MINERS_GET_CLOSEST_SOURCE } from "Utils/Config/config";
 import { MemoryHelper } from "Memory/MemoryHelper";
-import { RoomHelper } from "Room/RoomHelper";
 import { CreepAllHelper } from "./Creep.All.Helper";
 import { CreepCivHelper } from "./Creep.Civ.Helper";
 import { ROLE_POWER_UPGRADER } from "utils/Imports/constants";
 import { MemoryApi_Jobs } from "Memory/Memory.Jobs.Api";
 import { MemoryApi_Creep } from "Memory/Memory.Creep.Api";
+import { RoomHelper_Structure, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class CreepCivApi {
     /**********************************************************/
@@ -19,10 +19,13 @@ export class CreepCivApi {
     public static newWorkPartJob(creep: Creep, room: Room): WorkPartJob | undefined {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
         const upgradeJobs = MemoryApi_Jobs.getUpgradeJobs(room, (job: WorkPartJob) => !job.isTaken);
+        const isPowerUpgrader: boolean = !!(room.memory.creepLimit && room.memory.creepLimit.domesticLimits[ROLE_POWER_UPGRADER] > 0);
         const isCurrentUpgrader: boolean = _.some(
             MemoryApi_Creep.getMyCreeps(room.name),
-            (c: Creep) =>
-                (c.memory.job && c.memory.job!.actionType === "upgrade") || c.memory.role === ROLE_POWER_UPGRADER
+            (c: Creep) => (
+                c.memory.job &&
+                c.memory.job!.actionType === "upgrade") ||
+                c.memory.role === ROLE_POWER_UPGRADER
         );
 
         // Assign upgrade job is one isn't currently being worked
@@ -33,7 +36,7 @@ export class CreepCivApi {
         }
 
         // Priority Repair Only
-        if (creepOptions.repair || creepOptions.wallRepair) {
+        if (creepOptions.repair) {
             const priorityRepairJobs = MemoryApi_Jobs.getPriorityRepairJobs(room);
             if (priorityRepairJobs.length > 0) {
                 return priorityRepairJobs[0];
@@ -57,16 +60,13 @@ export class CreepCivApi {
 
         // Wall Repair
         if (creepOptions.wallRepair) {
-            const repairJobs = MemoryApi_Jobs.getRepairJobs(
-                room,
-                (job: WorkPartJob) => !job.isTaken && job.targetType === STRUCTURE_RAMPART
-            );
-            if (repairJobs.length > 0) {
-                return repairJobs[0];
+            const wallRepairJobs = MemoryApi_Jobs.getWallRepairJobs(room, (job: WorkPartJob) => !job.isTaken);
+            if (wallRepairJobs.length > 0) {
+                return wallRepairJobs[0];
             }
         }
 
-        if (creepOptions.upgrade) {
+        if (creepOptions.upgrade && !isPowerUpgrader) {
             if (upgradeJobs.length > 0) {
                 return upgradeJobs[0];
             }
@@ -111,7 +111,7 @@ export class CreepCivApi {
                     // ! but will not have enough accessTiles to be assigned. Creep needs to target the "not suitable" source in this case.
                     // Get rid of any sources that are out of access tiles
                     _.forEach(sourceObjects, (source: Source) => {
-                        const numAccessTiles = RoomHelper.getNumAccessTilesForTarget(source);
+                        const numAccessTiles = RoomHelper_Structure.getNumAccessTilesForTarget(source);
                         const numCreepsTargeting = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                             return (
                                 creep.memory.job !== undefined &&

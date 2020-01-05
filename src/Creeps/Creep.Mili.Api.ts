@@ -2,9 +2,9 @@ import {
     CreepAllApi,
     CreepMiliHelper,
     UserException,
-    RoomHelper,
     PathfindingApi,
-    MemoryApi_Creep
+    MemoryApi_Creep,
+    RoomHelper_State
 } from "Utils/Imports/internals";
 
 // Api for military creep's
@@ -126,7 +126,7 @@ export class CreepMiliApi {
                 }
 
                 // Set walls and ramparts as unwalkable
-                room.find(FIND_STRUCTURES).forEach(function(struct: Structure<StructureConstant>) {
+                room.find(FIND_STRUCTURES).forEach(function (struct: Structure<StructureConstant>) {
                     if (struct.structureType === STRUCTURE_WALL || struct.structureType === STRUCTURE_RAMPART) {
                         // Set walls and ramparts as unwalkable
                         costs.set(struct.pos.x, struct.pos.y, 0xff);
@@ -134,7 +134,7 @@ export class CreepMiliApi {
                 } as any);
 
                 // Set creeps as unwalkable
-                room.find(FIND_CREEPS).forEach(function(currentCreep: Creep) {
+                room.find(FIND_CREEPS).forEach(function (currentCreep: Creep) {
                     costs.set(currentCreep.pos.x, currentCreep.pos.y, 0xff);
                 });
 
@@ -204,7 +204,7 @@ export class CreepMiliApi {
         }
 
         // Neutral structures
-        if (RoomHelper.isAllyRoom(creep.room) === false) {
+        if (RoomHelper_State.isAllyRoom(creep.room) === false) {
             const neutralStructure: Structure<StructureConstant> = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: (struct: Structure) =>
                     struct.structureType === STRUCTURE_CONTAINER || struct.structureType === STRUCTURE_ROAD

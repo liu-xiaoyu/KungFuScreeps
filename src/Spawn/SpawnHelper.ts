@@ -10,7 +10,6 @@ import {
     ZEALOT_SOLO,
     STANDARD_SQUAD,
     UserException,
-    RoomHelper,
     ZEALOT_SOLO_ARRAY,
     STANDARD_SQUAD_ARRAY,
     STALKER_SOLO_ARRAY,
@@ -26,7 +25,9 @@ import {
     WALL_LIMIT,
     SCOUT_SPAWN_TICKS,
     MemoryApi_Room,
-    MemoryApi_Creep
+    MemoryApi_Creep,
+    RoomHelper_Structure,
+    RoomHelper_State
 } from "Utils/Imports/internals";
 
 /**
@@ -393,7 +394,7 @@ export class SpawnHelper {
         let accessibleTiles: number = 0;
         const roomTerrain: RoomTerrain = new Room.Terrain(room.name);
         _.forEach(sources, (source: Source) => {
-            accessibleTiles += RoomHelper.getNumAccessTilesForTarget(source);
+            accessibleTiles += RoomHelper_Structure.getNumAccessTilesForTarget(source);
         });
         return accessibleTiles;
     }
@@ -547,10 +548,10 @@ export class SpawnHelper {
         if (!room) {
             return true;
         }
-        if (RoomHelper.isNoReservation(room)) {
+        if (RoomHelper_State.isNoReservation(room)) {
             return false;
         }
-        return !RoomHelper.isAllyReserved(room);
+        return !RoomHelper_State.isAllyReserved(room);
     }
 
     /**

@@ -2,14 +2,14 @@ import {
     CreepAllHelper,
     CreepAllApi,
     PathfindingApi,
-    RoomApi,
-
     CONTAINER_MINIMUM_ENERGY,
     ROLE_MINER,
     ROLE_REMOTE_MINER,
     TOMBSTONE_MINIMUM_ENERGY,
     RUIN_MINIMUM_ENERGY,
     LINK_MINIMUM_ENERGY,
+    RoomApi_State,
+    RoomApi_Structure,
     MemoryApi_Room,
     MemoryApi_Creep
 } from "Utils/Imports/internals";
@@ -116,7 +116,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
      */
     public static createSourceJobs(room: Room): GetEnergyJob[] {
         // List of all sources that are under optimal work capacity
-        const openSources = RoomApi.getOpenSources(room);
+        const openSources = RoomApi_Structure.getOpenSources(room);
 
         if (openSources.length === 0) {
             return [];

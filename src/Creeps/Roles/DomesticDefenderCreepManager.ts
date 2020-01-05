@@ -1,4 +1,4 @@
-import { ROLE_DOMESTIC_DEFENDER, CreepMiliApi, RoomApi } from "Utils/Imports/internals";
+import { ROLE_DOMESTIC_DEFENDER, CreepMiliApi, RoomApi_Structure } from "Utils/Imports/internals";
 
 // Manager for the Domestic Defender Creep Role
 export class DomesticDefenderCreepManager implements IMiliCreepRoleManager {
@@ -28,7 +28,7 @@ export class DomesticDefenderCreepManager implements IMiliCreepRoleManager {
 
         // Find a target for the creep
         const target: Creep | null = CreepMiliApi.getDomesticDefenseAttackTarget(creep, creepOptions, CREEP_RANGE);
-        const defendingRampart: StructureRampart | null = RoomApi.getDefenseRampart(creep.room, target);
+        const defendingRampart: StructureRampart | null = RoomApi_Structure.getDefenseRampart(creep.room, target);
         const isMelee: boolean = false;
         if (!target) {
             return; // idle if no current target

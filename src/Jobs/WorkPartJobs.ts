@@ -1,4 +1,4 @@
-import { RoomApi,   CreepAllApi, CreepAllHelper, PathfindingApi, MemoryApi_Creep, MemoryApi_Room } from "Utils/Imports/internals";
+import { CreepAllApi, CreepAllHelper, PathfindingApi, RoomApi_Structure, MemoryApi_Creep, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class WorkPartJobs implements IJobTypeHelper {
     public jobType: Valid_JobTypes = "workPartJob";
@@ -97,7 +97,7 @@ export class WorkPartJobs implements IJobTypeHelper {
      * [Accurate-Restore] Chooses the lower of two values
      */
     public static createRepairJobs(room: Room): WorkPartJob[] {
-        const repairTargets = RoomApi.getRepairTargets(room);
+        const repairTargets = RoomApi_Structure.getRepairTargets(room);
 
         if (repairTargets.length === 0) {
             return [];
@@ -136,6 +136,53 @@ export class WorkPartJobs implements IJobTypeHelper {
         });
 
         return repairJobs;
+    }
+
+    /**
+     * Gets a list of repairJobs for the room
+     * @param room The room to get jobs for
+     * [Accurate-Restore] Chooses the lower of two values
+     */
+    public static createWallRepairJobs(room: Room): WorkPartJob[] {
+        const wallRepairTargets = RoomApi_Structure.getWallRepairTargets(room);
+
+        if (wallRepairTargets.length === 0) {
+            return [];
+        }
+
+        const wallRepairJobs: WorkPartJob[] = [];
+
+        _.forEach(wallRepairTargets, (structure: Structure) => {
+            const repairJob: WorkPartJob = {
+                jobType: "workPartJob",
+                targetID: structure.id as string,
+                targetType: <BuildableStructureConstant>structure.structureType,
+                actionType: "repair",
+                remaining: structure.hitsMax - structure.hits,
+                isTaken: false
+            };
+
+            const creepTargeting = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
+                return (
+                    creep.memory.job !== undefined &&
+                    creep.memory.job.targetID === structure.id &&
+                    creep.memory.job.actionType === "repair"
+                );
+            });
+
+            // Repair 20 hits/part/tick at .1 energy/hit rounded up to nearest whole number
+            _.forEach(creepTargeting, (creep: Creep) => {
+                repairJob.remaining -= Math.ceil(creep.carry.energy * 0.1);
+            });
+
+            if (repairJob.remaining <= 0) {
+                repairJob.isTaken = true;
+            }
+
+            wallRepairJobs.push(repairJob);
+        });
+
+        return wallRepairJobs;
     }
 
     /**

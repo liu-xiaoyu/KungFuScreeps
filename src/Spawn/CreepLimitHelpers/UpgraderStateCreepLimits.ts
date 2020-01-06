@@ -14,10 +14,10 @@ import {
     ROOM_STATE_UPGRADER,
     ROLE_MANAGER,
     SpawnHelper,
-    MemoryApi,
     STORAGE_ADDITIONAL_WORKER_THRESHOLD,
     STORAGE_ADDITIONAL_UPGRADER_THRESHOLD,
     SpawnApi,
+    MemoryApi_Room,
     RoomHelper_State,
     TIER_8
 } from "Utils/Imports/internals";
@@ -47,7 +47,7 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
         };
 
         const numLorries: number = SpawnHelper.getLorryLimitForRoom(room, room.memory.roomState!);
-        const minerLimits: number = MemoryApi.getSources(room.name).length;
+        const minerLimits: number = MemoryApi_Room.getSources(room.name).length;
         let numWorkers: number = 1;
         let numPowerUpgraders: number = 1;
 
@@ -59,7 +59,11 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
         const currentLevel: number = room.controller!.level;
 
         // If we have more than 100k energy in storage, we want another worker to help whittle it down
-        if (room.storage && room.storage!.store[RESOURCE_ENERGY] > STORAGE_ADDITIONAL_WORKER_THRESHOLD && needExtraWorker) {
+        if (
+            room.storage &&
+            room.storage!.store[RESOURCE_ENERGY] > STORAGE_ADDITIONAL_WORKER_THRESHOLD &&
+            needExtraWorker
+        ) {
             numWorkers++;
         }
         // If we have more than 300k energy in storage, get another power ugprader out to help with that
@@ -68,7 +72,6 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
         }
         // If we have a fair amount of construction sites in the room, pump out some extra workers
         numWorkers = SpawnHelper.getWorkerLimitForConstructionHelper(numWorkers, room);
-
 
         // Generate Limits --------
         domesticLimits[ROLE_MINER] = minerLimits;

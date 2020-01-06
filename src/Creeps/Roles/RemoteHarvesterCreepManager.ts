@@ -1,4 +1,12 @@
-import { ROLE_REMOTE_HARVESTER, MemoryApi, CreepAllApi, MemoryHelper, PathfindingApi, UserException, ERROR_ERROR } from "Utils/Imports/internals";
+import {
+    ROLE_REMOTE_HARVESTER,
+    CreepAllApi,
+    MemoryHelper,
+    PathfindingApi,
+    UserException,
+    ERROR_ERROR,
+    MemoryApi_Jobs
+} from "Utils/Imports/internals";
 import { CreepCivApi } from "Creeps/Creep.Civ.Api";
 
 // Manager for the miner creep role
@@ -15,7 +23,6 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
      * Decides which kind of job to get and calls the appropriate function
      */
     public getNewJob(creep: Creep, homeRoom: Room, targetRoom: Room | undefined): BaseJob | undefined {
-
         // When a creep is fleeing, the target room might be undefined, this is okay so check that the error ACTUALLY occured specifically
         if (!targetRoom && creep.memory.targetRoom === "") {
             throw new UserException(
@@ -26,17 +33,12 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
         }
 
         if (creep.carry.energy === 0 && creep.room.name === creep.memory.targetRoom) {
-
             // If creep is empty and in targetRoom - get energy
             return CreepCivApi.newGetEnergyJob(creep, targetRoom!);
-        }
-        else if (creep.carry.energy === 0 && creep.room.name !== creep.memory.targetRoom) {
-
+        } else if (creep.carry.energy === 0 && creep.room.name !== creep.memory.targetRoom) {
             // If creep is empty and not in targetRoom - Go to targetRoom
             return CreepCivApi.newMovePartJob(creep, creep.memory.targetRoom);
-        }
-        else if (creep.carry.energy > 0 && creep.room.name === creep.memory.targetRoom) {
-
+        } else if (creep.carry.energy > 0 && creep.room.name === creep.memory.targetRoom) {
             // If creep has energy and is in targetRoom - Get workpartJob
             let job = CreepCivApi.newWorkPartJob(creep, targetRoom!) as BaseJob;
 
@@ -46,9 +48,7 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
             }
 
             return job;
-        }
-        else if (creep.carry.energy > 0 && creep.room.name === creep.memory.homeRoom) {
-
+        } else if (creep.carry.energy > 0 && creep.room.name === creep.memory.homeRoom) {
             // If creep has energy and is in homeRoom - Get a carry job to use energy
             let job: BaseJob | undefined = this.newCarryPartJob(creep, homeRoom);
 
@@ -70,7 +70,7 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
 
         if (creepOptions.fillLink) {
-            const linkJobs = MemoryApi.getFillJobs(
+            const linkJobs = MemoryApi_Jobs.getFillJobs(
                 room,
                 (job: CarryPartJob) =>
                     !job.isTaken && job.targetType === STRUCTURE_LINK && job.remaining >= creep.carryCapacity
@@ -96,7 +96,7 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
         }
 
         if (creepOptions.fillStorage || creepOptions.fillTerminal) {
-            const storeJobs = MemoryApi.getStoreJobs(
+            const storeJobs = MemoryApi_Jobs.getStoreJobs(
                 room,
                 (bsJob: CarryPartJob) => !bsJob.isTaken && bsJob.remaining >= creep.carryCapacity
             );
@@ -133,6 +133,6 @@ export class RemoteHarvesterCreepManager implements ICivCreepRoleManager {
         }
 
         const currentRoom = creep.room;
-        MemoryApi.updateJobMemory(creep, currentRoom);
+        MemoryApi_Jobs.updateJobMemory(creep, currentRoom);
     }
 }

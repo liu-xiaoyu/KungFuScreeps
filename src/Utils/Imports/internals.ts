@@ -13,7 +13,11 @@ export * from "Creeps/Creep.All.Api";
 export * from "Creeps/Creep.Mili.Api";
 export * from "Empire/Empire.Api";
 export * from "Events/Event.Api";
-export * from "Memory/Memory.Api";
+export * from "Memory/Memory.All.Api";
+export * from "Memory/Memory.Creep.Api";
+export * from "Memory/Memory.Empire.Api";
+export * from "Memory/Memory.Jobs.Api";
+export * from "Memory/Memory.Room.Api";
 export * from "Pathfinding/Pathfinding.Api";
 export * from "Room/Room.State.Api";
 export * from "Room/Room.Structure.Api";
@@ -29,7 +33,7 @@ export * from "Room/Room.State.Helper";
 export * from "Room/Room.Structure.Helper";
 export * from "Spawn/SpawnHelper";
 export * from "Memory/MemoryHelper";
-export * from "Memory/MemoryHelper_Room";
+export * from "Memory/Memory.Room.Helper";
 export * from "Creeps/Creep.Mili.Helper";
 // -----------------------------
 // Body/Option Helper Implementations

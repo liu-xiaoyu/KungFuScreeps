@@ -34,7 +34,7 @@ import {
     CREEP_BODY_OPT_HELPERS,
     ROOM_STATE_CREEP_LIMITS,
     MemoryHelper_Room,
-    MemoryApi,
+    MemoryApi_Room,
     UserException,
     EventHelper,
     RoomHelper_Structure,
@@ -98,7 +98,7 @@ export class SpawnApi {
         const rolesToAdd: RoleConstant[] = [];
 
         // Check for Domestic Defenders
-        const defconLevel: number = MemoryApi.getDefconLevel(room);
+        const defconLevel: number = MemoryApi_Room.getDefconLevel(room);
         const isTowers: boolean = RoomHelper_Structure.isExistInRoom(room, STRUCTURE_TOWER);
         const limit: number = RoomHelper_State.getDomesticDefenderLimitByDefcon(defconLevel, isTowers);
 
@@ -111,7 +111,7 @@ export class SpawnApi {
         }
 
         // Check for Military Creeps
-        const attackRoomFlags: AttackFlagMemory[] = MemoryApi.getAllAttackFlagMemoryForHost(room.name);
+        const attackRoomFlags: AttackFlagMemory[] = MemoryApi_Room.getAllAttackFlagMemoryForHost(room.name);
         for (const attackRoomFlag of attackRoomFlags) {
             if (attackRoomFlag && Memory.flags[attackRoomFlag.flagName]) {
                 if (Memory.flags[attackRoomFlag.flagName].spawnProcessed) {
@@ -145,7 +145,7 @@ export class SpawnApi {
     public static setCreepLimits(room: Room): void {
         // Ensure creep limits are set
         if (!room.memory.creepLimit) {
-            MemoryApi.initCreepLimits(room);
+            MemoryApi_Room.initCreepLimits(room);
         }
 
         // Set Domestic Limits to Memory
@@ -164,7 +164,7 @@ export class SpawnApi {
      */
     public static getOpenSpawn(room: Room): any {
         // Get all openSpawns, and return the first
-        const openSpawns = MemoryApi.getStructureOfType(
+        const openSpawns = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_SPAWN,
             (spawn: StructureSpawn) => !spawn.spawning
@@ -183,9 +183,9 @@ export class SpawnApi {
      */
     public static getNextCreep(room: Room, openSpawn: StructureSpawn): RoleConstant | null {
         // Get Limits for each creep department
-        const creepLimits: CreepLimits = MemoryApi.getCreepLimits(room);
+        const creepLimits: CreepLimits = MemoryApi_Room.getCreepLimits(room);
         let militaryRole: RoleConstant | null;
-        const creepCount: AllCreepCount = MemoryApi.getAllCreepCount(room);
+        const creepCount: AllCreepCount = MemoryApi_Room.getAllCreepCount(room);
         const spawns: StructureSpawn[] = _.filter(
             Game.spawns,
             (spawn: StructureSpawn) => spawn.room.name === room.name

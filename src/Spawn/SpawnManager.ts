@@ -1,4 +1,4 @@
-import { ERROR_ERROR, UserException, SpawnHelper, MemoryApi, SpawnApi } from "Utils/Imports/internals";
+import { ERROR_ERROR, UserException, SpawnHelper, SpawnApi, MemoryApi_Empire } from "Utils/Imports/internals";
 
 // handles spawning for every room
 export class SpawnManager {
@@ -6,7 +6,7 @@ export class SpawnManager {
      * run the spawning for the AI for each room
      */
     public static runSpawnManager(): void {
-        const ownedRooms = MemoryApi.getOwnedRooms();
+        const ownedRooms = MemoryApi_Empire.getOwnedRooms();
 
         // Loop over all rooms and run the spawn for each one
         for (const room of ownedRooms) {

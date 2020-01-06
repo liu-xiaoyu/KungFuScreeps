@@ -1,4 +1,4 @@
-import { CreepAllHelper, CreepAllApi, PathfindingApi, MemoryApi, RESERVER_MIN_TTL, UserException, RoomHelper_State } from "Utils/Imports/internals";
+import { CreepAllHelper, CreepAllApi, PathfindingApi, RESERVER_MIN_TTL, UserException, RoomHelper_State, MemoryApi_Room } from "Utils/Imports/internals";
 import { CreepCivHelper } from "Creeps/Creep.Civ.Helper";
 
 export class ClaimPartJobs implements IJobTypeHelper {
@@ -134,7 +134,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
      */
     public static createClaimJobs(room: Room): ClaimPartJob[] {
         // Get only ClaimRoomMemory objects that are defined
-        const claimRooms = MemoryApi.getClaimRooms(room);
+        const claimRooms = MemoryApi_Room.getClaimRooms(room);
 
         if (claimRooms.length === 0) {
             return [];
@@ -162,7 +162,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
      * @param room The room to get the jobs for
      */
     public static createReserveJobs(room: Room): ClaimPartJob[] {
-        const reserveRooms: RemoteRoomMemory[] = MemoryApi.getRemoteRooms(room, (roomMemory: RemoteRoomMemory) => {
+        const reserveRooms: RemoteRoomMemory[] = MemoryApi_Room.getRemoteRooms(room, (roomMemory: RemoteRoomMemory) => {
             return roomMemory.reserveTTL < RESERVER_MIN_TTL;
         });
 

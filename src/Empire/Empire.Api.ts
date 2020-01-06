@@ -1,4 +1,4 @@
-import { EmpireHelper, MemoryApi, PROCESS_FLAG_HELPERS } from "Utils/Imports/internals";
+import { EmpireHelper, PROCESS_FLAG_HELPERS, MemoryApi_Empire, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class EmpireApi {
     /**
@@ -7,7 +7,7 @@ export class EmpireApi {
      */
     public static getUnprocessedFlags(): Flag[] {
         // Create an array of all flags
-        const allFlags: Flag[] = MemoryApi.getAllFlags();
+        const allFlags: Flag[] = MemoryApi_Empire.getAllFlags();
         const newFlags: Flag[] = [];
 
         // Create an array of all unprocessed flags
@@ -45,7 +45,7 @@ export class EmpireApi {
                     }
                 }
                 // If we make it here, we didn't find a match for the flag type, delete the flag and carry on
-                MemoryApi.createEmpireAlertNode("Attempted to process flag of an unhandled type.", 10);
+                MemoryApi_Empire.createEmpireAlertNode("Attempted to process flag of an unhandled type.", 10);
                 flag.memory.processed = true;
                 flag.memory.complete = true;
             }
@@ -54,8 +54,8 @@ export class EmpireApi {
             const roomName = flag.pos.roomName;
             if (!Memory.rooms[roomName]) {
                 const isOwnedRoom: boolean = false;
-                MemoryApi.createEmpireAlertNode("Initializing Room Memory for Dependent Room [" + roomName + "].", 10);
-                MemoryApi.initRoomMemory(roomName, isOwnedRoom);
+                MemoryApi_Empire.createEmpireAlertNode("Initializing Room Memory for Dependent Room [" + roomName + "].", 10);
+                MemoryApi_Room.initRoomMemory(roomName, isOwnedRoom);
             }
         }
     }
@@ -64,11 +64,11 @@ export class EmpireApi {
      * deletes all flags marked as complete
      */
     public static deleteCompleteFlags(): void {
-        const completeFlags = MemoryApi.getAllFlags((flag: Flag) => flag.memory.complete);
+        const completeFlags = MemoryApi_Empire.getAllFlags((flag: Flag) => flag.memory.complete);
 
         // Loop over all flags, removing them and their direct memory from the game
         for (const flag of completeFlags) {
-            MemoryApi.createEmpireAlertNode("Removing flag [" + flag.name + "]", 10);
+            MemoryApi_Empire.createEmpireAlertNode("Removing flag [" + flag.name + "]", 10);
             flag.remove();
         }
     }
@@ -78,15 +78,15 @@ export class EmpireApi {
      */
     public static cleanDeadFlags(): void {
         // Get all flag based action memory structures (Remote, Claim, and Attack Room Memory)
-        const allRooms = MemoryApi.getOwnedRooms();
+        const allRooms = MemoryApi_Empire.getOwnedRooms();
         const claimRooms: Array<ClaimRoomMemory | undefined> = _.flatten(
-            _.map(allRooms, room => MemoryApi.getClaimRooms(room))
+            _.map(allRooms, room => MemoryApi_Room.getClaimRooms(room))
         );
         const remoteRooms: Array<RemoteRoomMemory | undefined> = _.flatten(
-            _.map(allRooms, room => MemoryApi.getRemoteRooms(room))
+            _.map(allRooms, room => MemoryApi_Room.getRemoteRooms(room))
         );
         const attackRooms: Array<AttackRoomMemory | undefined> = _.flatten(
-            _.map(allRooms, room => MemoryApi.getAttackRooms(room))
+            _.map(allRooms, room => MemoryApi_Room.getAttackRooms(room))
         );
 
         // Clean dead flags from memory structures

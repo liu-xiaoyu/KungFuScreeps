@@ -1,16 +1,11 @@
 import {
     JobTypes,
     UserException,
-    CreepAllHelper,
     ERROR_ERROR,
     ERROR_FATAL,
-    ROLE_POWER_UPGRADER,
     ERROR_INFO,
-    MemoryApi,
-    MINERS_GET_CLOSEST_SOURCE,
     STUCK_COUNT_LIMIT,
     USE_STUCK_VISUAL,
-    MemoryHelper,
     RoomVisualHelper,
     MemoryHelper_Room,
     PathfindingApi

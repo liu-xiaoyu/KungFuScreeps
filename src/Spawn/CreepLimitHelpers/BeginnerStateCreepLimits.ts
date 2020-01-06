@@ -1,4 +1,11 @@
-import { ROLE_MINER, ROLE_HARVESTER, ROLE_WORKER, ROOM_STATE_BEGINNER, MemoryApi, SpawnHelper } from "Utils/Imports/internals";
+import {
+    ROLE_MINER,
+    ROLE_HARVESTER,
+    ROLE_WORKER,
+    ROOM_STATE_BEGINNER,
+    SpawnHelper,
+    MemoryApi_Room
+} from "Utils/Imports/internals";
 
 export class BeginnerStateCreepLimits implements ICreepSpawnLimits {
     public roomState: RoomStateConstant = ROOM_STATE_BEGINNER;
@@ -25,7 +32,7 @@ export class BeginnerStateCreepLimits implements ICreepSpawnLimits {
         };
 
         // If we can't build a single sufficiently sized miner, handle multiple miner limits
-        let minerLimits: number = MemoryApi.getSources(room.name).length;
+        let minerLimits: number = MemoryApi_Room.getSources(room.name).length;
         if (room.energyCapacityAvailable < 550) {
             const numAccessTilesToSource: number = SpawnHelper.getNumAccessTilesToSources(room);
             minerLimits = numAccessTilesToSource < 4 ? numAccessTilesToSource : 4;

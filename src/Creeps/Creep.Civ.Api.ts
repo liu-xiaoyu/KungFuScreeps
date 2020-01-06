@@ -1,13 +1,14 @@
-import { MemoryApi } from "Memory/Memory.Api";
+import { MemoryApi_All } from "Memory/Memory.All.Api";
 import { MINERS_GET_CLOSEST_SOURCE } from "Utils/Config/config";
 import { MemoryHelper } from "Memory/MemoryHelper";
 import { CreepAllHelper } from "./Creep.All.Helper";
 import { CreepCivHelper } from "./Creep.Civ.Helper";
 import { ROLE_POWER_UPGRADER } from "utils/Imports/constants";
-import { RoomHelper_Structure } from "Utils/Imports/internals";
+import { MemoryApi_Jobs } from "Memory/Memory.Jobs.Api";
+import { MemoryApi_Creep } from "Memory/Memory.Creep.Api";
+import { RoomHelper_Structure, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class CreepCivApi {
-
     /**********************************************************/
     /*        GET NEW JOB SECTION                           ***/
     /**********************************************************/
@@ -17,10 +18,10 @@ export class CreepCivApi {
      */
     public static newWorkPartJob(creep: Creep, room: Room): WorkPartJob | undefined {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
-        const upgradeJobs = MemoryApi.getUpgradeJobs(room, (job: WorkPartJob) => !job.isTaken);
+        const upgradeJobs = MemoryApi_Jobs.getUpgradeJobs(room, (job: WorkPartJob) => !job.isTaken);
         const isPowerUpgrader: boolean = !!(room.memory.creepLimit && room.memory.creepLimit.domesticLimits[ROLE_POWER_UPGRADER] > 0);
         const isCurrentUpgrader: boolean = _.some(
-            MemoryApi.getMyCreeps(room.name),
+            MemoryApi_Creep.getMyCreeps(room.name),
             (c: Creep) => (
                 c.memory.job &&
                 c.memory.job!.actionType === "upgrade") ||
@@ -36,14 +37,14 @@ export class CreepCivApi {
 
         // Priority Repair Only
         if (creepOptions.repair) {
-            const priorityRepairJobs = MemoryApi.getPriorityRepairJobs(room);
+            const priorityRepairJobs = MemoryApi_Jobs.getPriorityRepairJobs(room);
             if (priorityRepairJobs.length > 0) {
                 return priorityRepairJobs[0];
             }
         }
 
         if (creepOptions.build) {
-            const buildJobs = MemoryApi.getBuildJobs(room, (job: WorkPartJob) => !job.isTaken);
+            const buildJobs = MemoryApi_Jobs.getBuildJobs(room, (job: WorkPartJob) => !job.isTaken);
             if (buildJobs.length > 0) {
                 return buildJobs[0];
             }
@@ -51,7 +52,7 @@ export class CreepCivApi {
 
         // Regular repair
         if (creepOptions.repair) {
-            const repairJobs = MemoryApi.getRepairJobs(room, (job: WorkPartJob) => !job.isTaken);
+            const repairJobs = MemoryApi_Jobs.getRepairJobs(room, (job: WorkPartJob) => !job.isTaken);
             if (repairJobs.length > 0) {
                 return repairJobs[0];
             }
@@ -59,7 +60,7 @@ export class CreepCivApi {
 
         // Wall Repair
         if (creepOptions.wallRepair) {
-            const wallRepairJobs = MemoryApi.getWallRepairJobs(room, (job: WorkPartJob) => !job.isTaken);
+            const wallRepairJobs = MemoryApi_Jobs.getWallRepairJobs(room, (job: WorkPartJob) => !job.isTaken);
             if (wallRepairJobs.length > 0) {
                 return wallRepairJobs[0];
             }
@@ -79,7 +80,7 @@ export class CreepCivApi {
 
         if (creepOptions.harvestSources) {
             // forceUpdate to get accurate job listing
-            const sourceJobs = MemoryApi.getSourceJobs(room, (sJob: GetEnergyJob) => !sJob.isTaken, true);
+            const sourceJobs = MemoryApi_Jobs.getSourceJobs(room, (sJob: GetEnergyJob) => !sJob.isTaken, true);
 
             if (sourceJobs.length > 0) {
                 // Filter out jobs that have too little energy -
@@ -111,11 +112,11 @@ export class CreepCivApi {
                     // Get rid of any sources that are out of access tiles
                     _.forEach(sourceObjects, (source: Source) => {
                         const numAccessTiles = RoomHelper_Structure.getNumAccessTilesForTarget(source);
-                        const numCreepsTargeting = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+                        const numCreepsTargeting = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                             return (
                                 creep.memory.job !== undefined &&
                                 (creep.memory.role === "remoteMiner" || creep.memory.role === "miner") &&
-                                creep.memory.job.targetID === source.id as string
+                                creep.memory.job.targetID === (source.id as string)
                             );
                         }).length;
 
@@ -153,7 +154,7 @@ export class CreepCivApi {
 
         if (creepOptions.harvestMinerals) {
             // forceUpdate to get accurate job listing
-            const mineralJobs = MemoryApi.getMineralJobs(room, (sJob: GetEnergyJob) => !sJob.isTaken, true);
+            const mineralJobs = MemoryApi_Jobs.getMineralJobs(room, (sJob: GetEnergyJob) => !sJob.isTaken, true);
 
             if (mineralJobs.length > 0) {
                 return mineralJobs[0];
@@ -171,7 +172,7 @@ export class CreepCivApi {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
         if (creepOptions.getFromContainer) {
             // get a container job based on the filter function returned from the helper
-            const containerJobs = MemoryApi.getContainerJobs(
+            const containerJobs = MemoryApi_Jobs.getContainerJobs(
                 room,
                 CreepCivHelper.getContainerJobFilterFunction(room, creep)
             );
@@ -183,7 +184,7 @@ export class CreepCivApi {
 
         if (creepOptions.getDroppedEnergy) {
             // All dropped resources with enough energy to fill at least 60% of carry
-            const dropJobs = MemoryApi.getPickupJobs(
+            const dropJobs = MemoryApi_Jobs.getPickupJobs(
                 room,
                 (dJob: GetEnergyJob) => !dJob.isTaken && dJob.resources!.energy >= creep.carryCapacity * 0.6
             );
@@ -195,7 +196,7 @@ export class CreepCivApi {
 
         if (creepOptions.getLootJobs) {
             // All tombstones / ruins with enough energy to fill at least 60% of carry
-            const lootJobs = MemoryApi.getLootJobs(
+            const lootJobs = MemoryApi_Jobs.getLootJobs(
                 room,
                 (lJob: GetEnergyJob) => !lJob.isTaken && lJob.resources!.energy >= creep.carryCapacity * 0.6
             );
@@ -207,15 +208,18 @@ export class CreepCivApi {
 
         if (creepOptions.getFromStorage || creepOptions.getFromTerminal) {
             // All backupStructures with enough energy to fill creep.carry, and not taken
-            const backupStructures = MemoryApi.getBackupStructuresJobs(
+            const backupStructures = MemoryApi_Jobs.getBackupStructuresJobs(
                 room,
                 (job: GetEnergyJob) => !job.isTaken && job.resources!.energy >= creep.carryCapacity
             );
 
             // Only get from the storage if there are jobs that don't involve just putting it right back
             const isFillJobs: boolean =
-                MemoryApi.getFillJobs(room, (fJob: CarryPartJob) => !fJob.isTaken && fJob.targetType !== "link", true)
-                    .length > 0;
+                MemoryApi_Jobs.getFillJobs(
+                    room,
+                    (fJob: CarryPartJob) => !fJob.isTaken && fJob.targetType !== "link",
+                    true
+                ).length > 0;
             if (backupStructures.length > 0 && isFillJobs) {
                 return backupStructures[0];
             }

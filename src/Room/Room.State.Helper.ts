@@ -1,8 +1,10 @@
 import {
     UserException,
-    MemoryApi,
     SpawnHelper,
-    STIMULATE_FLAG
+    STIMULATE_FLAG,
+    MemoryApi_Room,
+    MemoryApi_Creep,
+    MemoryApi_Empire
 } from "Utils/Imports/internals";
 
 export class RoomHelper_State {
@@ -134,7 +136,7 @@ export class RoomHelper_State {
             );
         }
 
-        return MemoryApi.getUpgraderLink(room) !== null;
+        return MemoryApi_Room.getUpgraderLink(room) !== null;
     }
 
     /**
@@ -166,7 +168,7 @@ export class RoomHelper_State {
      * @param room The room to check
      */
     public static numHostileCreeps(room: Room): number {
-        const hostiles = MemoryApi.getHostileCreeps(room.name);
+        const hostiles = MemoryApi_Creep.getHostileCreeps(room.name);
         return hostiles.length;
     }
 
@@ -175,7 +177,7 @@ export class RoomHelper_State {
      * @param room
      */
     public static numRemoteRooms(room: Room): number {
-        const remoteRooms = MemoryApi.getRemoteRooms(room);
+        const remoteRooms = MemoryApi_Room.getRemoteRooms(room);
         return remoteRooms.length;
     }
 
@@ -184,7 +186,7 @@ export class RoomHelper_State {
      * @param room
      */
     public static numClaimRooms(room: Room): number {
-        const claimRooms = MemoryApi.getClaimRooms(room);
+        const claimRooms = MemoryApi_Room.getClaimRooms(room);
         return claimRooms.length;
     }
 
@@ -193,7 +195,7 @@ export class RoomHelper_State {
      * @param room
      */
     public static numAttackRooms(room: Room): number {
-        const attackRooms = MemoryApi.getAttackRooms(room);
+        const attackRooms = MemoryApi_Room.getAttackRooms(room);
         return attackRooms.length;
     }
 
@@ -273,8 +275,8 @@ export class RoomHelper_State {
      * @param room the room we are checking for
      */
     public static numCurrentlyUnclaimedClaimRooms(room: Room): number {
-        const allClaimRooms: Array<ClaimRoomMemory | undefined> = MemoryApi.getClaimRooms(room);
-        const ownedRooms: Room[] = MemoryApi.getOwnedRooms();
+        const allClaimRooms: Array<ClaimRoomMemory | undefined> = MemoryApi_Room.getClaimRooms(room);
+        const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
         let sum: number = 0;
 
         // No existing claim rooms
@@ -338,9 +340,9 @@ export class RoomHelper_State {
     public static isRemoteRoomOf(dependentRoomName: string, hostRoomName?: string): boolean {
         // early returns
         if (!hostRoomName) {
-            const ownedRooms: Room[] = MemoryApi.getOwnedRooms();
+            const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
             for (const room of ownedRooms) {
-                const remoteRooms: RemoteRoomMemory[] = MemoryApi.getRemoteRooms(room);
+                const remoteRooms: RemoteRoomMemory[] = MemoryApi_Room.getRemoteRooms(room);
                 if (_.some(remoteRooms, (rr: RemoteRoomMemory) => rr.roomName === dependentRoomName)) {
                     return true;
                 }
@@ -354,7 +356,7 @@ export class RoomHelper_State {
             return false;
         }
 
-        const remoteRooms: RemoteRoomMemory[] = MemoryApi.getRemoteRooms(Game.rooms[hostRoomName]);
+        const remoteRooms: RemoteRoomMemory[] = MemoryApi_Room.getRemoteRooms(Game.rooms[hostRoomName]);
         return _.some(remoteRooms, (rr: RemoteRoomMemory) => rr.roomName === dependentRoomName);
     }
 

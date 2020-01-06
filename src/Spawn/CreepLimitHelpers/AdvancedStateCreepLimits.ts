@@ -12,11 +12,12 @@ import {
     ROLE_REMOTE_DEFENDER,
     ROOM_STATE_ADVANCED,
     ROLE_SCOUT,
-    MemoryApi,
     SpawnHelper,
     SpawnApi,
     Normalize,
     STORAGE_ADDITIONAL_WORKER_THRESHOLD,
+    MemoryApi_Room,
+    MemoryApi_Creep,
     RoomHelper_State,
     RoomHelper_Structure
 } from "Utils/Imports/internals";
@@ -56,7 +57,7 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
 
         const numLorries: number = SpawnHelper.getLorryLimitForRoom(room, room.memory.roomState!);
         const numRemoteRooms: number = RoomHelper_State.numRemoteRooms(room);
-        const minerLimits: number = MemoryApi.getSources(room.name).length;
+        const minerLimits: number = MemoryApi_Room.getSources(room.name).length;
         let numWorkers: number = 3 + numRemoteRooms;
 
         // If we have more than 100k energy in storage, we want another worker to help whittle it down
@@ -66,7 +67,7 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
 
         // Generate Limits --------
         domesticLimits[ROLE_MINER] = minerLimits;
-        domesticLimits[ROLE_HARVESTER] = this.getNumHarvesters(room);;
+        domesticLimits[ROLE_HARVESTER] = this.getNumHarvesters(room);
         domesticLimits[ROLE_WORKER] = numWorkers;
         domesticLimits[ROLE_POWER_UPGRADER] = 0;
         domesticLimits[ROLE_LORRY] = numLorries;
@@ -127,7 +128,7 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
         // [Special Case], if we recovered a room and only have 1 harvester (they would be too small to keep up with room)
         if (RoomHelper_Structure.excecuteEveryTicks(40)) {
             const harvester: Creep | undefined = _.find(
-                MemoryApi.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER)
+                MemoryApi_Creep.getMyCreeps(room.name, (c: Creep) => c.memory.role === ROLE_HARVESTER)
             );
             if (harvester) {
                 if (SpawnApi.getEnergyCostOfBody(Normalize.convertCreepBodyToBodyPartConstant(harvester.body)) <= 600) {
@@ -137,5 +138,4 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
         }
         return 1;
     }
-
 }

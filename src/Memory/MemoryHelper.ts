@@ -1,4 +1,4 @@
-import { MemoryApi } from "Utils/Imports/internals";
+import { MemoryApi_Creep, MemoryApi_Empire } from "Utils/Imports/internals";
 
 // Accessing Memory Helpers
 export class MemoryHelper {
@@ -10,7 +10,7 @@ export class MemoryHelper {
         const filterByRole = (creep: Creep) => {
             return creep.memory.role === role;
         };
-        const creepsOfRole = MemoryApi.getMyCreeps(room.name, filterByRole);
+        const creepsOfRole = MemoryApi_Creep.getMyCreeps(room.name, filterByRole);
 
         return creepsOfRole;
     }
@@ -20,7 +20,7 @@ export class MemoryHelper {
      * @param roomName the name of the room we are cheking for
      */
     public static dependentRoomExists(roomName: string): boolean {
-        const ownedRooms: Room[] = MemoryApi.getOwnedRooms();
+        const ownedRooms: Room[] = MemoryApi_Empire.getOwnedRooms();
 
         // Loop over d-rooms within each room looking for the parameter room name
         for (const room of ownedRooms) {

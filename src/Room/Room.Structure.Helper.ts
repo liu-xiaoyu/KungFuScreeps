@@ -1,11 +1,17 @@
 import {
+    WALL_LIMIT,
+    ERROR_WARN,
+    STIMULATE_FLAG,
     UserException,
-    MemoryApi,
     CreepAllHelper,
     TOWER_MIN_DAMAGE_THRESHOLD,
+    SpawnHelper,
     TOWER_MAX_DAMAGE_THRESHOLD,
-    TOWER_ALLOWED_TO_REPAIR,
-    WALL_LIMIT
+    MemoryApi_Room,
+    MemoryApi_Empire,
+    MemoryApi_Creep,
+    MemoryApi_Jobs,
+    TOWER_ALLOWED_TO_REPAIR
 } from "Utils/Imports/internals";
 
 export class RoomHelper_Structure {
@@ -16,7 +22,7 @@ export class RoomHelper_Structure {
      * @param objectConst the object we want to check for
      */
     public static isExistInRoom(room: Room, objectConst: StructureConstant): boolean {
-        return MemoryApi.getStructures(room.name, s => s.structureType === objectConst).length > 0;
+        return MemoryApi_Room.getStructures(room.name, s => s.structureType === objectConst).length > 0;
     }
 
     /**
@@ -136,7 +142,7 @@ export class RoomHelper_Structure {
      */
     public static chooseTowerAttackTarget(room: Room): Creep | null {
         // All hostiles
-        const hostileCreeps = MemoryApi.getHostileCreeps(room.name);
+        const hostileCreeps = MemoryApi_Creep.getHostileCreeps(room.name);
 
         // Quit early if no creeps
         if (hostileCreeps.length === 0) {
@@ -156,8 +162,8 @@ export class RoomHelper_Structure {
         const civilianCreeps = hostileCreeps;
 
         // All towers in the room
-        // const towers = MemoryApi.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
-        const towers = MemoryApi.getStructureOfType(
+        // const towers = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_TOWER, (tower: StructureTower) => tower.store[RESOURCE_ENERGY] > 0);
+        const towers = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_TOWER,
             (tower: StructureTower) => tower.energy > 0
@@ -294,7 +300,7 @@ export class RoomHelper_Structure {
      */
     public static chooseTowerTargetRepair(room: Room): Structure | undefined | null {
         // Check for non-priority repair jobs of an allowed type
-        const repairJobs = MemoryApi.getRepairJobs(
+        const repairJobs = MemoryApi_Jobs.getRepairJobs(
             room,
             (j: WorkPartJob) => j.targetType === STRUCTURE_CONTAINER || j.targetType === STRUCTURE_ROAD
         );

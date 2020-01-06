@@ -18,7 +18,7 @@ import {
     ROLE_TOWER_TANK,
     ERROR_ERROR
 } from "Utils/Imports/constants";
-import { SpawnHelper, EventHelper, UserException, SpawnApi, MemoryApi } from "Utils/Imports/internals";
+import { SpawnHelper, EventHelper, UserException, SpawnApi, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class TowerDrainerTankBodyOptsHelper implements ICreepBodyOptsHelper {
 
@@ -132,7 +132,7 @@ export class TowerDrainerTankBodyOptsHelper implements ICreepBodyOptsHelper {
      * @param room the room we are spawning in
      */
     public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
-        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const roomCenter: RoomPosition = MemoryApi_Room.getBunkerCenter(room, false);
         const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
         const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter!.x, roomCenter!.y);
         directions.splice(directions.indexOf(managerDirection), 1);

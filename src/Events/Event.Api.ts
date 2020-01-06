@@ -1,4 +1,4 @@
-import { C_EVENT_CREEP_SPAWNED, EventHelper, SpawnHelper, UserException, MemoryApi, ROLE_SCOUT } from "Utils/Imports/internals";
+import { C_EVENT_CREEP_SPAWNED, EventHelper, SpawnHelper, UserException,   ROLE_SCOUT, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class EventApi {
     /**
@@ -93,7 +93,7 @@ export class EventApi {
             EventHelper.miltaryCreepSpawnTrigger(room, event, creep);
         }
         else if (creep.memory.role === ROLE_SCOUT) {
-            MemoryApi.updateLastTickScoutSpawned(room);
+            MemoryApi_Room.updateLastTickScoutSpawned(room);
         }
     }
 

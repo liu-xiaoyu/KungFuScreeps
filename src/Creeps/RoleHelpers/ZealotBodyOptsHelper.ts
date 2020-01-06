@@ -21,7 +21,7 @@ import {
     SpawnApi,
     UserException,
     EventHelper,
-    MemoryApi
+    MemoryApi_Room,
 } from "Utils/Imports/internals";
 
 export class ZealotBodyOptsHelper implements ICreepBodyOptsHelper {
@@ -160,7 +160,7 @@ export class ZealotBodyOptsHelper implements ICreepBodyOptsHelper {
      * @param room the room we are in
      */
     public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
-        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
+        const roomCenter: RoomPosition = MemoryApi_Room.getBunkerCenter(room, false);
         const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
         const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter!.x, roomCenter!.y);
         directions.splice(directions.indexOf(managerDirection), 1);

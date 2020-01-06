@@ -1,4 +1,11 @@
-import { MemoryApi, CreepAllApi, CreepMiliHelper, UserException, PathfindingApi, RoomHelper_State } from "Utils/Imports/internals";
+import {
+    CreepAllApi,
+    CreepMiliHelper,
+    UserException,
+    PathfindingApi,
+    MemoryApi_Creep,
+    RoomHelper_State
+} from "Utils/Imports/internals";
 
 // Api for military creep's
 export class CreepMiliApi {
@@ -15,7 +22,7 @@ export class CreepMiliApi {
         const squadSize: number = creepOptions.squadSize!;
         const squadUUID: number = creepOptions.squadUUID!;
         const rallyRoom: string = creepOptions.rallyLocation.roomName;
-        const creepsInSquad: Creep[] | null = MemoryApi.getCreepsInSquad(creep.room.name, squadUUID);
+        const creepsInSquad: Creep[] | null = MemoryApi_Creep.getCreepsInSquad(creep.room.name, squadUUID);
         const rangeForEvery: number = creepsInSquad !== null ? creepsInSquad.length - 1 : 1;
 
         // If we don't have the full squad spawned yet, creep is waiting
@@ -84,7 +91,7 @@ export class CreepMiliApi {
         }
 
         // Check if a squad member already has an attack target, if so choose that (so squads stay on the same page)
-        const squadMembers: Creep[] | null = MemoryApi.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
+        const squadMembers: Creep[] | null = MemoryApi_Creep.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
         if (squadMembers) {
             const squadOptions: CreepOptionsMili[] = _.map(
                 squadMembers,
@@ -137,7 +144,7 @@ export class CreepMiliApi {
 
         // Check for a straight path to one of the preferred targets
         // Enemy Creeps
-        const hostileCreeps: Creep[] = MemoryApi.getHostileCreeps(creep.room.name, undefined, true);
+        const hostileCreeps: Creep[] = MemoryApi_Creep.getHostileCreeps(creep.room.name, undefined, true);
         const closestCreep: Creep | null = _.first(hostileCreeps);
         if (closestCreep) {
             goal.pos = closestCreep.pos;
@@ -225,7 +232,7 @@ export class CreepMiliApi {
         creepOptions: CreepOptionsMili,
         CREEP_RANGE: number
     ): Creep | null {
-        const hostileCreeps: Creep[] = MemoryApi.getHostileCreeps(creep.room.name);
+        const hostileCreeps: Creep[] = MemoryApi_Creep.getHostileCreeps(creep.room.name);
 
         if (hostileCreeps.length > 0) {
             return creep.pos.findClosestByRange(hostileCreeps);
@@ -240,7 +247,7 @@ export class CreepMiliApi {
      */
     public static getHealingTarget(creep: Creep, creepOptions: CreepOptionsMili): Creep | null {
         let healingTarget: Creep | null;
-        const squadMembers: Creep[] | null = MemoryApi.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
+        const squadMembers: Creep[] | null = MemoryApi_Creep.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
 
         // If squad, find closest squad member with missing health
         if (creepOptions.squadUUID && squadMembers) {
@@ -288,13 +295,13 @@ export class CreepMiliApi {
      * moves the creep away from the target
      */
     public static kiteEnemyCreep(creep: Creep): boolean {
-        const hostileCreep: Creep | null = creep.pos.findClosestByRange(MemoryApi.getHostileCreeps(creep.room.name));
+        const hostileCreep: Creep | null = creep.pos.findClosestByRange(MemoryApi_Creep.getHostileCreeps(creep.room.name));
         if (!hostileCreep) {
             return false;
         }
         let path: PathFinderPath;
         const pathFinderOptions: PathFinderOpts = { flee: true };
-        const goal: { pos: RoomPosition, range: number } = { pos: hostileCreep.pos, range: 4 };
+        const goal: { pos: RoomPosition; range: number } = { pos: hostileCreep.pos, range: 4 };
         path = PathFinder.search(creep.pos, goal, pathFinderOptions);
         if (path.path.length > 0) {
             creep.moveTo(path.path[path.path.length - 1]);
@@ -362,7 +369,7 @@ export class CreepMiliApi {
      */
     public static moveCreepToFurthestSquadMember(creep: Creep): void {
         const creepOptions: CreepOptionsMili = creep.memory.options as CreepOptionsMili;
-        const creepsInSquad: Creep[] | null = MemoryApi.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
+        const creepsInSquad: Creep[] | null = MemoryApi_Creep.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
         let furthestSquadMember: RoomPosition | undefined;
         for (const member of creepsInSquad!) {
             if (member.room.name === creep.room.name) {

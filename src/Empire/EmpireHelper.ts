@@ -7,10 +7,11 @@ import {
     OVERRIDE_D_ROOM_FLAG,
     ERROR_WARN,
     STIMULATE_FLAG,
-    MemoryApi,
+
     UserException,
     SpawnApi,
-    RoomVisualHelper
+    RoomVisualHelper,
+    MemoryApi_Empire
 } from "Utils/Imports/internals";
 
 export class EmpireHelper {
@@ -24,7 +25,7 @@ export class EmpireHelper {
         // Green & White flags are considered override flags, get those and find the one that was placed most recently
         // ! - Idea for here... going to add a constant to describe each flag type, then we can make an empire api function
         // that returns the flag type, so this next line could be replaced with (flag: Flag) => this.getFlagType === OVERRIDE_FLAG
-        const allOverrideFlags = MemoryApi.getAllFlags(
+        const allOverrideFlags = MemoryApi_Empire.getAllFlags(
             (flag: Flag) => flag.color === COLOR_GREEN && flag.secondaryColor === COLOR_WHITE
         );
         let overrideFlag: Flag | undefined;
@@ -55,7 +56,7 @@ export class EmpireHelper {
      * @param targetRoom the room we want to support
      */
     public static findDependentRoomAuto(targetRoom: string): string {
-        const ownedRooms = MemoryApi.getOwnedRooms();
+        const ownedRooms = MemoryApi_Empire.getOwnedRooms();
         let shortestPathRoom: Room | undefined;
 
         // Loop over owned rooms, finding the shortest path
@@ -104,8 +105,8 @@ export class EmpireHelper {
             throw new UserException(
                 "Manual Dependent Room Finding Error",
                 "Flag [" +
-                overrideFlag.name +
-                "]. We have no vision in the room you attempted to manually set as override dependent room.",
+                    overrideFlag.name +
+                    "]. We have no vision in the room you attempted to manually set as override dependent room.",
                 ERROR_ERROR
             );
         }
@@ -141,10 +142,13 @@ export class EmpireHelper {
             const claimRoomName: string = claimRooms[claimRoom]!.roomName;
 
             if (!claimRooms[claimRoom]!.flags[0]) {
-                MemoryApi.createEmpireAlertNode("Removing Claim Room [" + claimRooms[claimRoom]!.roomName + "]", 10);
+                MemoryApi_Empire.createEmpireAlertNode(
+                    "Removing Claim Room [" + claimRooms[claimRoom]!.roomName + "]",
+                    10
+                );
 
                 // Get the dependent room for the attack room we are removing from memory
-                const dependentRoom: Room | undefined = _.find(MemoryApi.getOwnedRooms(), (room: Room) => {
+                const dependentRoom: Room | undefined = _.find(MemoryApi_Empire.getOwnedRooms(), (room: Room) => {
                     const rr = room.memory.claimRooms;
                     return _.some(rr!, (innerRR: ClaimRoomMemory) => {
                         if (innerRR) {
@@ -179,7 +183,7 @@ export class EmpireHelper {
                 // Tell typescript that these are claim flag memory structures
                 const currentFlag: ClaimFlagMemory = claimRoom!.flags[flag] as ClaimFlagMemory;
                 if (!Game.flags[currentFlag.flagName]) {
-                    MemoryApi.createEmpireAlertNode(
+                    MemoryApi_Empire.createEmpireAlertNode(
                         "Removing [" + flag + "] from Claim Room [" + claimRoom!.roomName + "]",
                         10
                     );
@@ -202,10 +206,13 @@ export class EmpireHelper {
             const attackRoomName: string = attackRooms[attackRoom]!.roomName;
 
             if (!attackRooms[attackRoom]!.flags[0]) {
-                MemoryApi.createEmpireAlertNode("Removing Attack Room [" + attackRooms[attackRoom]!.roomName + "]", 10);
+                MemoryApi_Empire.createEmpireAlertNode(
+                    "Removing Attack Room [" + attackRooms[attackRoom]!.roomName + "]",
+                    10
+                );
 
                 // Get the dependent room for the attack room we are removing from memory
-                const dependentRoom: Room | undefined = _.find(MemoryApi.getOwnedRooms(), (room: Room) => {
+                const dependentRoom: Room | undefined = _.find(MemoryApi_Empire.getOwnedRooms(), (room: Room) => {
                     const rr = room.memory.attackRooms;
                     return _.some(rr!, (innerRR: AttackRoomMemory) => {
                         if (innerRR) {
@@ -239,7 +246,7 @@ export class EmpireHelper {
                 // Tell typescript that these are claim flag memory structures
                 const currentFlag: AttackFlagMemory = attackRoom!.flags[flag] as AttackFlagMemory;
                 if (!Game.flags[currentFlag.flagName]) {
-                    MemoryApi.createEmpireAlertNode(
+                    MemoryApi_Empire.createEmpireAlertNode(
                         "Removing [" + flag + "] from Attack Room [" + attackRoom!.roomName + "]",
                         10
                     );
@@ -262,10 +269,13 @@ export class EmpireHelper {
             const remoteRoomName: string = remoteRooms[remoteRoom]!.roomName;
 
             if (!remoteRooms[remoteRoom]!.flags[0]) {
-                MemoryApi.createEmpireAlertNode("Removing Remote Room [" + remoteRooms[remoteRoom]!.roomName + "]", 10);
+                MemoryApi_Empire.createEmpireAlertNode(
+                    "Removing Remote Room [" + remoteRooms[remoteRoom]!.roomName + "]",
+                    10
+                );
 
                 // Get the dependent room for this room
-                const dependentRoom: Room | undefined = _.find(MemoryApi.getOwnedRooms(), (room: Room) => {
+                const dependentRoom: Room | undefined = _.find(MemoryApi_Empire.getOwnedRooms(), (room: Room) => {
                     const rr = room.memory.remoteRooms;
                     return _.some(rr!, (innerRR: RemoteRoomMemory) => {
                         if (innerRR) {
@@ -300,7 +310,7 @@ export class EmpireHelper {
                 // Tell typescript that these are claim flag memory structures
                 const currentFlag: RemoteFlagMemory = remoteRoom!.flags[flag] as RemoteFlagMemory;
                 if (!Game.flags[currentFlag.flagName]) {
-                    MemoryApi.createEmpireAlertNode(
+                    MemoryApi_Empire.createEmpireAlertNode(
                         "Removing [" + flag + "] from Remote Room Memory [" + remoteRoom!.roomName + "]",
                         10
                     );

@@ -18,7 +18,7 @@ import {
     ROLE_WORKER,
     SpawnHelper,
     SpawnApi,
-    MemoryApi
+    MemoryApi_Room,
 } from "Utils/Imports/internals";
 
 export class WorkerBodyOptsHelper implements ICreepBodyOptsHelper {
@@ -59,7 +59,7 @@ export class WorkerBodyOptsHelper implements ICreepBodyOptsHelper {
             case TIER_8:
             case TIER_7:
             case TIER_6:
-            case TIER_5:    // 8 Work, 6 Carry, 10 Move - Total Cost: 1600
+            case TIER_5: // 8 Work, 6 Carry, 10 Move - Total Cost: 1600
                 body = { work: 8, carry: 6, move: 10 };
                 break;
         }
@@ -128,7 +128,7 @@ export class WorkerBodyOptsHelper implements ICreepBodyOptsHelper {
                     upgrade: true, //
                     fillTower: true, //
                     getFromStorage: true, //
-                    getDroppedEnergy: true, //
+                    getDroppedEnergy: true //
                 };
 
                 break;
@@ -167,8 +167,17 @@ export class WorkerBodyOptsHelper implements ICreepBodyOptsHelper {
      * @param room the room we are in
      */
     public getSpawnDirection(centerSpawn: StructureSpawn, room: Room): DirectionConstant[] {
-        const roomCenter: RoomPosition = MemoryApi.getBunkerCenter(room, false);
-        const directions: DirectionConstant[] = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        const roomCenter: RoomPosition = MemoryApi_Room.getBunkerCenter(room, false);
+        const directions: DirectionConstant[] = [
+            TOP,
+            TOP_RIGHT,
+            RIGHT,
+            BOTTOM_RIGHT,
+            BOTTOM,
+            BOTTOM_LEFT,
+            LEFT,
+            TOP_LEFT
+        ];
         const managerDirection: DirectionConstant = centerSpawn.pos.getDirectionTo(roomCenter!.x, roomCenter!.y);
         directions.splice(directions.indexOf(managerDirection), 1);
         return directions;

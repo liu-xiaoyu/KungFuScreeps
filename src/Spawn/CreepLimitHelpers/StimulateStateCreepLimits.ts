@@ -12,7 +12,7 @@ import {
     ROLE_REMOTE_DEFENDER,
     ROOM_STATE_STIMULATE,
     SpawnHelper,
-    MemoryApi,
+    MemoryApi_Room,
     RoomHelper_State
 } from "Utils/Imports/internals";
 
@@ -41,7 +41,7 @@ export class StimulateStateCreepLimits implements ICreepSpawnLimits {
         };
 
         const numLorries: number = SpawnHelper.getLorryLimitForRoom(room, room.memory.roomState!);
-        const minerLimits: number = MemoryApi.getSources(room.name).length;
+        const minerLimits: number = MemoryApi_Room.getSources(room.name).length;
 
         // Generate Limits -------
         domesticLimits[ROLE_MINER] = minerLimits;

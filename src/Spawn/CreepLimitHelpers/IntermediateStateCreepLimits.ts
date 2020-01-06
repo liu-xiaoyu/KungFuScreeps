@@ -1,4 +1,4 @@
-import { ROLE_MINER, ROLE_HARVESTER, ROLE_WORKER, ROOM_STATE_INTER, MemoryApi } from "Utils/Imports/internals";
+import { ROLE_MINER, ROLE_HARVESTER, ROLE_WORKER, ROOM_STATE_INTER, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class IntermediateStateCreepLimits implements ICreepSpawnLimits {
     public roomState: RoomStateConstant = ROOM_STATE_INTER;
@@ -24,7 +24,7 @@ export class IntermediateStateCreepLimits implements ICreepSpawnLimits {
             manager: 0
         };
 
-        const minerLimits: number = MemoryApi.getSources(room.name).length;
+        const minerLimits: number = MemoryApi_Room.getSources(room.name).length;
 
         // Generate Limits -------
         domesticLimits[ROLE_MINER] = minerLimits;

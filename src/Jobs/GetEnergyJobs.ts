@@ -2,7 +2,6 @@ import {
     CreepAllHelper,
     CreepAllApi,
     PathfindingApi,
-    MemoryApi,
     CONTAINER_MINIMUM_ENERGY,
     ROLE_MINER,
     ROLE_REMOTE_MINER,
@@ -10,7 +9,9 @@ import {
     RUIN_MINIMUM_ENERGY,
     LINK_MINIMUM_ENERGY,
     RoomApi_State,
-    RoomApi_Structure
+    RoomApi_Structure,
+    MemoryApi_Room,
+    MemoryApi_Creep
 } from "Utils/Imports/internals";
 
 export class GetEnergyJobs implements IJobTypeHelper {
@@ -170,7 +171,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
      */
     public static createMineralJobs(room: Room): GetEnergyJob[] {
         // List of all sources that are under optimal work capacity
-        const openMinerals = MemoryApi.getMinerals(room.name);
+        const openMinerals = MemoryApi_Room.getMinerals(room.name);
 
         if (openMinerals.length === 0) {
             return [];
@@ -208,7 +209,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
      */
     public static createContainerJobs(room: Room): GetEnergyJob[] {
         // List of all containers with >= CONTAINER_MINIMUM_ENERGY (from config.ts)
-        const containers = MemoryApi.getStructureOfType(
+        const containers = MemoryApi_Room.getStructureOfType(
             room.name,
             STRUCTURE_CONTAINER,
             (container: StructureContainer) => container.store.energy > CONTAINER_MINIMUM_ENERGY
@@ -222,7 +223,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
 
         _.forEach(containers, (container: StructureContainer) => {
             // Get all creeps that are targeting this container to withdraw from it
-            const creepsUsingContainer = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+            const creepsUsingContainer = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                 if (
                     creep.memory.job &&
                     creep.memory.job.targetID === container.id &&
@@ -264,7 +265,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
     public static createLinkJobs(room: Room): GetEnergyJob[] {
         const linkJobList: GetEnergyJob[] = [];
 
-        const upgraderLink: StructureLink | null = MemoryApi.getUpgraderLink(room) as StructureLink | null;
+        const upgraderLink: StructureLink | null = MemoryApi_Room.getUpgraderLink(room) as StructureLink | null;
         if (upgraderLink !== undefined && upgraderLink !== null && upgraderLink.energy > LINK_MINIMUM_ENERGY) {
             const linkStore: StoreDefinition = { energy: upgraderLink.energy } as StoreDefinition;
             const linkJob: GetEnergyJob = {
@@ -285,11 +286,11 @@ export class GetEnergyJobs implements IJobTypeHelper {
      * @param room The room to create the job list for
      */
     public static createLootJobs(room: Room): GetEnergyJob[] {
-        const tombstones = MemoryApi.getTombstones(
+        const tombstones = MemoryApi_Room.getTombstones(
             room,
             (tombstone: Tombstone) => tombstone.store.energy >= TOMBSTONE_MINIMUM_ENERGY
         );
-        const ruins = MemoryApi.getRuins(room, (ruin: Ruin) => ruin.store.energy >= RUIN_MINIMUM_ENERGY);
+        const ruins = MemoryApi_Room.getRuins(room, (ruin: Ruin) => ruin.store.energy >= RUIN_MINIMUM_ENERGY);
 
         if (tombstones.length === 0 && ruins.length === 0) {
             return [];
@@ -299,7 +300,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
 
         _.forEach(tombstones, (tombstone: Tombstone) => {
             // Get all creeps that are targeting this tombstone to withdraw from it
-            const creepsUsingTombstone = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+            const creepsUsingTombstone = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                 if (
                     creep.memory.job &&
                     creep.memory.job.targetID === tombstone.id &&
@@ -333,7 +334,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
 
         _.forEach(ruins, (ruin: Ruin) => {
             // Get all creeps that are targeting this ruin to withdraw from it
-            const creepsUsingRuin = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+            const creepsUsingRuin = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                 if (
                     creep.memory.job &&
                     creep.memory.job.targetID === ruin.id &&
@@ -413,7 +414,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
      */
     public static createPickupJobs(room: Room): GetEnergyJob[] {
         // All dropped energy in the room
-        const drops = MemoryApi.getDroppedResources(room);
+        const drops = MemoryApi_Room.getDroppedResources(room);
 
         if (drops.length === 0) {
             return [];
@@ -425,7 +426,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
             const dropStore: StoreDefinition = { energy: 0 } as StoreDefinition;
             dropStore[drop.resourceType] = drop.amount;
 
-            const creepsUsingDrop = MemoryApi.getMyCreeps(room.name, (creep: Creep) => {
+            const creepsUsingDrop = MemoryApi_Creep.getMyCreeps(room.name, (creep: Creep) => {
                 if (
                     creep.memory.job &&
                     creep.memory.job.targetID === drop.id &&

@@ -1,4 +1,4 @@
-import { ROLE_POWER_UPGRADER, MemoryApi, CreepAllApi } from "Utils/Imports/internals";
+import { ROLE_POWER_UPGRADER,   CreepAllApi, MemoryApi_Jobs } from "Utils/Imports/internals";
 
 // Manager for the miner creep role
 export class PowerUpgraderCreepManager implements ICivCreepRoleManager {
@@ -30,7 +30,7 @@ export class PowerUpgraderCreepManager implements ICivCreepRoleManager {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
         if (creepOptions.upgrade) {
             // All link jobs with enough energy to fill creep.carry, and not taken
-            const upgraderJob = MemoryApi.getUpgradeJobs(room, (job: WorkPartJob) => !job.isTaken);
+            const upgraderJob = MemoryApi_Jobs.getUpgradeJobs(room, (job: WorkPartJob) => !job.isTaken);
 
             if (upgraderJob.length > 0) {
                 return upgraderJob[0];
@@ -46,7 +46,7 @@ export class PowerUpgraderCreepManager implements ICivCreepRoleManager {
      */
     public newGetEnergyJob(creep: Creep, room: Room): GetEnergyJob | undefined {
         // All link jobs with enough energy to fill creep.carry, and not taken
-        const linkJobs = MemoryApi.getLinkJobs(room, (job: GetEnergyJob) => !job.isTaken, true);
+        const linkJobs = MemoryApi_Jobs.getLinkJobs(room, (job: GetEnergyJob) => !job.isTaken, true);
 
         if (linkJobs.length > 0) {
             return linkJobs[0];
@@ -59,6 +59,6 @@ export class PowerUpgraderCreepManager implements ICivCreepRoleManager {
      * Handles setup for a new job
      */
     public handleNewJob(creep: Creep, room: Room): void {
-        MemoryApi.updateJobMemory(creep, room);
+        MemoryApi_Jobs.updateJobMemory(creep, room);
     }
 }

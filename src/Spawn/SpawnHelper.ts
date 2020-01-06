@@ -598,7 +598,7 @@ export class SpawnHelper {
             if (!harvester) {
                 return true;
             }
-            return harvester.ticksToLive !== undefined && harvester.ticksToLive <= harvester.body.length * 3;
+            return false;
         }
         return false;
     }

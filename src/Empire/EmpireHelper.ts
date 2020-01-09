@@ -12,7 +12,8 @@ import {
     SpawnApi,
     RoomVisualHelper,
     MemoryApi_Empire,
-    MemoryApi_Room
+    MemoryApi_Room,
+    EmpireApi
 } from "Utils/Imports/internals";
 
 export class EmpireHelper {
@@ -177,6 +178,7 @@ export class EmpireHelper {
             // If the room is built, complete all the flags associated with it
             if (this.claimRoomBuildComplete(claimRoom)) {
                 for (const flag in claimRoom!.flags) {
+                    MemoryApi_Empire.createEmpireAlertNode("Completing flag for claim room [" + claimRoom.roomName + "].", 10);
                     Game.flags[flag].memory.complete = true;
                 }
             }

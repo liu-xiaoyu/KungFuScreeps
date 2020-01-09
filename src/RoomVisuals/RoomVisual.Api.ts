@@ -89,7 +89,7 @@ export class RoomVisualApi {
             remoteReserver: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_RESERVER).length,
             remoteHarvester: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_HARVESTER).length,
             claimer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_CLAIMER).length,
-            colonizer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_COLONIZER).length,
+            remoteColonizer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_COLONIZER).length,
             remoteDefender: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_DEFENDER).length,
             manager: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_MANAGER).length,
             scout: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_SCOUT).length

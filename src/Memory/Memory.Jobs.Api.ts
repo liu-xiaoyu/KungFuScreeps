@@ -1,4 +1,4 @@
-import { NO_CACHING_MEMORY, STORE_JOB_CACHE_TTL, MemoryHelper_Room, SOURCE_JOB_CACHE_TTL, ALL_STRUCTURE_TYPES, UserException, CONTAINER_JOB_CACHE_TTL, LINK_JOB_CACHE_TTL, BACKUP_JOB_CACHE_TTL, PICKUP_JOB_CACHE_TTL, LOOT_JOB_CACHE_TTL, CLAIM_JOB_CACHE_TTL, RESERVE_JOB_CACHE_TTL, SIGN_JOB_CACHE_TTL, ATTACK_JOB_CACHE_TTL, REPAIR_JOB_CACHE_TTL, PRIORITY_REPAIR_THRESHOLD, BUILD_JOB_CACHE_TTL, UPGRADE_JOB_CACHE_TTL, FILL_JOB_CACHE_TTL, RoomApi_Structure } from "Utils/Imports/internals";
+import { NO_CACHING_MEMORY, STORE_JOB_CACHE_TTL, MemoryHelper_Room, SOURCE_JOB_CACHE_TTL, ALL_STRUCTURE_TYPES, UserException, CONTAINER_JOB_CACHE_TTL, LINK_JOB_CACHE_TTL, BACKUP_JOB_CACHE_TTL, ERROR_ERROR, PICKUP_JOB_CACHE_TTL, LOOT_JOB_CACHE_TTL, CLAIM_JOB_CACHE_TTL, RESERVE_JOB_CACHE_TTL, SIGN_JOB_CACHE_TTL, ATTACK_JOB_CACHE_TTL, REPAIR_JOB_CACHE_TTL, PRIORITY_REPAIR_THRESHOLD, BUILD_JOB_CACHE_TTL, UPGRADE_JOB_CACHE_TTL, FILL_JOB_CACHE_TTL, RoomApi_Structure } from "Utils/Imports/internals";
 
 export class MemoryApi_Jobs {
     /**
@@ -24,11 +24,11 @@ export class MemoryApi_Jobs {
     }
 
     /**
-    * Get the list of WorkPartJobs.repairJobs
-    * @param room The room to get the jobs from
-    * @param filterFunction [Optional] A function to filter the WorkPartJobs list
-    * @param forceUpdate [Optional] Forcibly invalidate the cache
-    */
+     * Get the list of WorkPartJobs.repairJobs
+     * @param room The room to get the jobs from
+     * @param filterFunction [Optional] A function to filter the WorkPartJobs list
+     * @param forceUpdate [Optional] Forcibly invalidate the cache
+     */
     public static getWallRepairJobs(
         room: Room,
         filterFunction?: (object: WorkPartJob) => boolean,

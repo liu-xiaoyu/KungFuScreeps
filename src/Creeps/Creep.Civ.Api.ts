@@ -126,7 +126,9 @@ export class CreepCivApi {
                     });
 
                     const closestAvailableSource: Source = creep.pos.findClosestByRange(accessibleSourceObjects)!; // Force not null since we used MemoryHelper.getOnlyObjectsFromIds;
-
+                    if (!closestAvailableSource) {
+                        return undefined;
+                    }
                     // return the job that corresponds with the closest source
                     return _.find(sourceJobs, (job: GetEnergyJob) => job.targetID === closestAvailableSource.id);
                 } else {

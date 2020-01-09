@@ -320,8 +320,11 @@ export class SpawnHelper {
         let creepNum: number = 0;
 
         switch (roleConst) {
-            case ROLE_CLAIMER || ROLE_COLONIZER:
+            case ROLE_CLAIMER:
                 creepNum = 1;
+                break;
+            case ROLE_COLONIZER:
+                creepNum = 2;
                 break;
         }
 

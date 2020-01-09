@@ -9,17 +9,17 @@ import { MemoryApi_Creep } from "Memory/Memory.Creep.Api";
 import { RoomHelper_Structure, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class CreepCivApi {
-    /**********************************************************/
-    /*        GET NEW JOB SECTION                           ***/
-    /**********************************************************/
-    // TODO - move all of these to their respective managers for refactoring purposes
     /**
      * Gets a new WorkPartJob for worker
+     * @param creep the creep getting a job
+     * @param room the room we are checking for a job in
+     * @returns a WorkPartJob that the creep is selecting, or undefined if there are none
      */
     public static newWorkPartJob(creep: Creep, room: Room): WorkPartJob | undefined {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
         const upgradeJobs = MemoryApi_Jobs.getUpgradeJobs(room, (job: WorkPartJob) => !job.isTaken);
         const isPowerUpgrader: boolean = !!(room.memory.creepLimit && room.memory.creepLimit.domesticLimits[ROLE_POWER_UPGRADER] > 0);
+        const isSpawnInRoom: boolean = !!(MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_SPAWN));
         const isCurrentUpgrader: boolean = _.some(
             MemoryApi_Creep.getMyCreeps(room.name),
             (c: Creep) => (
@@ -29,7 +29,7 @@ export class CreepCivApi {
         );
 
         // Assign upgrade job is one isn't currently being worked
-        if (creepOptions.upgrade && !isCurrentUpgrader) {
+        if (creepOptions.upgrade && !isCurrentUpgrader && isSpawnInRoom) {
             if (upgradeJobs.length > 0) {
                 return upgradeJobs[0];
             }

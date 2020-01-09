@@ -89,6 +89,9 @@ export class EmpireApi {
             _.map(allRooms, room => MemoryApi_Room.getAttackRooms(room))
         );
 
+        // Remove claim room flags once the room is sufficiently built up
+        EmpireHelper.markCompletedClaimRooms(claimRooms);
+
         // Clean dead flags from memory structures
         EmpireHelper.cleanDeadClaimRoomFlags(claimRooms);
         EmpireHelper.cleanDeadRemoteRoomsFlags(remoteRooms);

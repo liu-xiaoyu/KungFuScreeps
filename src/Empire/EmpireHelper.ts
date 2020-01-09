@@ -11,7 +11,8 @@ import {
     UserException,
     SpawnApi,
     RoomVisualHelper,
-    MemoryApi_Empire
+    MemoryApi_Empire,
+    MemoryApi_Room
 } from "Utils/Imports/internals";
 
 export class EmpireHelper {
@@ -105,8 +106,8 @@ export class EmpireHelper {
             throw new UserException(
                 "Manual Dependent Room Finding Error",
                 "Flag [" +
-                    overrideFlag.name +
-                    "]. We have no vision in the room you attempted to manually set as override dependent room.",
+                overrideFlag.name +
+                "]. We have no vision in the room you attempted to manually set as override dependent room.",
                 ERROR_ERROR
             );
         }
@@ -161,6 +162,41 @@ export class EmpireHelper {
                 delete Memory.rooms[dependentRoom!.name].claimRooms![claimRoom];
             }
         }
+    }
+
+    /**
+     * Mark the flag as complete for each claim room that is considered "built"
+     * @param claimRooms the claim rooms we are checking in memory
+     */
+    public static markCompletedClaimRooms(claimRooms: Array<ClaimRoomMemory | undefined>): void {
+        for (const claimRoom of claimRooms) {
+            if (!claimRoom) {
+                continue;
+            }
+
+            // If the room is built, complete all the flags associated with it
+            if (this.claimRoomBuildComplete(claimRoom)) {
+                for (const flag in claimRoom!.flags) {
+                    Game.flags[flag].memory.complete = true;
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if the current claim room is considered "built"
+     * @param claimRoom the claim room we are checking
+     * @returns boolean represeting its status as built or unbuilt
+     */
+    public static claimRoomBuildComplete(claimRoom: ClaimRoomMemory): boolean {
+        const room: Room | undefined = Game.rooms[claimRoom.roomName];
+        // If we have no vision, assume build is not complete
+        if (!room) {
+            return false;
+        }
+
+        const spawns = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_RAMPART);
+        return (spawns.length > 0);
     }
 
     /**

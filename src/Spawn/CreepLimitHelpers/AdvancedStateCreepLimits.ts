@@ -136,6 +136,6 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
                 }
             }
         }
-        return 1;
+        return 2;
     }
 }

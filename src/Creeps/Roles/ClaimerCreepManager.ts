@@ -14,8 +14,7 @@ export class ClaimerCreepManager implements ICivCreepRoleManager {
         const creepOptions = creep.memory.options as CreepOptionsCiv;
 
         if (creepOptions.claim) {
-            const claimJobs = MemoryApi_Jobs.getClaimJobs(room, (job: ClaimPartJob) => !job.isTaken);
-
+            const claimJobs = MemoryApi_Jobs.getClaimJobs(room, (job: ClaimPartJob) => !job.isTaken, true);
             if (claimJobs.length > 0) {
                 return claimJobs[0];
             }

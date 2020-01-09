@@ -46,7 +46,9 @@ export class ClaimerBodyOptsHelper implements ICreepBodyOptsHelper {
             case ROOM_STATE_STIMULATE:
             case ROOM_STATE_UPGRADER:
             case ROOM_STATE_NUKE_INBOUND:
-                creepOptions = {};
+                creepOptions = {
+                    claim: true
+                };
 
                 break;
         }

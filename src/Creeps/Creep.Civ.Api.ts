@@ -19,7 +19,7 @@ export class CreepCivApi {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
         const upgradeJobs = MemoryApi_Jobs.getUpgradeJobs(room, (job: WorkPartJob) => !job.isTaken);
         const isPowerUpgrader: boolean = !!(room.memory.creepLimit && room.memory.creepLimit.domesticLimits[ROLE_POWER_UPGRADER] > 0);
-        const isSpawnInRoom: boolean = !!(MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_SPAWN));
+        const isSpawnInRoom: boolean = (MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_SPAWN)).length > 0;
         const isCurrentUpgrader: boolean = _.some(
             MemoryApi_Creep.getMyCreeps(room.name),
             (c: Creep) => (

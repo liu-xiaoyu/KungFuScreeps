@@ -177,9 +177,14 @@ export class EmpireHelper {
 
             // If the room is built, complete all the flags associated with it
             if (this.claimRoomBuildComplete(claimRoom)) {
+
                 for (const flag in claimRoom!.flags) {
+                    const currentFlagName: string = claimRoom.flags[flag].flagName;
+                    if (!Game.flags[currentFlagName]) {
+                        continue;
+                    }
                     MemoryApi_Empire.createEmpireAlertNode("Completing flag for claim room [" + claimRoom.roomName + "].", 10);
-                    Game.flags[flag].memory.complete = true;
+                    Game.flags[currentFlagName].memory.complete = true;
                 }
             }
         }
@@ -197,7 +202,7 @@ export class EmpireHelper {
             return false;
         }
 
-        const spawns = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_RAMPART);
+        const spawns = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_SPAWN);
         return (spawns.length > 0);
     }
 

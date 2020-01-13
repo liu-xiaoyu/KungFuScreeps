@@ -68,6 +68,7 @@ export class RemoteColonizerCreepManager implements ICivCreepRoleManager {
      * @param room the room we are in
      */
     public handleNewJob(creep: Creep, room: Room): void {
-        MemoryApi_Jobs.updateJobMemory(creep, room);
+        const targetRoom = Game.rooms[creep.memory.targetRoom];
+        MemoryApi_Jobs.updateJobMemory(creep, targetRoom);
     }
 }

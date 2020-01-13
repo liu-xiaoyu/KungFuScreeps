@@ -302,7 +302,7 @@ export class SpawnApi {
         if (room.memory.roomState === ROOM_STATE_INTRO) {
             return TIER_1;
         }
-        if (energyAvailable === TIER_8) {
+        if (energyAvailable >= TIER_7 && room.controller?.level === 8) {
             return TIER_8;
         }
 

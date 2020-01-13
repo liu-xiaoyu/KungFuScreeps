@@ -1,4 +1,4 @@
-import { CREEP_CIV_MANAGERS, CREEP_MILI_MANAGERS, ALL_CIVILIAN_ROLES, ALL_REMOTE_ROLES, ALL_MILITARY_ROLES, ERROR_ERROR, UtilHelper, UserException, CreepAllApi } from "Utils/Imports/internals";
+import { CREEP_CIV_MANAGERS, CREEP_MILI_MANAGERS, ALL_CIVILIAN_ROLES, ALL_REMOTE_ROLES, ALL_MILITARY_ROLES, ERROR_ERROR, UtilHelper, UserException, CreepAllApi, ROLE_COLONIZER } from "Utils/Imports/internals";
 
 // Call the creep manager for each role
 export class CreepManager {
@@ -103,6 +103,13 @@ export class CreepManager {
         }
 
         if (creep.memory.working) {
+            // Special case for remote colonizer, ideally this gets handled a different way and removed from here please
+            // TODO, do ^ find a cleaner solution for this patch
+            if (creep.memory.role === ROLE_COLONIZER && creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()) {
+                delete creep.memory.job;
+                return;
+            }
+
             CreepAllApi.doWork(creep, creep.memory.job);
             return;
         }

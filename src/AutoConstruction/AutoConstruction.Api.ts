@@ -14,11 +14,11 @@ export class AutoConstruction {
      */
     public static getBuildableTiles(roomName: string): boolean[][] {
         // TODO Create a stringify/unstringify version of this array to be stored in memory
-        const roomTerrain = new Room.Terrain(roomName);
+        const roomTerrain: RoomTerrain = new Room.Terrain(roomName);
         // Create an empty 50 x 50 array
         // For clarity, creates an Array from [ a new array of 50 elements ] and maps each element to [ a new array of 50 elements ]
         // This array will be filled with booleans of buildable or not
-        const buildableArray = Array.from(Array(50), () => new Array(50));
+        const buildableArray: boolean[][] = Array.from(Array(50), () => new Array(50));
 
         // Fill buildableArray
         for (let x = 0; x < 50; x++) {
@@ -36,50 +36,43 @@ export class AutoConstruction {
     }
 
     /**
+     * Get the distance transofmr of the room array
+     * @param roomName the room name we are checking this all for
+     * @returns number[][] representing distance transform array
+     */
+    private static getDistanceTransformOfRoom(roomName: string): number[][] {
+        const buildableArray: boolean[][] = this.getBuildableTiles(roomName);
+        const distanceTransform: number[][] = Array.from(Array(50), () => new Array(50));
+
+        for (let x = 0; x < 50; x++) {
+            for (let y = 0; y < 50; y++) {
+
+            }
+        }
+        return distanceTransform;
+    }
+
+    /**
      * Returns the top left tile of a buildable location, given the params
      * @param height The height of the module (y range)
      * @param width The width of the module (x range)
      * @returns RoomPosition The top left position of where the module can be placed
      */
-    public static getOptimalLocation(roomName: string, height: number, width: number) {
-        // Todo: Source this from memory rather than create it each time
-        const buildableArray = this.getBuildableTiles(roomName);
+    public static getOptimalLocation(roomName: string, height: number, width: number): RoomPosition | undefined {
+        const distanceTransform: number[][] = this.getDistanceTransformOfRoom(roomName);
 
-        let currentPos: number[] | undefined;
-        let currentHeight = 0;
-        let currentWidth = 0;
 
-        // TODO Reprogram this to check corners first, then check internals. Can avoid a lot of extra work this way
-        // [1,1] - [48,48]; Skip exits
-        for (let x = 1; x < 49; x++) {
-            for (let y = 1; y < 49; y++) {
-                // If tile is buildable either add to currHeight/width; set currentPos if needed
-                if (buildableArray[x][y] === true) {
-                    if (currentPos === undefined) {
-                        currentPos = [x, y];
-                    }
-                    currentHeight++;
-                    currentWidth++;
-                } else {
-                    // Reset currentPos if height/width is not enough once we hit an unbuildable tile
-                    if (currentHeight < height || currentWidth < width) {
-                        currentPos = undefined;
-                        currentHeight = 0;
-                        currentWidth = 0;
-                    }
-                }
+    }
 
-                // Break out of height loop if we have enough space
-                if (currentHeight >= height) {
-                    break;
-                }
-            }
+    /**
+     * Check the squares around the current location
+     * @param x the x value
+     * @param y the y value
+     * @param distanceTransform the array representing closest distance to each tile
+     * @returns boolean representing if the location is suitable
+     */
+    private static checkCurrentLocation(x: number, y: number, distanceTransform: number[][]): boolean {
 
-            // Break out of width loop if we have enough space
-            if (currentWidth >= width && currentHeight >= width) {
-                break;
-            }
-        }
     }
 
     /**

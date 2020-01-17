@@ -57,9 +57,7 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
             return false;
         }
         if (!creep.room.memory.structures.data) {
-            if (creep.room.name === creep.memory.targetRoom) {
-                MemoryApi_Room.getRoomMemory(creep.room);
-            }
+            MemoryApi_Room.getRoomMemory(creep.room);
         }
 
         const enemyTowers: StructureTower[] | null = creep.room.memory.structures.data[
@@ -80,7 +78,6 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
                 creep.moveTo(new RoomPosition(25, 25, creep.room.name), { range: 15 });
                 return true;
             }
-
             // Creep is off exit tile, stay put until healed up
             return true;
         }

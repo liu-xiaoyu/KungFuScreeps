@@ -72,9 +72,9 @@ export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
         const targetRoom: string = creep.memory.targetRoom;
         const isInAdjRoom: boolean = (
             exits[1] === targetRoom ||
-            exits[1] === targetRoom ||
-            exits[1] === targetRoom ||
-            exits[1] === targetRoom
+            exits[3] === targetRoom ||
+            exits[5] === targetRoom ||
+            exits[7] === targetRoom
         );
         return path?.length < 3 && isInAdjRoom;
     }

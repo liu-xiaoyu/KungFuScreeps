@@ -45,9 +45,10 @@ export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
             // We aren't in healing position yet, move with the tank
             if (this.isOnExitTile(creep.pos)) {
                 CreepAllApi.moveCreepOffExit(creep);
-                return;
             }
-            this.rallyWithTank(creep);
+            else {
+                this.rallyWithTank(creep);
+            }
         }
     }
 
@@ -67,7 +68,15 @@ export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
      */
     private inHealingPosition(creep: Creep): boolean {
         const path: PathStep[] = creep.pos.findPathTo(new RoomPosition(25, 25, creep.memory.targetRoom), { range: 24 });
-        return path?.length < 3;
+        const exits: ExitsInformation = Game.map.describeExits(creep.memory.targetRoom);
+        const targetRoom: string = creep.memory.targetRoom;
+        const isInAdjRoom: boolean = (
+            exits[1] === targetRoom ||
+            exits[1] === targetRoom ||
+            exits[1] === targetRoom ||
+            exits[1] === targetRoom
+        );
+        return path?.length < 3 && isInAdjRoom;
     }
 
     /**
@@ -82,7 +91,7 @@ export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
         if (!_.every(squadTank, (c: Creep) => creep.pos.isNearTo(c.pos.x, c.pos.y))) {
             const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadTank, { filter: (c: Creep) => c.name !== creep.name });
             if (closestSquadMember) {
-                creep.moveTo(closestSquadMember);
+                creep.moveTo(closestSquadMember.pos);
             }
             return false;
         }

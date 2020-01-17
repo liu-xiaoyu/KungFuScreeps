@@ -13,8 +13,11 @@ import {
     SpawnHelper,
     Normalize,
     MemoryApi_Empire,
+    ERROR_WARN,
     MemoryApi_Room,
-    MemoryApi_Creep
+    MemoryApi_Creep,
+    TOWER_DRAINER_SQUAD,
+    TOWER_DRAINER_SQUAD_ARRAY
 } from "Utils/Imports/internals";
 
 export class EventHelper {
@@ -109,6 +112,7 @@ export class EventHelper {
         // The creep is not assigned to a flag yet, find it's flag and assign it
         const flagType = attackFlag.flagType;
         let requestingRoleArray: RoleConstant[] = [];
+
         switch (flagType) {
             case STANDARD_SQUAD:
                 const creepsInSquad: Creep[] | null = MemoryApi_Creep.getCreepsInSquad(roomName, attackFlag.squadUUID);
@@ -136,6 +140,13 @@ export class EventHelper {
             case STALKER_SOLO:
                 requestingRoleArray = STALKER_SOLO_ARRAY;
                 break;
+
+            case TOWER_DRAINER_SQUAD:
+                requestingRoleArray = TOWER_DRAINER_SQUAD_ARRAY;
+                break;
+
+            default:
+                throw new UserException("Invalid flag type for EventHelper/isRequestFlag", "", ERROR_WARN);
         }
         return requestingRoleArray.includes(creepRole);
     }

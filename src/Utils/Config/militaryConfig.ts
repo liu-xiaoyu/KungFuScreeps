@@ -17,6 +17,11 @@ export const STANDARD_SQUAD_ARRAY: RoleConstant[] = [ROLE_STALKER, ROLE_MEDIC, R
  * create the array for stalker solo flag
  */
 export const STALKER_SOLO_ARRAY: RoleConstant[] = [ROLE_STALKER];
+
+/**
+ * Array for tower drainer squad
+ */
+export const TOWER_DRAINER_SQUAD_ARRAY: RoleConstant[] = [ROLE_TOWER_MEDIC, ROLE_TOWER_TANK];
 // -------------------------------
 
 // -----

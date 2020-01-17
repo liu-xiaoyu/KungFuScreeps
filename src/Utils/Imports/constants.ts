@@ -47,6 +47,7 @@ export const CLAIM_FLAG = 4;
 export const REMOTE_FLAG = 5;
 export const OVERRIDE_D_ROOM_FLAG = 6;
 export const STIMULATE_FLAG = 7;
+export const TOWER_DRAINER_SQUAD = 8;
 
 // Creep Body Layout Constants
 export const GROUPED = "grouped";

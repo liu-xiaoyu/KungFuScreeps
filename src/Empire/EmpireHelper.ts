@@ -13,7 +13,8 @@ import {
     RoomVisualHelper,
     MemoryApi_Empire,
     MemoryApi_Room,
-    EmpireApi
+    EmpireApi,
+    TOWER_DRAINER_SQUAD
 } from "Utils/Imports/internals";
 
 export class EmpireHelper {
@@ -388,6 +389,11 @@ export class EmpireHelper {
                 case COLOR_RED:
                     flagType = STANDARD_SQUAD;
                     break;
+
+                // Tower Drainer Squad
+                case COLOR_WHITE:
+                    flagType = TOWER_DRAINER_SQUAD;
+                    break;
             }
         }
         // Claim Flags
@@ -460,6 +466,13 @@ export class EmpireHelper {
             // Standard Squad
             case STANDARD_SQUAD:
                 attackFlagMemory.squadSize = 3;
+                attackFlagMemory.squadUUID = SpawnApi.generateSquadUUID();
+                attackFlagMemory.rallyLocation = this.findRallyLocation(dependentRoom, flag.pos.roomName);
+                break;
+
+            // Tower drainer squad
+            case TOWER_DRAINER_SQUAD:
+                attackFlagMemory.squadSize = 2;
                 attackFlagMemory.squadUUID = SpawnApi.generateSquadUUID();
                 attackFlagMemory.rallyLocation = this.findRallyLocation(dependentRoom, flag.pos.roomName);
                 break;

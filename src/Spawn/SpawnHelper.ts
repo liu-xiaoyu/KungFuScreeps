@@ -27,7 +27,9 @@ import {
     MemoryApi_Room,
     MemoryApi_Creep,
     RoomHelper_Structure,
-    RoomHelper_State
+    RoomHelper_State,
+    TOWER_DRAINER_SQUAD,
+    TOWER_DRAINER_SQUAD_ARRAY
 } from "Utils/Imports/internals";
 
 /**
@@ -417,8 +419,13 @@ export class SpawnHelper {
 
             case STALKER_SOLO:
                 return STALKER_SOLO_ARRAY;
+
+            case TOWER_DRAINER_SQUAD:
+                return TOWER_DRAINER_SQUAD_ARRAY;
+
+            default:
+                throw new UserException("Invalid attack flag passed to spawnhelper/getrolesfromattackArray", "rip", ERROR_WARN);
         }
-        return [];
     }
 
     /**

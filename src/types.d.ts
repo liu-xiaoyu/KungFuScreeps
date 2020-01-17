@@ -1299,6 +1299,7 @@ type CLAIM_FLAG = 4;
 type REMOTE_FLAG = 5;
 type OVERRIDE_D_ROOM_FLAG = 6;
 type STIMULATE_FLAG = 7;
+type TOWER_DRAINER_SQUAD = 8;
 
 /**
  * type that holds all flag type constants
@@ -1310,7 +1311,8 @@ type FlagTypeConstant =
     | CLAIM_FLAG
     | REMOTE_FLAG
     | OVERRIDE_D_ROOM_FLAG
-    | STIMULATE_FLAG;
+    | STIMULATE_FLAG
+    | TOWER_DRAINER_SQUAD;
 
 /**
  * Tier Definitions

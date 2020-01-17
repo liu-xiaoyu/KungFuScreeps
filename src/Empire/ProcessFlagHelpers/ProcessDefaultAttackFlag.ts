@@ -1,4 +1,4 @@
-import {   EmpireHelper, MemoryApi_Room, MemoryApi_Empire } from "Utils/Imports/internals";
+import { EmpireHelper, MemoryApi_Room, MemoryApi_Empire } from "Utils/Imports/internals";
 
 export class ProcessDefaultAttackFlag implements IFlagProcesser {
     public primaryColor: ColorConstant = COLOR_RED;
@@ -63,7 +63,8 @@ export class ProcessDefaultAttackFlag implements IFlagProcesser {
             roomName: flag.pos.roomName,
             flags: [attackFlagMemory]
         };
-
+        console.log("mem: ", attackRoomMemory);
+        console.log("dep room: ", dependentRoom);
         MemoryApi_Empire.createEmpireAlertNode(
             "Attack Flag [" + flag.name + "] processed. Host Room: [" + dependentRoom.name + "]",
             10

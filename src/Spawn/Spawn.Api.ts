@@ -179,6 +179,7 @@ export class SpawnApi {
 
     /**
      * get next creep to spawn
+     * TODO spawn squad members together
      * @param room the room we want to spawn them in
      */
     public static getNextCreep(room: Room, openSpawn: StructureSpawn): RoleConstant | null {

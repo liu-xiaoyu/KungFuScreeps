@@ -1,4 +1,4 @@
-import { MemoryApi_Creep, RoomHelper_Structure } from "Utils/Imports/internals";
+import { MemoryApi_Creep, RoomHelper_Structure, CreepAllApi } from "Utils/Imports/internals";
 import {
     ROLE_TOWER_TANK,
 } from "Utils/Imports/constants";
@@ -7,6 +7,10 @@ import {
 export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
     public name: RoleConstant = ROLE_TOWER_TANK;
 
+    // Current Status
+    // Medic thinks its on a healing position
+    // Tank leaves without his homie
+    // Can't get the towers because data is null, need to make sure it gets updated when creep enters the room
     constructor() {
         const self = this;
         self.runCreepRole = self.runCreepRole.bind(this);
@@ -20,10 +24,30 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
         // Check first if we need to retreat, then (if we're rallied with healer + NOT on an exit tile)
         // Move to the exit tile until these are true, everything is handled within the functions from here
         if (!this.retreatTowerCreep(creep)) {
-            if (this.rallyWithHealer(creep) && !this.isOnExitTile(creep.pos)) {
+            if (creep.pos.roomName !== creep.memory.targetRoom && this.medicInAnotherRoom(creep)) {
+                if (this.isOnExitTile(creep.pos)) {
+                    CreepAllApi.moveCreepOffExit(creep);
+                    return;
+                }
+            }
+            else if (this.rallyWithHealer(creep)) {
                 creep.moveTo(new RoomPosition(25, 25, creep.memory.targetRoom));
+                return;
             }
         }
+    }
+
+    /**
+     * check if medic is oin another room
+     * @param creep the tower tank
+     */
+    private medicInAnotherRoom(creep: Creep): boolean {
+        const squadHealers: Creep[] | null = this.getTowerMedicsInSquad(creep);
+        if (!squadHealers) {
+            return false;
+        }
+        const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadHealers, { filter: (c: Creep) => c.name !== creep.name });
+        return closestSquadMember?.room.name === creep.room.name;
     }
 
     /**
@@ -33,6 +57,15 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
      */
     private retreatTowerCreep(creep: Creep): boolean {
         if (!Memory.rooms[creep.memory.targetRoom]) {
+            return false;
+        }
+        if (!Game.rooms[creep.memory.targetRoom]) {
+            return false;
+        }
+        if (!creep.room.memory.structures) {
+            return false;
+        }
+        if (!creep.room.memory.structures.data) {
             return false;
         }
 
@@ -74,7 +107,7 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
             return true;
         }
         if (!_.every(squadHealers, (c: Creep) => creep.pos.isNearTo(c.pos.x, c.pos.y))) {
-            const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadHealers);
+            const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadHealers, { filter: (c: Creep) => c.name !== creep.name });
             if (closestSquadMember) {
                 creep.moveTo(closestSquadMember);
             }

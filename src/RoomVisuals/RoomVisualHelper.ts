@@ -16,7 +16,8 @@ import {
     STUCK_COUNT_LIMIT,
     STUCK_VISUAL_COLORS,
     RoomManager,
-    RoomHelper_Structure
+    RoomHelper_Structure,
+    TOWER_DRAINER_SQUAD
 } from "Utils/Imports/internals";
 
 const textColor = "#bab8ba";
@@ -105,6 +106,8 @@ export class RoomVisualHelper {
                 return "Override";
             case STIMULATE_FLAG:
                 return "Stimulate";
+            case TOWER_DRAINER_SQUAD:
+                return "Tower Drainer Squad";
             default:
                 return "Not a valid flag type (roomVisualHelper/convertFlagTypeToString).";
         }

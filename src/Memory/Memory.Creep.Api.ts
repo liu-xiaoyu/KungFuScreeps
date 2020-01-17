@@ -112,7 +112,7 @@ export class MemoryApi_Creep {
         return creeps;
     }
 
-        /**
+    /**
      * get all creeps in a specific squad given the squad uuid
      * @param squadUUID the id for the squad
      */

@@ -1,8 +1,10 @@
 import {
     ROLE_TOWER_MEDIC,
+    ROLE_TOWER_TANK
 } from "Utils/Imports/constants";
 import { MemoryApi_Creep } from "Memory/Memory.Creep.Api";
 import { CreepAllApi } from "Creeps/Creep.All.Api";
+import { ConsoleCommands } from "Utils/Imports/internals";
 
 // Manager for the miner creep role
 export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
@@ -24,19 +26,20 @@ export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
         // They move every other tick, make them smarter and move as a unit, possibly call an abstracted function together?
         // Check if we're in position to heal
         if (this.inHealingPosition(creep)) {
-
+            console.log("IN HEALING POSITOIN");
             const squadTank: Creep[] | null = this.getTowerTanksInSquad(creep);
             if (!squadTank) {
                 return;
             }
-            const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadTank);
-            if (!closestSquadMember || (creep.memory.targetRoom !== closestSquadMember.memory.targetRoom)) {
+            const firstTowerTank: Creep | undefined = _.find(squadTank);
+            if (!firstTowerTank || (creep.memory.targetRoom !== firstTowerTank.memory.targetRoom)) {
                 return;
             }
+            console.log("FOUND OUT TOWER TANK");
             // If we're next to the creep, and it needs heal, heal it
-            if (creep.pos.isNearTo(closestSquadMember)) {
-                if (closestSquadMember.hits < closestSquadMember.hitsMax) {
-                    creep.heal(closestSquadMember);
+            if (creep.pos.isNearTo(firstTowerTank)) {
+                if (firstTowerTank.hits < firstTowerTank.hitsMax) {
+                    creep.heal(firstTowerTank);
                 }
             }
         }
@@ -67,18 +70,25 @@ export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
      */
     private inHealingPosition(creep: Creep): boolean {
         const path: PathStep[] = creep.pos.findPathTo(new RoomPosition(25, 25, creep.memory.targetRoom), { range: 24 });
+        console.log("path", JSON.stringify(path));
         if (!path) {
             return false;
         }
         const exits: ExitsInformation = Game.map.describeExits(creep.memory.targetRoom);
         const targetRoom: string = creep.memory.targetRoom;
         const isInAdjRoom: boolean = (
-            exits[1] === targetRoom ||
-            exits[3] === targetRoom ||
-            exits[5] === targetRoom ||
-            exits[7] === targetRoom
+            exits['1'] === targetRoom ||
+            exits['3'] === targetRoom ||
+            exits['5'] === targetRoom ||
+            exits['7'] === targetRoom
         );
-        return path!.length < 3 && isInAdjRoom;
+        console.log("exits", JSON.stringify(exits));
+        console.log("targetRoom", targetRoom);
+        console.log("adjRoom", isInAdjRoom);
+        console.log("path length", path.length);
+        console.log("final thing p1", path.length < 3);
+        console.log("return", path.length < 3 && isInAdjRoom);
+        return path.length < 3 && isInAdjRoom;
     }
 
     /**
@@ -91,9 +101,9 @@ export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
             return true;
         }
         if (!_.every(squadTank, (c: Creep) => creep.pos.isNearTo(c.pos.x, c.pos.y))) {
-            const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadTank, { filter: (c: Creep) => c.name !== creep.name });
-            if (closestSquadMember) {
-                creep.moveTo(closestSquadMember.pos);
+            const firstTowerTank: Creep | undefined = _.find(squadTank);
+            if (firstTowerTank) {
+                creep.moveTo(firstTowerTank.pos);
             }
             return false;
         }
@@ -106,6 +116,10 @@ export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
      */
     private getTowerTanksInSquad(creep: Creep): Creep[] | null {
         const creepOptions: CreepOptionsMili = creep.memory.options as CreepOptionsMili;
-        return MemoryApi_Creep.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
+        const creepsInSquad: Creep[] | null = MemoryApi_Creep.getCreepsInSquad(creep.memory.homeRoom, creepOptions.squadUUID!);
+        if (!creepsInSquad) {
+            return null;
+        }
+        return _.filter(creepsInSquad, (c: Creep) => c.memory.role === ROLE_TOWER_TANK);
     }
 }

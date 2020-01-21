@@ -1,6 +1,7 @@
 import { MemoryApi_Creep, RoomHelper_Structure, CreepAllApi, MemoryApi_Room } from "Utils/Imports/internals";
 import {
     ROLE_TOWER_TANK,
+    ROLE_TOWER_MEDIC
 } from "Utils/Imports/constants";
 
 // Manager for the miner creep role
@@ -37,11 +38,16 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
      */
     private medicInAnotherRoom(creep: Creep): boolean {
         const squadHealers: Creep[] | null = this.getTowerMedicsInSquad(creep);
+
         if (!squadHealers) {
             return false;
         }
-        const closestSquadMember: Creep | null = creep.pos.findClosestByRange(squadHealers, { filter: (c: Creep) => c.name !== creep.name });
-        return closestSquadMember!.room.name === creep.room.name;
+        const firstHealer: Creep | undefined = _.find(squadHealers);
+        if (!firstHealer) {
+            return true;
+        }
+
+        return creep.room.name !== firstHealer.room.name;
     }
 
     /**
@@ -96,7 +102,7 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
         if (!squadHealers) {
             return true;
         }
-        return (!_.every(squadHealers, (c: Creep) => creep.pos.isNearTo(c.pos.x, c.pos.y)));
+        return (_.every(squadHealers, (c: Creep) => creep.pos.isNearTo(c.pos.x, c.pos.y)));
     }
 
     /**
@@ -120,7 +126,11 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
      */
     private getTowerMedicsInSquad(creep: Creep): Creep[] | null {
         const creepOptions: CreepOptionsMili = creep.memory.options as CreepOptionsMili;
-        return MemoryApi_Creep.getCreepsInSquad(creep.room.name, creepOptions.squadUUID!);
+        const creepsInSquad: Creep[] | null = MemoryApi_Creep.getCreepsInSquad(creep.memory.homeRoom, creepOptions.squadUUID!);
+        if (!creepsInSquad) {
+            return null;
+        }
+        return _.filter(creepsInSquad, (c: Creep) => c.memory.role === ROLE_TOWER_MEDIC);
     }
 
     /**

@@ -4,7 +4,6 @@ import {
 } from "Utils/Imports/constants";
 import { MemoryApi_Creep } from "Memory/Memory.Creep.Api";
 import { CreepAllApi } from "Creeps/Creep.All.Api";
-import { ConsoleCommands } from "Utils/Imports/internals";
 
 // Manager for the miner creep role
 export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {

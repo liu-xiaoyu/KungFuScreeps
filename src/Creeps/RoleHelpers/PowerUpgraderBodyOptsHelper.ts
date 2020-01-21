@@ -37,7 +37,9 @@ export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
         const numRemoteSources = RoomHelper_State.numRemoteSources(room);
         let numWorkParts: number = (numRemoteSources * 2);
         const storageLevel: number = RoomHelper_Structure.getStorageLevel(room);
-        const USED_ENERGY: number = 600;
+        const NUM_CARRY: number = 8;
+        const NUM_MOVE: number = 4;
+        const USED_ENERGY: number = (NUM_CARRY + NUM_MOVE) * 50;
 
         switch (tier) {
             case TIER_5:

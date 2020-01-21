@@ -49,11 +49,11 @@ export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
                 // This is to limit work parts in the case of an empty storage to help a room get back off the ground
                 numWorkParts = storageLevel < STORAGE_LEVEL_MINI_UPGRADERS ? MINI_UPGRADER_WORK_PARTS : numWorkParts;
                 numWorkParts = SpawnHelper.limitNumWorkParts(numWorkParts, USED_ENERGY, tier);
-                body = { work: numWorkParts, carry: 8, move: 4 };
+                body = { work: numWorkParts, carry: NUM_CARRY, move: NUM_MOVE };
                 break;
 
             case TIER_8: // 15 Work, 8 Carry, 4 Move - Total Cost: 2100
-                body = { work: 15, carry: 8, move: 4 }; // RCL 8 you can only do 15 per tick
+                body = { work: 15, carry: NUM_CARRY, move: NUM_MOVE }; // RCL 8 you can only do 15 per tick
                 break;
         }
 

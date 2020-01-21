@@ -6,6 +6,7 @@ import {
     TIER_6,
     TIER_7,
     TIER_8,
+    TIER_5,
     ROLE_POWER_UPGRADER,
     SpawnHelper,
     SpawnApi,
@@ -36,14 +37,16 @@ export class PowerUpgraderBodyOptsHelper implements ICreepBodyOptsHelper {
         const numRemoteSources = RoomHelper_State.numRemoteSources(room);
         let numWorkParts: number = (numRemoteSources * 2);
         const storageLevel: number = RoomHelper_Structure.getStorageLevel(room);
+        const USED_ENERGY: number = 600;
 
         switch (tier) {
+            case TIER_5:
             case TIER_6:
             case TIER_7:
                 numWorkParts += 12;
                 // This is to limit work parts in the case of an empty storage to help a room get back off the ground
                 numWorkParts = storageLevel < STORAGE_LEVEL_MINI_UPGRADERS ? MINI_UPGRADER_WORK_PARTS : numWorkParts;
-                numWorkParts = SpawnHelper.limitNumWorkParts(numWorkParts, 600, tier);
+                numWorkParts = SpawnHelper.limitNumWorkParts(numWorkParts, USED_ENERGY, tier);
                 body = { work: numWorkParts, carry: 8, move: 4 };
                 break;
 

@@ -721,6 +721,10 @@ interface RoomMemory {
      */
     structures: Cache;
     /**
+     * Hostile structures in the room
+     */
+    hostileStructures: Cache;
+    /**
      * IDs of all construction sites in the room
      */
     constructionSites: Cache;

@@ -59,15 +59,17 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
         if (!Memory.rooms[creep.memory.targetRoom]) {
             return false;
         }
+        const targetRoom = Game.rooms[creep.memory.targetRoom];
         if (!Game.rooms[creep.memory.targetRoom]) {
             return false;
         }
-        const targetRoom = Game.rooms[creep.memory.targetRoom];
-        if (!targetRoom.memory.structures.data) {
-            MemoryApi_Room.getRoomMemory(targetRoom);
+        if (!targetRoom.memory.hostileStructures?.data) {
+            const isHostileRoom: boolean = true;
+            const forceUpdate: boolean = true;
+            MemoryApi_Room.getRoomMemory(targetRoom, forceUpdate, isHostileRoom);
         }
 
-        const enemyTowers: StructureTower[] | null = creep.room.memory.structures.data[
+        const enemyTowers: StructureTower[] | null = creep.room.memory.hostileStructures.data[
             STRUCTURE_TOWER
         ] as StructureTower[];
         if (!enemyTowers) {

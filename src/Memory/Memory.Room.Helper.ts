@@ -146,6 +146,34 @@ export class MemoryHelper_Room {
     }
 
     /**
+     * Find all hostile structures in room
+     *
+     * [Cached] Room.memory.structures
+     * @param room The Room we are checking in
+     */
+    public static updateHostileStructures(roomName: string): void {
+        // If we have no vision of the room, return
+        if (!Memory.rooms[roomName]) {
+            return;
+        }
+
+        Memory.rooms[roomName].hostileStructures = { data: {}, cache: null };
+
+        const allStructures: Structure[] = Game.rooms[roomName].find(FIND_HOSTILE_STRUCTURES) as Structure[];
+        const sortedStructureIDs: StringMap = {};
+        // For each structureType, remove the structures from allStructures and map them to ids in the memory object.
+        _.forEach(ALL_STRUCTURE_TYPES, (type: StructureConstant) => {
+            sortedStructureIDs[type] = _.map(
+                _.remove(allStructures, (struct: Structure) => struct.structureType === type),
+                (struct: Structure) => struct.id
+            );
+        });
+
+        Memory.rooms[roomName].hostileStructures.data = sortedStructureIDs;
+        Memory.rooms[roomName].hostileStructures.cache = Game.time;
+    }
+
+    /**
      * Find all sources in room
      *
      * [Cached] Room.memory.sources

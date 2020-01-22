@@ -154,12 +154,14 @@ export class MemoryApi_Room {
                 droppedResources: { data: null, cache: null },
                 jobs: {},
                 structures: { data: null, cache: null },
+                hostileStructures: { data: null, cache: null },
                 upgradeLink: "",
                 events: []
             };
         } else {
             Memory.rooms[roomName] = {
                 structures: { data: null, cache: null },
+                hostileStructures: { data: null, cache: null },
                 sources: { data: null, cache: null },
                 minerals: { data: null, cache: null },
                 tombstones: { data: null, cache: null },
@@ -186,17 +188,70 @@ export class MemoryApi_Room {
      * [Cached] Memory.rooms[room.name]
      * @param room The name of the room to get memory for
      * @param forceUpdate [Optional] Force all room memory to update
+     * @param isHostileRoom [Default] if the room we are getting memory for is hostile
      */
-    public static getRoomMemory(room: Room, forceUpdate?: boolean): void {
+    public static getRoomMemory(room: Room, forceUpdate?: boolean, isHostileRoom: boolean = false): void {
         MemoryApi_Room.getConstructionSites(room.name, undefined, forceUpdate);
         MemoryApi_Creep.getMyCreeps(room.name, undefined, forceUpdate);
         MemoryApi_Creep.getHostileCreeps(room.name, undefined, forceUpdate);
-        MemoryApi_Room.getSources(room.name, undefined, forceUpdate);
-        MemoryApi_Room.getStructures(room.name, undefined, forceUpdate);
-        MemoryApi_Jobs.getAllGetEnergyJobs(room, undefined, forceUpdate);
-        MemoryApi_Jobs.getAllClaimPartJobs(room, undefined, forceUpdate);
-        MemoryApi_Jobs.getAllWorkPartJobs(room, undefined, forceUpdate);
-        MemoryApi_Room.getBunkerCenter(room, forceUpdate);
+        MemoryApi_Room.getHostileStuctures(room.name, undefined, forceUpdate);
+
+        if (!isHostileRoom) {
+            MemoryApi_Room.getSources(room.name, undefined, forceUpdate);
+            MemoryApi_Room.getStructures(room.name, undefined, forceUpdate);
+            MemoryApi_Jobs.getAllGetEnergyJobs(room, undefined, forceUpdate);
+            MemoryApi_Jobs.getAllClaimPartJobs(room, undefined, forceUpdate);
+            MemoryApi_Jobs.getAllWorkPartJobs(room, undefined, forceUpdate);
+            MemoryApi_Room.getBunkerCenter(room, forceUpdate);
+        }
+    }
+
+    /**
+     * Get hostile structures in a room, updating if necessary
+     *
+     * [Cached] Memory.rooms[room.name].structures
+     * @param room The room to retrieve from
+     * @param filterFunction [Optional] The function to filter all structure objects
+     * @param forceUpdate [Optional] Invalidate Cache by force
+     * @returns Array<Structure> -- An array of structures
+     */
+    public static getHostileStuctures(
+        roomName: string,
+        filterFunction?: (object: Structure) => boolean,
+        forceUpdate?: boolean
+    ): Structure[] {
+        // If we have no vision of the room, return an empty array
+        if (!Memory.rooms[roomName]) {
+            return [];
+        }
+
+        if (
+            NO_CACHING_MEMORY ||
+            forceUpdate ||
+            Memory.rooms[roomName].hostileStructures === undefined ||
+            Memory.rooms[roomName].hostileStructures.cache < Game.time - STRUCT_CACHE_TTL
+        ) {
+            MemoryHelper_Room.updateHostileStructures(roomName);
+        }
+
+        const structureIDs: string[] = [];
+        // Flatten the object into an array of IDs
+        for (const type in Memory.rooms[roomName].hostileStructures.data) {
+            const IDs = Memory.rooms[roomName].hostileStructures.data[type];
+            for (const singleID of IDs) {
+                if (singleID) {
+                    structureIDs.push(singleID);
+                }
+            }
+        }
+
+        let structures: Structure[] = MemoryHelper.getOnlyObjectsFromIDs<Structure<StructureConstant>>(structureIDs);
+
+        if (filterFunction !== undefined) {
+            structures = _.filter(structures, filterFunction);
+        }
+
+        return structures;
     }
 
     /**

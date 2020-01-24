@@ -1,4 +1,4 @@
-import { MemoryApi_Creep, RoomHelper_Structure, CreepAllApi, MemoryApi_Room } from "Utils/Imports/internals";
+import { MemoryApi_Creep, RoomHelper_Structure, CreepAllApi, MemoryApi_Room, MemoryHelper_Room, MemoryHelper } from "Utils/Imports/internals";
 import {
     ROLE_TOWER_TANK,
     ROLE_TOWER_MEDIC
@@ -69,10 +69,8 @@ export class TowerDrainerTankCreepManager implements IMiliCreepRoleManager {
             MemoryApi_Room.getRoomMemory(targetRoom, forceUpdate, isHostileRoom);
         }
 
-        const enemyTowers: StructureTower[] | null = creep.room.memory.hostileStructures.data[
-            STRUCTURE_TOWER
-        ] as StructureTower[];
-        if (!enemyTowers) {
+        const enemyTowers: StructureTower[] = MemoryApi_Room.getHostileStructureOfType(targetRoom.name, STRUCTURE_TOWER) as StructureTower[];
+        if (!(enemyTowers.length > 0)) {
             return false;
         }
 

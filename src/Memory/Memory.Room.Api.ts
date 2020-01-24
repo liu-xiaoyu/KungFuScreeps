@@ -347,6 +347,49 @@ export class MemoryApi_Room {
     }
 
     /**
+     * Get structures of a single type in a room, updating if necessary
+     *
+     * [Cached] Memory.rooms[room.name].structures
+     * @param roomName The room to check in
+     * @param type The type of structure to retrieve
+     * @param filterFunction [Optional] A function to filter by
+     * @param forceUpdate [Optional] Force structures memory to be updated
+     * @returns Structure[] An array of structures of a single type
+     */
+    public static getHostileStructureOfType(
+        roomName: string,
+        type: StructureConstant,
+        filterFunction?: (object: any) => boolean,
+        forceUpdate?: boolean
+    ): Structure[] {
+        // If we have no vision of the room, return an empty array
+        if (!Memory.rooms[roomName]) {
+            return [];
+        }
+
+        if (
+            NO_CACHING_MEMORY ||
+            forceUpdate ||
+            Memory.rooms[roomName].hostileStructures === undefined ||
+            Memory.rooms[roomName].hostileStructures.data === null ||
+            Memory.rooms[roomName].hostileStructures.data[type] === undefined ||
+            Memory.rooms[roomName].hostileStructures.cache < Game.time - STRUCT_CACHE_TTL
+        ) {
+            MemoryHelper_Room.updateHostileStructures(roomName);
+        }
+
+        const structureIDs: string[] = Memory.rooms[roomName].hostileStructures.data[type];
+
+        let structures: Structure[] = MemoryHelper.getOnlyObjectsFromIDs<Structure>(structureIDs);
+
+        if (filterFunction !== undefined) {
+            structures = _.filter(structures, filterFunction);
+        }
+
+        return structures;
+    }
+
+    /**
      * Get all construction sites in a room, updating if necessary
      *
      * [Cached] Memory.rooms[room.name].constructionSites

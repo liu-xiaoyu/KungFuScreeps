@@ -69,24 +69,18 @@ export class TowerDrainerMedicCreepManager implements IMiliCreepRoleManager {
      */
     private inHealingPosition(creep: Creep): boolean {
         const path: PathStep[] = creep.pos.findPathTo(new RoomPosition(25, 25, creep.memory.targetRoom), { range: 24 });
-        console.log("path", JSON.stringify(path));
         if (!path) {
             return false;
         }
+
         const exits: ExitsInformation = Game.map.describeExits(creep.memory.targetRoom);
-        const targetRoom: string = creep.memory.targetRoom;
         const isInAdjRoom: boolean = (
-            exits['1'] === targetRoom ||
-            exits['3'] === targetRoom ||
-            exits['5'] === targetRoom ||
-            exits['7'] === targetRoom
+            exits['1'] === creep.room.name ||
+            exits['3'] === creep.room.name ||
+            exits['5'] === creep.room.name ||
+            exits['7'] === creep.room.name
         );
-        console.log("exits", JSON.stringify(exits));
-        console.log("targetRoom", targetRoom);
-        console.log("adjRoom", isInAdjRoom);
-        console.log("path length", path.length);
-        console.log("final thing p1", path.length < 3);
-        console.log("return", path.length < 3 && isInAdjRoom);
+
         return path.length < 3 && isInAdjRoom;
     }
 

@@ -84,17 +84,6 @@ export class MemoryApi_Room {
             }
         });
         Memory.rooms[room.name].claimRooms = nonNullClaimRooms;
-
-        // Re-map Remote Room array to remove null values
-        const allAttackRooms: AttackRoomMemory[] = Memory.rooms[room.name].attackRooms!;
-        const nonNullAttackRooms: AttackRoomMemory[] = [];
-
-        _.forEach(allAttackRooms, (rr: AttackRoomMemory) => {
-            if (rr !== null) {
-                nonNullAttackRooms.push(rr);
-            }
-        });
-        Memory.rooms[room.name].attackRooms = nonNullAttackRooms;
     }
 
     /**
@@ -118,7 +107,6 @@ export class MemoryApi_Room {
         //                    unless we define a constructor for RoomMemory.
         if (isOwnedRoom) {
             Memory.rooms[roomName] = {
-                attackRooms: [],
                 claimRooms: [],
                 constructionSites: { data: null, cache: null },
                 creepLimit: {
@@ -139,7 +127,6 @@ export class MemoryApi_Room {
                         remoteColonizer: 0,
                         claimer: 0
                     },
-                    militaryLimits: []
                 },
                 creeps: { data: null, cache: null },
                 defcon: -1,
@@ -156,7 +143,6 @@ export class MemoryApi_Room {
                 structures: { data: null, cache: null },
                 hostileStructures: { data: null, cache: null },
                 upgradeLink: "",
-                events: []
             };
         } else {
             Memory.rooms[roomName] = {
@@ -170,7 +156,6 @@ export class MemoryApi_Room {
                 constructionSites: { data: null, cache: null },
                 defcon: -1,
                 hostiles: { data: null, cache: null },
-                events: []
             };
         }
 
@@ -689,50 +674,6 @@ export class MemoryApi_Room {
     }
 
     /**
-     * Get the attack room objects
-     *
-     * Updates all dependencies if the cache is invalid, for efficiency
-     * @param room The room to check dependencies of
-     * @param filterFunction [Optional] The function to filter the room objects
-     * @param targetRoom [Optional] the name of the specific room we want to grab
-     */
-    public static getAttackRooms(
-        room: Room,
-        targetRoom?: string,
-        filterFunction?: (object: Room) => boolean
-    ): AttackRoomMemory[] {
-        let attackRooms: AttackRoomMemory[];
-
-        if (!Memory.rooms[room.name]) {
-            return [];
-        }
-        // Kind of hacky, but if filter function isn't provided then its just true so that is won't effect evaulation on getting the attack rooms
-        if (!filterFunction) {
-            filterFunction = () => true;
-        }
-
-        // TargetRoom parameter provided
-        if (targetRoom) {
-            attackRooms = _.filter(
-                Memory.rooms[room.name].attackRooms!,
-                (roomMemory: AttackRoomMemory) => roomMemory.roomName === targetRoom && filterFunction
-            );
-        } else {
-            // No target room provided, just return them all
-            attackRooms = _.filter(
-                Memory.rooms[room.name].attackRooms!,
-                () => filterFunction
-            );
-        }
-
-        if (attackRooms.length === 0) {
-            return [];
-        }
-
-        return attackRooms;
-    }
-
-    /**
      * get the defcon level for the room
      * @param room the room we are checking defcon for
      */
@@ -766,15 +707,13 @@ export class MemoryApi_Room {
         if (
             !Memory.rooms[room.name].creepLimit ||
             !Memory.rooms[room.name].creepLimit!.domesticLimits ||
-            !Memory.rooms[room.name].creepLimit!.remoteLimits ||
-            !Memory.rooms[room.name].creepLimit!.militaryLimits
+            !Memory.rooms[room.name].creepLimit!.remoteLimits
         ) {
             MemoryApi_Room.initCreepLimits(room);
         }
         const creepLimits: CreepLimits = {
             domesticLimits: Memory.rooms[room.name].creepLimit!.domesticLimits,
             remoteLimits: Memory.rooms[room.name].creepLimit!.remoteLimits,
-            militaryLimits: Memory.rooms[room.name].creepLimit!.militaryLimits
         };
 
         return creepLimits;
@@ -803,7 +742,6 @@ export class MemoryApi_Room {
                 remoteColonizer: 0,
                 claimer: 0
             },
-            militaryLimits: []
         };
     }
 
@@ -822,28 +760,6 @@ export class MemoryApi_Room {
 
         // Return all visible rooms which appear in roomNames array
         return _.filter(Game.rooms, (room: Room) => roomNames.includes(room.name));
-    }
-
-    /**
-     * Get all attack flag memory objects associated with the host room
-     * @param hostRoomName the host room we are getting the memory from
-     * @returns an array of attack flag memory
-     */
-    public static getAllAttackFlagMemoryForHost(hostRoomName: string): AttackFlagMemory[] {
-        const hostRoom: Room = Game.rooms[hostRoomName];
-        const attackRooms: AttackRoomMemory[] = this.getAttackRooms(hostRoom);
-        const attackRoomFlags: AttackFlagMemory[] = [];
-        for (const attackRoom of attackRooms) {
-            if (!attackRoom) {
-                continue;
-            }
-            for (const attackFlag of attackRoom.flags) {
-                if (attackFlag) {
-                    attackRoomFlags.push(attackFlag as AttackFlagMemory);
-                }
-            }
-        }
-        return attackRoomFlags;
     }
 
     /**

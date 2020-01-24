@@ -18,7 +18,7 @@ import {
     ROLE_TOWER_MEDIC,
     ERROR_ERROR
 } from "Utils/Imports/constants";
-import { SpawnHelper, EventHelper, UserException, SpawnApi, MemoryApi_Room } from "Utils/Imports/internals";
+import { SpawnHelper, UserException, SpawnApi, MemoryApi_Room } from "Utils/Imports/internals";
 
 export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
     public name: RoleConstant = ROLE_TOWER_MEDIC;
@@ -81,25 +81,7 @@ export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
         rallyLocationParam: RoomPosition | null
     ): CreepOptionsMili | undefined {
         let creepOptions: CreepOptionsMili = SpawnHelper.getDefaultCreepOptionsMili();
-        switch (roomState) {
-            case ROOM_STATE_INTRO:
-            case ROOM_STATE_BEGINNER:
-            case ROOM_STATE_INTER:
-            case ROOM_STATE_ADVANCED:
-            case ROOM_STATE_STIMULATE:
-            case ROOM_STATE_UPGRADER:
-            case ROOM_STATE_NUKE_INBOUND:
-                creepOptions = {
-                    squadSize: squadSizeParam,
-                    squadUUID: squadUUIDParam,
-                    rallyLocation: rallyLocationParam,
-                    rallyDone: false,
-                    healer: true
-                };
-
-                break;
-        }
-
+        // TODO impelmeent
         return creepOptions;
     }
 
@@ -116,14 +98,7 @@ export class TowerDrainerMedicBodyOptsHelper implements ICreepBodyOptsHelper {
         creepBody: BodyPartConstant[],
         creepName: string
     ): string {
-        const requestingFlag: AttackFlagMemory | undefined = EventHelper.getMiliRequestingFlag(
-            room,
-            roleConst,
-            creepName
-        );
-        if (requestingFlag) {
-            return Game.flags[requestingFlag!.flagName].pos.roomName;
-        }
+        // TODO impelmeent
 
         // Throw exception if we couldn't find a definite room memory
         throw new UserException(

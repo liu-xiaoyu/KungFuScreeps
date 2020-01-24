@@ -74,31 +74,26 @@ export class SpawnManager {
                 }
 
                 // Spawn the creep
-                if (
-                    SpawnApi.spawnNextCreep(
-                        room,
-                        creepBody,
-                        creepOptions!,
-                        nextCreepRole!,
-                        openSpawn!,
-                        homeRoom,
-                        targetRoom,
-                        name,
-                        spawnDirection
-                    ) === OK
-                ) {
-                    // On successful creep spawn of a military creep, remove that role from the military spawn queue
-                    SpawnApi.removeSpawnedCreepFromMiliQueue(nextCreepRole!, room);
-                }
-            }
-
-            // Throw error if the energy cost is more than the capacity of the room for the room
-            if (bodyEnergyCost > room.energyCapacityAvailable) {
-                throw new UserException(
-                    "Trying to spawn a creeep thats more expensive than we can possibly spawn",
-                    "Cost: " + bodyEnergyCost + ". \nAvailable: " + room.energyCapacityAvailable + ".",
-                    ERROR_ERROR
+                SpawnApi.spawnNextCreep(
+                    room,
+                    creepBody,
+                    creepOptions!,
+                    nextCreepRole!,
+                    openSpawn!,
+                    homeRoom,
+                    targetRoom,
+                    name,
+                    spawnDirection
                 );
+
+                // Throw error if the energy cost is more than the capacity of the room for the room
+                if (bodyEnergyCost > room.energyCapacityAvailable) {
+                    throw new UserException(
+                        "Trying to spawn a creeep thats more expensive than we can possibly spawn",
+                        "Cost: " + bodyEnergyCost + ". \nAvailable: " + room.energyCapacityAvailable + ".",
+                        ERROR_ERROR
+                    );
+                }
             }
         }
     }

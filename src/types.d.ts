@@ -207,14 +207,6 @@ type ROLE_TOWER_MEDIC = "towerMedic";
 type ROLE_MANAGER = "manager"; //
 
 // Role Interfaces to be implemented  -------------
-/**
- * Interface for Creep Role Managers
- */
-interface IMiliCreepRoleManager {
-    name: RoleConstant;
-    runCreepRole: (creep: Creep) => void;
-}
-
 interface ICivCreepRoleManager {
     name: RoleConstant;
     getNewJob: (creep: Creep, room: Room, targetRoom?: Room) => BaseJob | undefined;
@@ -685,34 +677,6 @@ interface CarryPartJobListing {
     storeJobs?: Cache;
 }
 
-/**
- * types of custom events
- */
-type C_EVENT_CREEP_SPAWNED = 1;
-type CustomEventConstant = C_EVENT_CREEP_SPAWNED;
-
-/**
- * a custom event that signals something notable that occured in a room
- */
-interface CustomEvent {
-    /**
-     * the constant of the type of event that occured
-     */
-    type: CustomEventConstant;
-    /**
-     * the target id that the event occured on
-     */
-    targetId: string;
-    /**
-     * the room name the event occured in
-     */
-    roomName: string;
-    /**
-     * to mark the event as processed (ie done)
-     */
-    processed: boolean;
-}
-
 interface RoomMemory {
     roomState?: RoomStateConstant;
     /**
@@ -777,10 +741,6 @@ interface RoomMemory {
      */
     shotLastTick?: boolean;
     /**
-     * Names of all rooms flagged to attack
-     */
-    attackRooms?: AttackRoomMemory[];
-    /**
      * Names of all rooms flagged to remote harvest
      */
     remoteRooms?: RemoteRoomMemory[];
@@ -796,10 +756,6 @@ interface RoomMemory {
      * extra memory for visual function
      */
     visual?: VisualMemory;
-    /**
-     * memory for the custom in room events
-     */
-    events: CustomEvent[];
     /**
      * The last tick we had a scout spawn
      */
@@ -1042,10 +998,6 @@ interface CreepLimits {
      * creep limits for domestic creeps
      */
     domesticLimits: DomesticCreepLimits;
-    /**
-     * creep limits for military creeps
-     */
-    militaryLimits: RoleConstant[];
 }
 
 /**
@@ -1065,10 +1017,6 @@ interface RemoteCreepLimits {
      * limit for remote reservers
      */
     remoteReserver: number;
-    /**
-     * limit for remote defenders
-     */
-    remoteDefender: number;
     /**
      * limit for remote colonizers
      */
@@ -1160,13 +1108,6 @@ interface FlagMemory {
     spawnProcessed: boolean;
 }
 
-// Attack Flag Options
-/**
- * Red - Red
- * Zealot/Stalker/Medic Squad
- */
-type ATTACK_BASIC_SQUAD = "basic_squad"; //
-
 // Memory for remote/attack/claim rooms
 /**
  * parent memory for depedent rooms
@@ -1180,19 +1121,6 @@ interface DepedentRoomParentMemory {
      * reference to the attack flags placed in the room
      */
     flags: ParentFlagMemory[];
-}
-/**
- * Attack room memory structure
- */
-interface AttackRoomMemory extends DepedentRoomParentMemory {
-    /**
-     * hostiles in the room
-     */
-    hostiles: Cache;
-    /**
-     * structures in room
-     */
-    structures: Cache;
 }
 
 /**
@@ -1237,31 +1165,6 @@ interface ParentFlagMemory {
      * the type of the flag
      */
     flagType: FlagTypeConstant | undefined;
-}
-/**
- * memory for an attack flag
- */
-interface AttackFlagMemory extends ParentFlagMemory {
-    /**
-     * the number of creeps we are asking for
-     */
-    squadSize: number;
-    /**
-     * the unique id for the sqauad
-     */
-    squadUUID: number;
-    /**
-     * the location creeps are going to meet
-     */
-    rallyLocation: RoomPosition | null;
-    /**
-     * the number of creeps this flag has successfully spawned
-     */
-    currentSpawnCount: number;
-    /**
-     * array of the creep names in the squad
-     */
-    squadMembers: string[];
 }
 
 /**

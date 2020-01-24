@@ -7,7 +7,6 @@ import {
     MEMORY_MANAGER_BUCKET_LIMIT,
     EVENT_MANAGER_BUCKET_LIMIT,
     ROOM_OVERLAY_BUCKET_LIMIT,
-    EventManager,
     ConsoleCommands,
     CreepManager,
     RoomVisualManager,
@@ -68,15 +67,6 @@ export class ManagerManager {
         if (!Game.cpu["bucket"] || (Game.cpu["bucket"] > ROOM_OVERLAY_BUCKET_LIMIT && ROOM_VISUALS_ON)) {
             try {
                 RoomVisualManager.runRoomVisualManager();
-            } catch (e) {
-                UtilHelper.printError(e);
-            }
-        }
-
-        // Display room visuals if we have a fat enough bucket and config option allows it
-        if (!Game.cpu["bucket"] || Game.cpu["bucket"] > EVENT_MANAGER_BUCKET_LIMIT) {
-            try {
-                EventManager.runEventManager();
             } catch (e) {
                 UtilHelper.printError(e);
             }

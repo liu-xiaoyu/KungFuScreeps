@@ -13,13 +13,8 @@ import {
     RemoteMinerCreepManager,
     RemoteHarvesterCreepManager,
     RemoteReserverCreepManager,
-    RemoteDefenderCreepManager,
     RemoteColonizerCreepManager,
     ClaimerCreepManager,
-    ZealotCreepManager,
-    StalkerCreepManager,
-    MedicCreepManager,
-    DomesticDefenderCreepManager,
     ScoutCreepManager,
     MinerBodyOptsHelper,
     HarvesterBodyOptsHelper,
@@ -54,8 +49,6 @@ import {
     ProcessDependentRoomOverride,
     TowerDrainerMedicBodyOptsHelper,
     TowerDrainerTankBodyOptsHelper,
-    TowerDrainerMedicCreepManager,
-    TowerDrainerTankCreepManager
 } from "Utils/Imports/internals";
 
 // Constant containing the manager for each job, which all implement doWork & travelTo
@@ -83,16 +76,6 @@ export const CREEP_CIV_MANAGERS: ICivCreepRoleManager[] = [
     new ClaimerCreepManager(),
     new ScoutCreepManager()
 ];
-
-export const CREEP_MILI_MANAGERS: IMiliCreepRoleManager[] = [
-    new ZealotCreepManager(),
-    new StalkerCreepManager(),
-    new MedicCreepManager(),
-    new DomesticDefenderCreepManager(),
-    new TowerDrainerMedicCreepManager(),
-    new TowerDrainerTankCreepManager(),
-    new RemoteDefenderCreepManager(),
-]
 
 // Constant containing the body and options helper for a creep, which implement these helper functions
 export const CREEP_BODY_OPT_HELPERS: ICreepBodyOptsHelper[] = [

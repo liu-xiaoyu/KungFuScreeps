@@ -238,69 +238,6 @@ export class EmpireHelper {
     }
 
     /**
-     * if an attack room has no flags associated with it, delete the attack room memory structure
-     * @param attackRooms an array of all the attack room memory structures in the empire
-     */
-    public static cleanDeadAttackRooms(attackRooms: Array<AttackRoomMemory | undefined>): void {
-        // Loop over remote rooms, and if we find one with no associated flag, remove it
-        for (const attackRoom in attackRooms) {
-            if (!attackRooms[attackRoom]) {
-                continue;
-            }
-            const attackRoomName: string = attackRooms[attackRoom]!.roomName;
-
-            if (!attackRooms[attackRoom]!.flags[0]) {
-                MemoryApi_Empire.createEmpireAlertNode(
-                    "Removing Attack Room [" + attackRooms[attackRoom]!.roomName + "]",
-                    10
-                );
-
-                // Get the dependent room for the attack room we are removing from memory
-                const dependentRoom: Room | undefined = _.find(MemoryApi_Empire.getOwnedRooms(), (room: Room) => {
-                    const rr = room.memory.attackRooms;
-                    return _.some(rr!, (innerRR: AttackRoomMemory) => {
-                        if (innerRR) {
-                            return innerRR.roomName === attackRoomName;
-                        }
-                        return false;
-                    });
-                });
-
-                delete Memory.rooms[dependentRoom!.name].attackRooms![attackRoom];
-            }
-        }
-    }
-
-    /**
-     * clean dead attack room flags from a live attack room
-     */
-    public static cleanDeadAttackRoomFlags(attackRooms: Array<AttackRoomMemory | undefined>): void {
-        // Loop over attack rooms, and make sure the flag they're referencing actually exists
-        // Delete the memory structure if its not associated with an existing flag
-        for (const attackRoom of attackRooms) {
-            if (!attackRoom) {
-                continue;
-            }
-
-            for (const flag in attackRoom!.flags) {
-                if (!attackRoom!.flags[flag]) {
-                    continue;
-                }
-
-                // Tell typescript that these are claim flag memory structures
-                const currentFlag: AttackFlagMemory = attackRoom!.flags[flag] as AttackFlagMemory;
-                if (!Game.flags[currentFlag.flagName]) {
-                    MemoryApi_Empire.createEmpireAlertNode(
-                        "Removing [" + flag + "] from Attack Room [" + attackRoom!.roomName + "]",
-                        10
-                    );
-                    delete attackRoom!.flags[flag];
-                }
-            }
-        }
-    }
-
-    /**
      * if an remote room has no flags associated with it, delete the attack room memory structure
      * @param attackRooms an array of all the attack room memory structures in the empire
      */
@@ -371,33 +308,8 @@ export class EmpireHelper {
      */
     public static getFlagType(flag: Flag): FlagTypeConstant | undefined {
         let flagType: FlagTypeConstant | undefined;
-        // Attack flags
-        if (flag.color === COLOR_RED) {
-            // Check the subtype
-            switch (flag.secondaryColor) {
-                // Zealot Solo
-                case COLOR_BLUE:
-                    flagType = ZEALOT_SOLO;
-                    break;
-
-                // Stalker Solo
-                case COLOR_BROWN:
-                    flagType = STALKER_SOLO;
-                    break;
-
-                // Standard Squad
-                case COLOR_RED:
-                    flagType = STANDARD_SQUAD;
-                    break;
-
-                // Tower Drainer Squad
-                case COLOR_WHITE:
-                    flagType = TOWER_DRAINER_SQUAD;
-                    break;
-            }
-        }
         // Claim Flags
-        else if (flag.color === COLOR_WHITE) {
+        if (flag.color === COLOR_WHITE) {
             flagType = CLAIM_FLAG;
         }
         // Option Flags
@@ -426,67 +338,5 @@ export class EmpireHelper {
         }
 
         return flagType;
-    }
-
-    /**
-     * generate the options for an attack flag based on its type
-     * @param flag the flag we are getting options for
-     * @param flagTypeConst the flag type of this flag
-     * @param dependentRoom the room that will be hosting this attack room
-     * @returns the object for the attack flag associated memory structure
-     */
-    public static generateAttackFlagOptions(
-        flag: Flag,
-        flagTypeConst: FlagTypeConstant | undefined,
-        dependentRoom: string
-    ): AttackFlagMemory {
-        // Generate the attack flag options based on the type of flag it is
-        const attackFlagMemory: AttackFlagMemory = {
-            squadSize: 0,
-            squadUUID: 0,
-            rallyLocation: null,
-            flagName: flag.name,
-            flagType: flagTypeConst,
-            currentSpawnCount: 0,
-            squadMembers: []
-        };
-
-        // Fill in these options based on the flag type
-        switch (flagTypeConst) {
-            // Zealot Solo
-            case ZEALOT_SOLO:
-                // We don't need to adjust the memory for this type
-                break;
-
-            // Stalker Solo
-            case STALKER_SOLO:
-                // We don't need to adjust memory for this type
-                break;
-
-            // Standard Squad
-            case STANDARD_SQUAD:
-                attackFlagMemory.squadSize = 3;
-                attackFlagMemory.squadUUID = SpawnApi.generateSquadUUID();
-                attackFlagMemory.rallyLocation = this.findRallyLocation(dependentRoom, flag.pos.roomName);
-                break;
-
-            // Tower drainer squad
-            case TOWER_DRAINER_SQUAD:
-                attackFlagMemory.squadSize = 2;
-                attackFlagMemory.squadUUID = SpawnApi.generateSquadUUID();
-                attackFlagMemory.rallyLocation = this.findRallyLocation(dependentRoom, flag.pos.roomName);
-                break;
-
-            // Throw a warning if we were unable to generate memory for this flag type, and set it to be deleted
-            default:
-                flag.memory.complete = true;
-                throw new UserException(
-                    "Unable to get attack flag memory for flag type " + flagTypeConst,
-                    "Flag " + flag.name + " was of an invalid type for the purpose of generating attack flag memory",
-                    ERROR_WARN
-                );
-        }
-
-        return attackFlagMemory;
     }
 }

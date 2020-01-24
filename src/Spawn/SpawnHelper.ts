@@ -10,12 +10,6 @@ import {
     ZEALOT_SOLO,
     STANDARD_SQUAD,
     UserException,
-    ZEALOT_SOLO_ARRAY,
-    STANDARD_SQUAD_ARRAY,
-    STALKER_SOLO_ARRAY,
-    TIER_1_MILITARY_PRIORITY,
-    TIER_2_MILITARY_PRIORITY,
-    TIER_3_MILITARY_PRIORITY,
     ALL_MILITARY_ROLES,
     ALL_DEFENSIVE_ROLES,
     RESERVER_MIN_TTL,
@@ -29,7 +23,6 @@ import {
     RoomHelper_Structure,
     RoomHelper_State,
     TOWER_DRAINER_SQUAD,
-    TOWER_DRAINER_SQUAD_ARRAY
 } from "Utils/Imports/internals";
 
 /**
@@ -129,7 +122,7 @@ export class SpawnHelper {
      */
     public static getDefaultCreepOptionsMili(): CreepOptionsMili {
         return {
-            squadSize: 0
+            squadSize: 1
         };
     }
 
@@ -150,24 +143,6 @@ export class SpawnHelper {
             options: creepOptions,
             working: false
         };
-    }
-
-    /**
-     * get number of active squad members for a given squad
-     * @param flagMemory the attack flag memory
-     * @param room the room they are coming from
-     */
-    public static getNumOfActiveSquadMembers(flagMemory: AttackFlagMemory, room: Room): number {
-        // Please improve this if possible lol. Had to get around type guards as we don't actually know what a creeps memory has in it unless we explicitly know the type i think
-        // We're going to run into this everytime we use creep memory so we need to find a nicer way around it if possible but if not casting it as a memory type
-        // Isn't the worst solution in the world
-        const militaryCreeps: Array<Creep | null> = MemoryApi_Creep.getMyCreeps(room.name, creep =>
-            this.isMilitaryRole(creep.memory.role)
-        );
-        return _.filter(militaryCreeps, creep => {
-            const creepOptions = creep!.memory.options as CreepOptionsMili;
-            return creepOptions.squadUUID === flagMemory.squadUUID;
-        }).length;
     }
 
     /**
@@ -293,7 +268,7 @@ export class SpawnHelper {
     public static getNumCreepAssignedAsTargetRoom(
         room: Room,
         roleConst: RoleConstant,
-        roomMemory: ClaimRoomMemory | AttackRoomMemory | RemoteRoomMemory | undefined,
+        roomMemory: ClaimRoomMemory | RemoteRoomMemory | undefined,
         ticksToLiveLimit: number
     ): number {
         // Get all creeps above the ticks to live limit with the specified role
@@ -359,34 +334,6 @@ export class SpawnHelper {
      * @param roomState the room state of the room we are checking limit for
      */
     public static getLorryLimitForRoom(room: Room, roomState: RoomStateConstant) {
-        // ! Some ideas for finding lorry limits for a room
-        // ! Turned in to insane ramblings though
-        /*
-            Potentially, we could check that the room state is within a certain value range
-            like advanced, stimulate, seige, maybe? (same values its changed on anyway, so just extra saftey)
-            And we could like check if any empire jobs exist... still not sure the route we're going to take
-            to make sure terminals and labs get filled exactly, but we do know that those will create room jobs
-            for creeps to follow, we could also have it fill another memory structure and we check that and
-            decide how many lorries we need to do this set of jobs, it also has the benifit of slowly going down
-            as the job is more and more complete ie if we spawn 1 lorry per 25k energy we want to move to a terminal,
-            then as the amount of energy needing to be moved remaining goes down, naturally the number of lorries needed
-            will as well.
-
-            I'm having a flash of an idea about empire job queues. Each room can check empire job queues and decide if they
-            need to create any jobs in the room, and this function for example will check how many lorries need to exist in the room
-            etc, etc, etc. We can see what way we wanna go there, we still are a little bit off from that since we need to finish
-            the more pertinant parts of job queues and set up the flag system and make sure the room structures run themselves (thats
-                when we actually start running into it, since terminals will presumably check this emprie job queue and decide if it needs
-                to sell energy, move to another room)
-
-            It would also be interesting to set up a system to supply each other with energy as needed. Like if you're being seiged and in real trouble
-            and you're running dry (lets say they've knocked out a couple of your other rooms too) i could send energy and help keep your
-            last room alive... possibly military support to would be really cool (that would be as simple as detecting and auto placing a flag
-                in your room and the system will handle itself)
-
-            Even more off-topic, but we make sure creep.attack() and tower.attack() is never called on an ally creep (maybe even override the functions)
-            (to ensure extra saftey in the case of abug)
-        */
         return 0;
     }
 
@@ -402,94 +349,6 @@ export class SpawnHelper {
             accessibleTiles += RoomHelper_Structure.getNumAccessTilesForTarget(source);
         });
         return accessibleTiles;
-    }
-
-    /**
-     * get the array of roles based on the attack flag type
-     * @param attackFlag the flag memory of the attack flag
-     */
-    public static getRolesArrayFromAttackFlag(attackFlag: ParentFlagMemory): RoleConstant[] {
-        // check the flag type and return the array
-        switch (attackFlag.flagType) {
-            case ZEALOT_SOLO:
-                return ZEALOT_SOLO_ARRAY;
-
-            case STANDARD_SQUAD:
-                return STANDARD_SQUAD_ARRAY;
-
-            case STALKER_SOLO:
-                return STALKER_SOLO_ARRAY;
-
-            case TOWER_DRAINER_SQUAD:
-                return TOWER_DRAINER_SQUAD_ARRAY;
-
-            default:
-                throw new UserException("Invalid attack flag passed to spawnhelper/getrolesfromattackArray", "rip", ERROR_WARN);
-        }
-    }
-
-    /**
-     * check if the creep role exists in the room's queue
-     * @param room the room we are checking for
-     * @param roleConst the role we are checking for
-     * @param limit the limit we are checking for
-     */
-    public static isCreepCountSpawnedAndQueueAtLimit(room: Room, roleConst: RoleConstant, limit: number): boolean {
-        const roleArray: RoleConstant[] = room.memory.creepLimit!["militaryLimits"];
-        const creepsInRoom: Creep[] = MemoryApi_Creep.getMyCreeps(room.name, (c: Creep) => c.memory.role === roleConst);
-        let sum = 0;
-
-        // Get all the defenders in queue to be spawned
-        for (const role in roleArray) {
-            if (roleArray[role] === roleConst) {
-                sum++;
-            }
-        }
-
-        // Get all defenders currently spawned
-        sum += creepsInRoom.length;
-        return sum >= limit;
-    }
-
-    /**
-     * spawn the next creep in the military queue for that tier
-     * @param tier the priority tier of the military creep we are attempting to spawn
-     * @param room the room we are spawning for
-     */
-    public static spawnMiliQueue(tier: number, room: Room): RoleConstant | null {
-        // Look for the correspondings tier's within the military queue for the room, return it if we find one
-        const militaryQueue: RoleConstant[] = room.memory.creepLimit!.militaryLimits;
-        switch (tier) {
-            case 1:
-                for (const queueRole in militaryQueue) {
-                    for (const tierRole of TIER_1_MILITARY_PRIORITY) {
-                        if (militaryQueue[queueRole] === tierRole) {
-                            return militaryQueue[queueRole];
-                        }
-                    }
-                }
-                return null;
-            case 2:
-                for (const queueRole in militaryQueue) {
-                    for (const tierRole of TIER_2_MILITARY_PRIORITY) {
-                        if (militaryQueue[queueRole] === tierRole) {
-                            return militaryQueue[queueRole];
-                        }
-                    }
-                }
-                return null;
-            case 3:
-                for (const queueRole in militaryQueue) {
-                    for (const tierRole of TIER_3_MILITARY_PRIORITY) {
-                        if (militaryQueue[queueRole] === tierRole) {
-                            return militaryQueue[queueRole];
-                        }
-                    }
-                }
-                return null;
-            default:
-                throw new UserException("Invalid tier number", "spawnHelper/spawnMiliQueue", ERROR_WARN);
-        }
     }
 
     /**

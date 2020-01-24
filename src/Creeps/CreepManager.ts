@@ -1,4 +1,13 @@
-import { CREEP_CIV_MANAGERS, CREEP_MILI_MANAGERS, ALL_CIVILIAN_ROLES, ALL_REMOTE_ROLES, ALL_MILITARY_ROLES, ERROR_ERROR, UtilHelper, UserException, CreepAllApi, ROLE_COLONIZER } from "Utils/Imports/internals";
+import {
+    CREEP_CIV_MANAGERS,
+    ALL_CIVILIAN_ROLES,
+    ALL_REMOTE_ROLES,
+    ERROR_ERROR,
+    UtilHelper,
+    UserException,
+    CreepAllApi,
+    ROLE_COLONIZER
+} from "Utils/Imports/internals";
 
 // Call the creep manager for each role
 export class CreepManager {
@@ -40,10 +49,6 @@ export class CreepManager {
         // Of the helper functions within the creep manager files
         if (ALL_CIVILIAN_ROLES.includes(role)) {
             this.runSingleCivCreepManager(creep, role);
-            return;
-        }
-        else if (ALL_MILITARY_ROLES.includes(role)) {
-            this.runSingleMiliCreepManager(creep, role);
             return;
         }
 
@@ -112,18 +117,6 @@ export class CreepManager {
 
             CreepAllApi.doWork(creep, creep.memory.job);
             return;
-        }
-    }
-
-    /**
-     * Run the civilian creep managerss
-     * @param creep the creep we want to run
-     */
-    private static runSingleMiliCreepManager(creep: Creep, role: RoleConstant): void {
-        for (const i in CREEP_MILI_MANAGERS) {
-            if (CREEP_MILI_MANAGERS[i].name === role) {
-                CREEP_MILI_MANAGERS[i].runCreepRole(creep);
-            }
         }
     }
 }

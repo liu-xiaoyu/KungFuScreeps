@@ -64,7 +64,6 @@ export class StimulateStateCreepLimits implements ICreepSpawnLimits {
             remoteHarvester: 0,
             remoteReserver: 0,
             remoteColonizer: 0,
-            remoteDefender: 0,
             claimer: 0
         };
 
@@ -90,7 +89,6 @@ export class StimulateStateCreepLimits implements ICreepSpawnLimits {
         );
         remoteLimits[ROLE_REMOTE_RESERVER] = SpawnHelper.getRemoteReserverLimitForRoom(room);
         remoteLimits[ROLE_COLONIZER] = numClaimRooms * SpawnHelper.getLimitPerClaimRoomForRole(ROLE_COLONIZER);
-        remoteLimits[ROLE_REMOTE_DEFENDER] = numRemoteDefenders;
         remoteLimits[ROLE_CLAIMER] =
             numCurrentlyUnclaimedClaimRooms * SpawnHelper.getLimitPerClaimRoomForRole(ROLE_CLAIMER);
 

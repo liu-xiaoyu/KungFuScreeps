@@ -35,12 +35,6 @@ export class MemoryHelper {
                     return true;
                 }
             }
-
-            for (const ar in room.memory.attackRooms!) {
-                if (room.memory.attackRooms![ar] && roomName === room.memory.attackRooms![ar].roomName) {
-                    return true;
-                }
-            }
         }
 
         return false;

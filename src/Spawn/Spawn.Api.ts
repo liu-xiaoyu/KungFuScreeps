@@ -36,7 +36,6 @@ import {
     MemoryHelper_Room,
     MemoryApi_Room,
     UserException,
-    EventHelper,
     RoomHelper_Structure,
     RoomHelper_State,
 } from "Utils/Imports/internals";
@@ -90,55 +89,6 @@ export class SpawnApi {
     }
 
     /**
-     * set military creep queue
-     * ! lord this function is a mess upon revisiting
-     * @param room the room we want queue for
-     */
-    private static generateMilitaryCreepQueue(room: Room): void {
-        const rolesToAdd: RoleConstant[] = [];
-
-        // Check for Domestic Defenders
-        const defconLevel: number = MemoryApi_Room.getDefconLevel(room);
-        const isTowers: boolean = RoomHelper_Structure.isExistInRoom(room, STRUCTURE_TOWER);
-        const limit: number = RoomHelper_State.getDomesticDefenderLimitByDefcon(defconLevel, isTowers);
-
-        if (
-            // Need to not spawn defenders at beginner roomstate
-            defconLevel > 3 &&
-            !SpawnHelper.isCreepCountSpawnedAndQueueAtLimit(room, ROLE_DOMESTIC_DEFENDER, limit)
-        ) {
-            rolesToAdd.push(ROLE_DOMESTIC_DEFENDER);
-        }
-
-        // Check for Military Creeps
-        const attackRoomFlags: AttackFlagMemory[] = MemoryApi_Room.getAllAttackFlagMemoryForHost(room.name);
-        for (const attackRoomFlag of attackRoomFlags) {
-            if (attackRoomFlag && Memory.flags[attackRoomFlag.flagName]) {
-                if (Memory.flags[attackRoomFlag.flagName].spawnProcessed) {
-                    continue;
-                }
-                const attackingRoles: RoleConstant[] = SpawnHelper.getRolesArrayFromAttackFlag(attackRoomFlag);
-                for (const role of attackingRoles) {
-                    rolesToAdd.push(role);
-                }
-
-                // Set the flag as processed, so it's only added to the queue once
-                if (Memory.flags[attackRoomFlag.flagName] !== undefined) {
-                    Memory.flags[attackRoomFlag.flagName].spawnProcessed = true;
-                }
-            }
-        }
-
-        // Add the constructed queue to the military queue
-        if (!room.memory.creepLimit!.militaryLimits) {
-            room.memory.creepLimit!.militaryLimits = [];
-        }
-        for (const role of rolesToAdd) {
-            room.memory.creepLimit!.militaryLimits.push(role);
-        }
-    }
-
-    /**
      * set creep limits for the room
      * @param room the room we are setting limits for
      */
@@ -153,9 +103,6 @@ export class SpawnApi {
 
         // Set Remote Limits to Memory
         MemoryHelper_Room.updateRemoteLimits(room, this.generateRemoteCreepLimits(room));
-
-        // Create the Military Queue
-        this.generateMilitaryCreepQueue(room);
     }
 
     /**
@@ -185,7 +132,6 @@ export class SpawnApi {
     public static getNextCreep(room: Room, openSpawn: StructureSpawn): RoleConstant | null {
         // Get Limits for each creep department
         const creepLimits: CreepLimits = MemoryApi_Room.getCreepLimits(room);
-        let militaryRole: RoleConstant | null;
         const creepCount: AllCreepCount = MemoryApi_Room.getAllCreepCount(room);
         const spawns: StructureSpawn[] = _.filter(
             Game.spawns,
@@ -199,12 +145,6 @@ export class SpawnApi {
             return ROLE_HARVESTER;
         }
 
-        // Spawn High Priority military
-        militaryRole = SpawnHelper.spawnMiliQueue(1, room);
-        if (militaryRole !== null) {
-            return militaryRole;
-        }
-
         // Check if we need a domestic creep -- Return role if one is found
         for (const role of domesticRolePriority) {
             // Skip the manager if we aren't on the center spawn
@@ -216,12 +156,6 @@ export class SpawnApi {
             }
         }
 
-        // Spawn Mid Priority military creeps
-        militaryRole = SpawnHelper.spawnMiliQueue(2, room);
-        if (militaryRole !== null) {
-            return militaryRole;
-        }
-
         // Check if we need a remote creep -- Return role if one is found
         for (const role of remoteRolePriority) {
             if (creepCount[role] < creepLimits.remoteLimits[role]) {
@@ -229,11 +163,7 @@ export class SpawnApi {
             }
         }
 
-        // Spawn Low Priority military creeps
-        militaryRole = SpawnHelper.spawnMiliQueue(3, room);
-
-        // Return null if we don't need to spawn anything
-        return militaryRole;
+        return null;
     }
 
     /**
@@ -503,26 +433,8 @@ export class SpawnApi {
             rallyLocation: null
         };
 
-        // Don't actually get anything of value if it isn't a military creep
-        if (!SpawnHelper.isMilitaryRole(roleConst)) {
-            return squadOptions;
-        }
-
-        const selectedFlagMemory: AttackFlagMemory | undefined = EventHelper.getMiliRequestingFlag(
-            room,
-            roleConst,
-            creepName
-        );
-        // If we didn't find a squad based flag return the default squad options
-        if (!selectedFlagMemory) {
-            return squadOptions;
-        } else {
-            // Set squad options to the flags memory and return it
-            squadOptions.squadSize = selectedFlagMemory.squadSize;
-            squadOptions.squadUUID = selectedFlagMemory.squadUUID;
-            squadOptions.rallyLocation = selectedFlagMemory.rallyLocation;
-            return squadOptions;
-        }
+        // SUPERTODO will need to reimplement this function when we get this all working
+        return {};
     }
 
     /**
@@ -566,22 +478,6 @@ export class SpawnApi {
             "role: " + roleConst + "\nCreep HomeRoom",
             ERROR_ERROR
         );
-    }
-
-    /**
-     * remove the spawned military creep from the military spawn queue
-     * @param nextCreepRole the role we are trying to remove
-     * @param room the room we are doing this for
-     */
-    public static removeSpawnedCreepFromMiliQueue(nextCreepRole: RoleConstant, room: Room): void {
-        if (SpawnHelper.isMilitaryRole(nextCreepRole)) {
-            for (let i = 0; i < room.memory.creepLimit!.militaryLimits.length; ++i) {
-                if (room.memory.creepLimit!.militaryLimits[i] === nextCreepRole) {
-                    room.memory.creepLimit!.militaryLimits.splice(i, 1);
-                    break;
-                }
-            }
-        }
     }
 
     /**

@@ -19,7 +19,6 @@ import {
     ERROR_ERROR,
     SpawnHelper,
     SpawnApi,
-    EventHelper,
     UserException,
 
     MemoryApi_Room
@@ -133,15 +132,8 @@ export class MedicBodyOptsHelper implements ICreepBodyOptsHelper {
         creepBody: BodyPartConstant[],
         creepName: string
     ): string {
-        const requestingFlag: AttackFlagMemory | undefined = EventHelper.getMiliRequestingFlag(
-            room,
-            roleConst,
-            creepName
-        );
-        if (requestingFlag) {
-            return Game.flags[requestingFlag!.flagName].pos.roomName;
-        }
 
+        // TODO impelment this
         // Throw exception if we couldn't find a definite room memory
         throw new UserException(
             "Couldn't get target room for [" + roleConst + " ]",

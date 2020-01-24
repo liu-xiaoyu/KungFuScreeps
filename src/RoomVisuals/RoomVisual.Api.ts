@@ -341,31 +341,13 @@ export class RoomVisualApi {
      * @param y the y coord for the visual
      */
     public static createAttackFlagVisual(room: Room, x: number, y: number): number {
-        const dependentRemoteRooms: Array<AttackRoomMemory | undefined> = MemoryApi_Room.getAttackRooms(room);
+        const dependentRemoteRooms: string[] = [];
         // Draw the text
         const lines: string[] = [];
-        lines.push("");
-        lines.push("Attack Rooms ");
-        lines.push("");
-        for (const dr of dependentRemoteRooms) {
-            if (!dr) {
-                continue;
-            }
-
-            lines.push("Room:   [ " + dr!.roomName + " ] ");
-            for (const flag of dr!.flags) {
-                if (!flag) {
-                    continue;
-                }
-                lines.push("Flag:   [ " + flag.flagName + " ] ");
-                lines.push("Type:   [ " + RoomVisualHelper.convertFlagTypeToString(flag.flagType) + " ]");
-            }
-            lines.push("");
-        }
 
         // If no remote rooms, print none
         if (lines.length === 3) {
-            lines.push("No Current Attack Rooms ");
+            lines.push("Attack Rooms Offline ");
             lines.push("");
         }
         RoomVisualHelper.multiLineText(lines, x, y, room.name, false);

@@ -68,7 +68,6 @@ export const domesticRolePriority: RoleConstant[] = [
 
 // * Keep this list ordered by spawn priority
 export const remoteRolePriority: RoleConstant[] = [
-    ROLE_REMOTE_DEFENDER,
     ROLE_REMOTE_RESERVER,
     ROLE_REMOTE_MINER,
     ROLE_REMOTE_HARVESTER,

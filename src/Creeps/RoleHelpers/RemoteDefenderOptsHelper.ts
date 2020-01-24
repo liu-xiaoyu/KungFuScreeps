@@ -69,25 +69,7 @@ export class RemoteDefenderBodyOptsHelper implements ICreepBodyOptsHelper {
     public generateCreepOptions(roomState: RoomStateConstant): CreepOptionsMili | undefined {
         let creepOptions: CreepOptionsMili = SpawnHelper.getDefaultCreepOptionsMili();
 
-        switch (roomState) {
-            case ROOM_STATE_INTRO:
-            case ROOM_STATE_BEGINNER:
-            case ROOM_STATE_INTER:
-            case ROOM_STATE_ADVANCED:
-            case ROOM_STATE_STIMULATE:
-            case ROOM_STATE_UPGRADER:
-            case ROOM_STATE_NUKE_INBOUND:
-                creepOptions = {
-                    squadSize: 1,
-                    squadUUID: null,
-                    rallyLocation: null,
-                    rallyDone: false,
-                    healer: true,
-                    defender: true
-                };
-
-                break;
-        }
+        // TODO impelmeent
 
         return creepOptions;
     }

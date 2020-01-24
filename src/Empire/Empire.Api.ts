@@ -85,9 +85,6 @@ export class EmpireApi {
         const remoteRooms: Array<RemoteRoomMemory | undefined> = _.flatten(
             _.map(allRooms, room => MemoryApi_Room.getRemoteRooms(room))
         );
-        const attackRooms: Array<AttackRoomMemory | undefined> = _.flatten(
-            _.map(allRooms, room => MemoryApi_Room.getAttackRooms(room))
-        );
 
         // Remove claim room flags once the room is sufficiently built up
         EmpireHelper.markCompletedClaimRooms(claimRooms);
@@ -95,11 +92,9 @@ export class EmpireApi {
         // Clean dead flags from memory structures
         EmpireHelper.cleanDeadClaimRoomFlags(claimRooms);
         EmpireHelper.cleanDeadRemoteRoomsFlags(remoteRooms);
-        EmpireHelper.cleanDeadAttackRoomFlags(attackRooms);
 
         // Clean the memory of each type of dependent room memory structure with no existing flags associated
         EmpireHelper.cleanDeadClaimRooms(claimRooms);
         EmpireHelper.cleanDeadRemoteRooms(remoteRooms);
-        EmpireHelper.cleanDeadAttackRooms(attackRooms);
     }
 }

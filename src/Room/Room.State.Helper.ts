@@ -191,15 +191,6 @@ export class RoomHelper_State {
     }
 
     /**
-     * get number of associated attack rooms
-     * @param room
-     */
-    public static numAttackRooms(room: Room): number {
-        const attackRooms = MemoryApi_Room.getAttackRooms(room);
-        return attackRooms.length;
-    }
-
-    /**
      * Returns the number of sources in a room
      * @param room The room to check
      */

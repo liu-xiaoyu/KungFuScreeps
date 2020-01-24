@@ -4,7 +4,6 @@ import {
     ClaimPartJobs,
     WorkPartJobs,
     CarryPartJobs,
-    CreepMiliHelper,
     RoomHelper_Structure,
     RoomApi_State,
 } from "Utils/Imports/internals";
@@ -51,9 +50,8 @@ export class MemoryHelper_Room {
             return;
         }
 
-        const enemies = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS, {
-            filter: (creep: Creep) => !CreepMiliHelper.isAllyCreep(creep)
-        });
+        // TODO filter our ally creeps out
+        const enemies = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
 
         // Sort creeps into categories
         Memory.rooms[roomName].hostiles = {

@@ -39,7 +39,6 @@ export class NukeStateCreepLimits implements ICreepSpawnLimits {
             remoteHarvester: 0,
             remoteReserver: 0,
             remoteColonizer: 0,
-            remoteDefender: 0,
             claimer: 0
         };
 

@@ -93,6 +93,8 @@ export class CreepManager {
 
 
         if (creep.memory.job === undefined) {
+            if (role === "scout") {
+            }
             creep.memory.job = managerImplementation!.getNewJob(creep, homeRoom, targetRoom);
 
             if (creep.memory.job === undefined) {

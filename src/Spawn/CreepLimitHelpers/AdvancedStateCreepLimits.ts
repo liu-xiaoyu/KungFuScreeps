@@ -71,7 +71,7 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
         domesticLimits[ROLE_WORKER] = numWorkers;
         domesticLimits[ROLE_POWER_UPGRADER] = 0;
         domesticLimits[ROLE_LORRY] = numLorries;
-        domesticLimits[ROLE_SCOUT] = SpawnHelper.getScoutSpawnLimit(room);
+        // domesticLimits[ROLE_SCOUT] = SpawnHelper.getScoutSpawnLimit(room);
 
         return domesticLimits;
     }
@@ -86,7 +86,6 @@ export class AdvancedStateCreepLimits implements ICreepSpawnLimits {
             remoteHarvester: 0,
             remoteReserver: 0,
             remoteColonizer: 0,
-            remoteDefender: 0,
             claimer: 0
         };
 

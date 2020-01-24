@@ -80,7 +80,7 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
         domesticLimits[ROLE_POWER_UPGRADER] = numPowerUpgraders;
         domesticLimits[ROLE_LORRY] = numLorries;
         domesticLimits[ROLE_MANAGER] = 1;
-        domesticLimits[ROLE_SCOUT] = SpawnHelper.getScoutSpawnLimit(room);
+        // domesticLimits[ROLE_SCOUT] = SpawnHelper.getScoutSpawnLimit(room);
 
         return domesticLimits;
     }
@@ -105,7 +105,6 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
             return remoteLimits;
         }
         // Gather the rest of the data only if we have a remote room or a claim room
-        const numRemoteDefenders: number = RoomHelper_State.numRemoteDefenders(room);
         const numRemoteSources: number = RoomHelper_State.numRemoteSources(room);
         const numCurrentlyUnclaimedClaimRooms: number = RoomHelper_State.numCurrentlyUnclaimedClaimRooms(room);
 

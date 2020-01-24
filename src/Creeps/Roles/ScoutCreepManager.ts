@@ -17,7 +17,6 @@ export class ScoutCreepManager implements ICivCreepRoleManager {
      */
     public getNewJob(creep: Creep): MovePartJob | undefined {
         const newTargetRoom = this.getNewTargetRoom(creep);
-
         const newMovePartJob: MovePartJob = {
             jobType: "movePartJob",
             targetType: "roomName",
@@ -75,8 +74,8 @@ export class ScoutCreepManager implements ICivCreepRoleManager {
         const randomInt: number = Math.floor(Math.random() * Object.keys(exits).length);
         // Keys are 1 3 5 7, possible values of randomInt = 0 1 2 3;
         const randomDirection = ((randomInt * 2) + 1).toString() as ExitKey;
-
-        return newTargetRoom = exits[randomDirection]!;
+        newTargetRoom = exits[randomDirection]!;
+        return newTargetRoom;
     }
     /**
      * Handle initalizing a new job

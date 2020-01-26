@@ -108,6 +108,7 @@ export class militaryDataHelper {
                     dismantleMultiplier += 1;
                     upgradeControllerMultiplier += BOOSTS.work.XGH2O.upgradeController;
                     break;
+                default: throw new UserException("Error in getCreepAdjustedWork()", "Unable to find the correct boost affect. Ensure that the proper reactions are being checked.", ERROR_ERROR);
             }
         });
 

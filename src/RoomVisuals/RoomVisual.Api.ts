@@ -651,7 +651,7 @@ export class RoomVisualApi {
             (tower: StructureTower) => tower.energy > 0
         ) as StructureTower[];
 
-        const creepHealData = RoomHelper_Structure.getCreepHealData(healCreeps, attackCreeps);
+        const creepHealData = RoomHelper_Structure.getCreepsAvailableHealing(healCreeps, attackCreeps);
 
         // Damage array should be populated at this point
 

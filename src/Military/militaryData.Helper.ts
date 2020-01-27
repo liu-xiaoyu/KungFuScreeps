@@ -143,7 +143,7 @@ export class militaryDataHelper {
                 default: throw new UserException("Error in getCreepAdjustedAttack()", "Unable to find the correct boost affect. Ensure that the proper reactions are being checked.", ERROR_ERROR);
             }
         });
-
+ 
         return attackMultiplier * ATTACK_POWER;
     }
 
@@ -175,7 +175,7 @@ export class militaryDataHelper {
         
         if(assumeMaxDamage){   
             return { rangedAttack: RangedMultiplier * RANGED_ATTACK_POWER, rangedMassAttack: RangedMassMultiplier * RANGED_ATTACK_POWER}
-        } else { //assume min damage
+        } else { // assume min damage
             return { rangedAttack: RangedMultiplier * RANGED_ATTACK_POWER, rangedMassAttack: RangedMassMultiplier * 1}
         }
     }

@@ -13,6 +13,7 @@ import {
     MemoryApi_Jobs,
     TOWER_ALLOWED_TO_REPAIR
 } from "Utils/Imports/internals";
+import { militaryDataHelper } from "Military/militaryData.Helper";
 
 export class RoomHelper_Structure {
 
@@ -192,8 +193,12 @@ export class RoomHelper_Structure {
         let bestDamage: number = 0;
 
         _.forEach(hostiles, (c: Creep) => {
-            const distance = this.getAverageDistanceToTarget(towers, c);
-            const damage = this.getTowerDamageAtRange(distance);
+
+            let damage = 0;
+
+            _.forEach(towers, (tower: StructureTower) => { 
+                damage += this.getTowerDamageAtRange(tower.pos.getRangeTo(c));
+            });
 
             if (damage > bestDamage) {
                 bestTarget = c;
@@ -223,7 +228,7 @@ export class RoomHelper_Structure {
         otherHostiles?: Creep[]
     ): Creep | null {
         // Get the amount of healing each creep can receive
-        const creepHealData: Array<{ creep: Creep; healAmount: number }> = this.getCreepHealData(
+        const creepHealData: Array<{ creep: Creep; healAmount: number }> = this.getCreepsAvailableHealing(
             healHostiles,
             otherHostiles
         );
@@ -235,12 +240,14 @@ export class RoomHelper_Structure {
         let bestDamage = 0;
 
         for (const data of creepHealData) {
-            // Get distance / damage to target
-            const avgDistanceToTower = this.getAverageDistanceToTarget(towers, data.creep);
-            const towerDamageToTarget = this.getTowerDamageAtRange(avgDistanceToTower);
+            let damage = 0;
+
+            _.forEach(towers, (tower: StructureTower) => { 
+                damage += this.getTowerDamageAtRange(tower.pos.getRangeTo(data.creep));
+            });
 
             // Get damage after all possible healing has been applied
-            const netDamage = towerDamageToTarget - data.healAmount;
+            const netDamage = damage - data.healAmount;
 
             // If this is better than our last target, choose it
             if (bestDamage < netDamage) {
@@ -260,37 +267,35 @@ export class RoomHelper_Structure {
         }
     }
 
-    public static getCreepHealData(
-        healHostiles: Creep[],
-        otherHostiles?: Creep[]
+    public static getCreepsAvailableHealing(
+        healCreeps: Creep[],
+        otherCreeps?: Creep[]
     ): Array<{ creep: Creep; healAmount: number }> {
-        const hostiles: Creep[] = otherHostiles === undefined ? healHostiles : healHostiles.concat(otherHostiles);
+        
+        const hostiles: Creep[] = otherCreeps === undefined ? healCreeps : healCreeps.concat(otherCreeps);
 
-        const creepHealData: Array<{ creep: Creep; healAmount: number }> = [];
-
-        // Loop through each creep and get heal amount
-        // Each heal creep will consider healing itself as well as any other creep to cover worst-case scenario
-        for (const creep of hostiles) {
-            let healAmount = 0;
-
-            // Loop through all healers to find which can affect this creep and by how much
-            for (const healer of healHostiles) {
-                const distance = creep.pos.getRangeTo(healer);
-                // skip if creep is too far to heal
-                if (distance > 3) {
-                    continue;
-                } // Creep is not able to heal() and must use rangedHeal()
-                else if (distance > 1) {
-                    healAmount += healer.getActiveBodyparts(HEAL) * RANGED_HEAL_POWER;
-                } // Creep can use heal()
-                else {
-                    healAmount += healer.getActiveBodyparts(HEAL) * HEAL_POWER;
-                }
-            }
-
-            creepHealData.push({ creep, healAmount });
+        // Get all healers ability to heal adjusted for boosts
+        const healersAdjustedPower: Array<{ creep: Creep, heal: number, rangedHeal: number }> = [];
+        for (const healer of healCreeps) { 
+            const healerData = militaryDataHelper.getCreepAdjustedHeal(healer);
+            healersAdjustedPower.push({creep: healer, heal: healerData.heal, rangedHeal: healerData.rangedHeal});
         }
 
+        // Get the maximum amount each creep could be healed for in a worst-case scenario
+        const creepHealData: Array<{ creep: Creep; healAmount: number }> = [];
+        for(const creep of hostiles) { 
+
+            let healAmount = 0;
+
+            for (const data of healersAdjustedPower) { 
+                const distanceToCreep = creep.pos.getRangeTo(data.creep);
+                const currentHealerAmount = distanceToCreep <= 1 ? data.heal : distanceToCreep <= 3 ? data.rangedHeal : 0;
+                healAmount += currentHealerAmount;
+            }
+
+            creepHealData.push( {creep, healAmount} );
+        }
+        
         return creepHealData;
     }
 

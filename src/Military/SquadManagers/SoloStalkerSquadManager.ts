@@ -49,6 +49,10 @@ export class SoloStalkerSquadManager implements ISquadManager {
 
     }
 
+    /**
+     * Check the status of the squad
+     * @returns boolean representing the squads current status
+     */
     public checkStatus(): boolean {
         return true;
     }

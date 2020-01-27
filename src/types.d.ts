@@ -234,7 +234,7 @@ interface ISquadManager {
     addCreep(creep: Creep): void;
     createInstance: (targetroom: string) => ISquadManager;
     removeInstance: () => void;
-    checkStatus: () => void;
+    checkStatus: () => boolean;
 }
 
 /**

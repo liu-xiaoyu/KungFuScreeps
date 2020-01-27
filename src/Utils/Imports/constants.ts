@@ -25,7 +25,6 @@ export const ROLE_STALKER = "stalker";
 export const ROLE_MEDIC = "medic";
 export const ROLE_DOMESTIC_DEFENDER = "domesticDefender";
 export const ROLE_TOWER_TANK = "towerTank";
-export const ROLE_TOWER_MEDIC = "towerMedic";
 export const ROLE_SCOUT = "scout";
 export const ROLE_MANAGER = "manager";
 

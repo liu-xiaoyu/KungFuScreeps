@@ -5,6 +5,7 @@ export class StandardSquadManager implements ISquadManager {
     public creeps: Creep[] = [];
     public targetRoom: string = "";
     public squadUUID: number = 0;
+    public operationUUID: number = 0;
 
     constructor() {
         const self = this;
@@ -26,11 +27,12 @@ export class StandardSquadManager implements ISquadManager {
      * Create an instance and place into the empire memory
      * @param targetRoom the room we are attacking
      */
-    public createInstance(targetRoom: string): StandardSquadManager {
+    public createInstance(targetRoom: string, operationUUID: number): StandardSquadManager {
         const uuid: number = SpawnApi.generateSquadUUID();
         const instance = new StandardSquadManager();
         instance.squadUUID = uuid;
         instance.targetRoom = targetRoom;
+        instance.operationUUID = operationUUID;
         return instance;
     }
 

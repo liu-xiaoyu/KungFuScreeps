@@ -224,9 +224,10 @@ interface ISquadManager {
     creeps: Creep[];
     targetRoom: string;
     squadUUID: number;
+    operationUUID: number;
     runSquad: (room: Room) => void;
     addCreep(creep: Creep): void;
-    createInstance: (targetroom: string) => ISquadManager;
+    createInstance: (targetroom: string, operationUUID: number) => ISquadManager;
     removeInstance: () => void;
     checkStatus: () => boolean;
 }
@@ -797,11 +798,12 @@ interface EmpireMemory {
     /**
      * Military operations
      */
-    militaryOperations?: MilitaryOperation;
+    militaryOperations?: MilitaryOperations[];
 }
 
-interface MilitaryOperation {
-    operations: ISquadManager[];
+interface MilitaryOperations {
+    squads: ISquadManager[];
+    operationUUID: number;
 }
 
 interface MovementData {

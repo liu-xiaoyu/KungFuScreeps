@@ -43,8 +43,10 @@ export class MemoryManager {
             Memory.creeps = {};
         }
 
-        if (!Memory.empire) {
-            Memory.empire = {};
+        if (!Memory.empire?.militaryOperations) {
+            Memory.empire = {
+                militaryOperations: []
+            };
         }
     }
 }

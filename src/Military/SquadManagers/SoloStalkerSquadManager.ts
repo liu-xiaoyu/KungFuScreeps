@@ -5,6 +5,7 @@ export class SoloStalkerSquadManager implements ISquadManager {
     public creeps: Creep[] = [];
     public targetRoom: string = "";
     public squadUUID: number = 0;
+    public operationUUID: number = 0;
 
     constructor() {
         const self = this;
@@ -26,11 +27,12 @@ export class SoloStalkerSquadManager implements ISquadManager {
      * Create an instance and place into the empire memory
      * @param targetRoom the room we are attacking
      */
-    public createInstance(targetRoom: string): SoloStalkerSquadManager {
+    public createInstance(targetRoom: string, operationUUID: number): SoloStalkerSquadManager {
         const uuid: number = SpawnApi.generateSquadUUID();
         const instance = new SoloStalkerSquadManager();
         instance.squadUUID = uuid;
         instance.targetRoom = targetRoom;
+        instance.operationUUID = operationUUID;
         return instance;
     }
 

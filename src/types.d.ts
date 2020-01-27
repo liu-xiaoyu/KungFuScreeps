@@ -96,7 +96,6 @@ declare const ROLE_ZEALOT = "zealot";
 declare const ROLE_STALKER = "stalker";
 declare const ROLE_MEDIC = "medic";
 declare const ROLE_DOMESTIC_DEFENDER = "domesticDefender";
-declare const ROLE_TOWER_MEDIC = "towerMedic";
 declare const ROLE_TOWER_TANK = "towerTank";
 declare const ROLE_MANAGER = "manager";
 
@@ -121,7 +120,6 @@ type RoleConstant =
     | ROLE_STALKER
     | ROLE_MEDIC
     | ROLE_DOMESTIC_DEFENDER
-    | ROLE_TOWER_MEDIC
     | ROLE_TOWER_TANK
     | ROLE_MANAGER;
 
@@ -197,10 +195,6 @@ type ROLE_DOMESTIC_DEFENDER = "domesticDefender"; //
  * Military Creep - tower drainer tank
  */
 type ROLE_TOWER_TANK = "towerTank"; //
-/**
- * Military Creep - tower drainer medic
- */
-type ROLE_TOWER_MEDIC = "towerMedic";
 /*
  * Domestic Creep, manages energy flow in the room
  */

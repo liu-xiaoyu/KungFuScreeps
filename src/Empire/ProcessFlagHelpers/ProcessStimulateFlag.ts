@@ -20,14 +20,13 @@ export class ProcessDefaultStimulateFlag implements IFlagProcesser {
         Memory.flags[flag.name].timePlaced = Game.time;
         Memory.flags[flag.name].flagType = flagTypeConst;
         Memory.flags[flag.name].flagName = flag.name;
-        Memory.flags[flag.name].spawnProcessed = false;
 
         MemoryApi_Empire.createEmpireAlertNode(
             "Option Flag [" +
-                flag.name +
-                "] processed. Flag Type: [" +
-                RoomVisualHelper.convertFlagTypeToString(flagTypeConst) +
-                "]",
+            flag.name +
+            "] processed. Flag Type: [" +
+            RoomVisualHelper.convertFlagTypeToString(flagTypeConst) +
+            "]",
             10
         );
     }

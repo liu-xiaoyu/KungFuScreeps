@@ -1,20 +1,12 @@
 import {
-    ZEALOT_SOLO,
-    STALKER_SOLO,
-    STANDARD_SQUAD,
     CLAIM_FLAG,
     REMOTE_FLAG,
     OVERRIDE_D_ROOM_FLAG,
     ERROR_WARN,
     STIMULATE_FLAG,
-
     UserException,
-    SpawnApi,
-    RoomVisualHelper,
     MemoryApi_Empire,
     MemoryApi_Room,
-    EmpireApi,
-    TOWER_DRAINER_SQUAD
 } from "Utils/Imports/internals";
 
 export class EmpireHelper {

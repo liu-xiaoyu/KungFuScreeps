@@ -1,4 +1,4 @@
-import {   UserException, EmpireHelper, MemoryApi_Room, MemoryApi_Empire } from "Utils/Imports/internals";
+import { UserException, EmpireHelper, MemoryApi_Room, MemoryApi_Empire } from "Utils/Imports/internals";
 
 export class ProcessDefaultRemoteRoom implements IFlagProcesser {
     public primaryColor: ColorConstant = COLOR_YELLOW;
@@ -23,7 +23,6 @@ export class ProcessDefaultRemoteRoom implements IFlagProcesser {
         Memory.flags[flag.name].timePlaced = Game.time;
         Memory.flags[flag.name].flagType = flagTypeConst;
         Memory.flags[flag.name].flagName = flag.name;
-        Memory.flags[flag.name].spawnProcessed = false;
 
         // Create the RemoteFlagMemory object for this flag
         const remoteFlagMemory: RemoteFlagMemory = {
@@ -47,7 +46,7 @@ export class ProcessDefaultRemoteRoom implements IFlagProcesser {
             throw new UserException(
                 "Already working this dependent room!",
                 "The room you placed the remote flag in is already being worked by " +
-                    existingDepedentRemoteRoomMem.roomName,
+                existingDepedentRemoteRoomMem.roomName,
                 ERROR_WARN
             );
         }

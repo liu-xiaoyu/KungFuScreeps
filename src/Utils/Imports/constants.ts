@@ -41,18 +41,14 @@ export const TIER_8 = 12300;
 // Squad Manager Name Constants
 export const SOLO_ZEALOT_MAN = "soloZealotSquad";
 export const SOLO_STALKER_MAN = "soloStalkerSquad";
-export const STANDARD_MAN = "soloZealotSquad";
-export const TOWER_DRAINER_MAN = "soloZealotSquad";
+export const STANDARD_MAN = "standardSquad";
+export const TOWER_DRAINER_MAN = "towerDrainerSquad";
 
 // Attack Flag Constants
-export const ZEALOT_SOLO = 1;
-export const STALKER_SOLO = 2;
-export const STANDARD_SQUAD = 3;
 export const CLAIM_FLAG = 4;
 export const REMOTE_FLAG = 5;
 export const OVERRIDE_D_ROOM_FLAG = 6;
 export const STIMULATE_FLAG = 7;
-export const TOWER_DRAINER_SQUAD = 8;
 
 // Creep Body Layout Constants
 export const GROUPED = "grouped";

@@ -6,9 +6,6 @@ import {
     ROLE_REMOTE_RESERVER,
     ROLE_CLAIMER,
     ERROR_WARN,
-    STALKER_SOLO,
-    ZEALOT_SOLO,
-    STANDARD_SQUAD,
     UserException,
     ALL_MILITARY_ROLES,
     ALL_DEFENSIVE_ROLES,
@@ -22,7 +19,6 @@ import {
     MemoryApi_Creep,
     RoomHelper_Structure,
     RoomHelper_State,
-    TOWER_DRAINER_SQUAD,
 } from "Utils/Imports/internals";
 
 /**

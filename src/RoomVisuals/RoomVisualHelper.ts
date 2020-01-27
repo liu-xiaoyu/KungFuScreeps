@@ -6,18 +6,13 @@ import {
     ROOM_STATE_NUKE_INBOUND,
     ROOM_STATE_STIMULATE,
     ROOM_STATE_UPGRADER,
-    STANDARD_SQUAD,
-    ZEALOT_SOLO,
-    STALKER_SOLO,
     CLAIM_FLAG,
     REMOTE_FLAG,
     OVERRIDE_D_ROOM_FLAG,
     STIMULATE_FLAG,
     STUCK_COUNT_LIMIT,
     STUCK_VISUAL_COLORS,
-    RoomManager,
     RoomHelper_Structure,
-    TOWER_DRAINER_SQUAD
 } from "Utils/Imports/internals";
 
 const textColor = "#bab8ba";
@@ -92,12 +87,6 @@ export class RoomVisualHelper {
      */
     public static convertFlagTypeToString(flagType: FlagTypeConstant | undefined): string {
         switch (flagType) {
-            case STANDARD_SQUAD:
-                return "Standard Squad";
-            case STALKER_SOLO:
-                return "Stalker Solo";
-            case ZEALOT_SOLO:
-                return "Zealot Solo";
             case CLAIM_FLAG:
                 return "Claim";
             case REMOTE_FLAG:
@@ -106,8 +95,6 @@ export class RoomVisualHelper {
                 return "Override";
             case STIMULATE_FLAG:
                 return "Stimulate";
-            case TOWER_DRAINER_SQUAD:
-                return "Tower Drainer Squad";
             default:
                 return "Not a valid flag type (roomVisualHelper/convertFlagTypeToString).";
         }

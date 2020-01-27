@@ -203,8 +203,8 @@ type ROLE_MANAGER = "manager"; //
 // Squad Manager Name Constants
 type SOLO_ZEALOT_MAN = "soloZealotSquad";
 type SOLO_STALKER_MAN = "soloStalkerSquad";
-type STANDARD_MAN = "soloZealotSquad";
-type TOWER_DRAINER_MAN = "soloZealotSquad";
+type STANDARD_MAN = "standardSquad";
+type TOWER_DRAINER_MAN = "towerDrainerSquad";
 
 type SquadManagerConstant =
     SOLO_STALKER_MAN |
@@ -798,10 +798,10 @@ interface EmpireMemory {
     /**
      * Military operations
      */
-    militaryOperations: MilitaryOperations[];
+    militaryOperations: MilitaryOperation[];
 }
 
-interface MilitaryOperations {
+interface MilitaryOperation {
     squads: ISquadManager[];
     operationUUID: number;
 }
@@ -1133,16 +1133,11 @@ interface FlagMemory {
     /**
      * the type of flag this is
      */
-    flagType: FlagTypeConstant | undefined;
+    flagType?: FlagTypeConstant | undefined;
     /**
      * the name of the flag
      */
     flagName: string;
-    /**
-     * if the spawning has been processed
-     * currently only relevant to military flags
-     */
-    spawnProcessed: boolean;
 }
 
 // Memory for remote/attack/claim rooms
@@ -1225,9 +1220,6 @@ interface RemoteFlagMemory extends ParentFlagMemory {
 /**
  * flag type constant definitions
  */
-declare const ZEALOT_SOLO = 1;
-declare const STALKER_SOLO = 2;
-declare const STANDARD_SQUAD = 3;
 declare const CLAIM_FLAG = 4;
 declare const REMOTE_FLAG = 5;
 declare const OVERRIDE_D_ROOM_FLAG = 6;
@@ -1236,27 +1228,19 @@ declare const STIMULATE_FLAG = 7;
 /**
  * flag types type definitions
  */
-type ZEALOT_SOLO = 1;
-type STALKER_SOLO = 2;
-type STANDARD_SQUAD = 3;
 type CLAIM_FLAG = 4;
 type REMOTE_FLAG = 5;
 type OVERRIDE_D_ROOM_FLAG = 6;
 type STIMULATE_FLAG = 7;
-type TOWER_DRAINER_SQUAD = 8;
 
 /**
  * type that holds all flag type constants
  */
 type FlagTypeConstant =
-    | ZEALOT_SOLO
-    | STALKER_SOLO
-    | STANDARD_SQUAD
     | CLAIM_FLAG
     | REMOTE_FLAG
     | OVERRIDE_D_ROOM_FLAG
     | STIMULATE_FLAG
-    | TOWER_DRAINER_SQUAD;
 
 /**
  * Tier Definitions

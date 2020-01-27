@@ -80,7 +80,7 @@ export class UpgraderStateCreepLimits implements ICreepSpawnLimits {
         domesticLimits[ROLE_POWER_UPGRADER] = numPowerUpgraders;
         domesticLimits[ROLE_LORRY] = numLorries;
         domesticLimits[ROLE_MANAGER] = 1;
-        // domesticLimits[ROLE_SCOUT] = SpawnHelper.getScoutSpawnLimit(room);
+        domesticLimits[ROLE_SCOUT] = SpawnHelper.getScoutSpawnLimit(room);
 
         return domesticLimits;
     }

@@ -10,6 +10,7 @@ export * from "Utils/UtilHelpers/Normalize";
 // Import All API
 export * from "AutoConstruction/AutoConstruction.Api";
 export * from "Creeps/Creep.All.Api";
+export * from "Military/Military.Api.Spawn";
 export * from "Empire/Empire.Api";
 export * from "Memory/Memory.All.Api";
 export * from "Memory/Memory.Creep.Api";

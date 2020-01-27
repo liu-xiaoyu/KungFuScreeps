@@ -16,7 +16,9 @@ export class PathfindingApi {
     public static initializeEmpireMovementMemory(): void {
         // Memory safeguarding
         if (!Memory.empire) {
-            Memory.empire = {};
+            Memory.empire = {
+                militaryOperations: [],
+            };
         }
 
         if (!Memory.empire.movementData) {

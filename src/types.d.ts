@@ -798,7 +798,7 @@ interface EmpireMemory {
     /**
      * Military operations
      */
-    militaryOperations?: MilitaryOperations[];
+    militaryOperations: MilitaryOperations[];
 }
 
 interface MilitaryOperations {

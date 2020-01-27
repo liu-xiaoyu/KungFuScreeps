@@ -206,11 +206,35 @@ type ROLE_TOWER_MEDIC = "towerMedic";
  */
 type ROLE_MANAGER = "manager"; //
 
+// Squad Manager Name Constants
+type SOLO_ZEALOT_MAN = "soloZealotSquad";
+type SOLO_STALKER_MAN = "soloStalkerSquad";
+type STANDARD_MAN = "soloZealotSquad";
+type TOWER_DRAINER_MAN = "soloZealotSquad";
+
+type SquadManagerConstant =
+    SOLO_STALKER_MAN |
+    SOLO_ZEALOT_MAN |
+    STANDARD_MAN |
+    TOWER_DRAINER_MAN;
+
 // Role Interfaces to be implemented  -------------
 interface ICivCreepRoleManager {
     name: RoleConstant;
     getNewJob: (creep: Creep, room: Room, targetRoom?: Room) => BaseJob | undefined;
     handleNewJob: (creep: Creep, room: Room, job?: BaseJob) => void;
+}
+
+interface ISquadManager {
+    name: SquadManagerConstant;
+    creeps: Creep[];
+    targetRoom: string;
+    squadUUID: number;
+    runSquad: (room: Room) => void;
+    addCreep(creep: Creep): void;
+    createInstance: (targetroom: string) => ISquadManager;
+    removeInstance: () => void;
+    checkStatus: () => void;
 }
 
 /**
@@ -764,7 +788,6 @@ interface RoomMemory {
 
 interface Memory {
     empire: EmpireMemory;
-    structures: { [structureID: string]: StructureMemory };
     debug: StringMap;
 }
 
@@ -777,6 +800,14 @@ interface EmpireMemory {
      * PathfindingApi empire-wide memory
      */
     movementData?: MovementData;
+    /**
+     * Military operations
+     */
+    militaryOperations?: MilitaryOperation;
+}
+
+interface MilitaryOperation {
+    operations: ISquadManager[];
 }
 
 interface MovementData {

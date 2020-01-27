@@ -47,9 +47,19 @@ import {
     ProcessDefaultRemoteRoom,
     ProcessDefaultStimulateFlag,
     ProcessDependentRoomOverride,
-    TowerDrainerMedicBodyOptsHelper,
     TowerDrainerTankBodyOptsHelper,
 } from "Utils/Imports/internals";
+import { SoloStalkerSquadManager } from "Military/SquadManagers/SoloStalkerSquadManager";
+import { SoloZealotSquadManager } from "Military/SquadManagers/SoloZealotSquadManager";
+import { TowerDrainerSquadManager } from "Military/SquadManagers/TowerDrainerSquadManager";
+import { StandardSquadManager } from "Military/SquadManagers/StandardSquadManager";
+
+// tslint:disable-next-line: interface-name
+export interface ICreepSpawnLimits {
+    roomState: RoomStateConstant;
+    generateRemoteLimits: (room: Room) => RemoteCreepLimits;
+    generateDomesticLimits: (room: Room) => DomesticCreepLimits;
+}
 
 // Constant containing the manager for each job, which all implement doWork & travelTo
 export const JobTypes: IJobTypeHelper[] = [
@@ -96,7 +106,6 @@ export const CREEP_BODY_OPT_HELPERS: ICreepBodyOptsHelper[] = [
     new StalkerBodyOptsHelper(),
     new MedicBodyOptsHelper(),
     new DomesticDefenderBodyOptsHelper(),
-    new TowerDrainerMedicBodyOptsHelper(),
     new TowerDrainerTankBodyOptsHelper(),
     new ScoutBodyOptsHelper()
 ];
@@ -120,4 +129,12 @@ export const PROCESS_FLAG_HELPERS: IFlagProcesser[] = [
     new ProcessDefaultRemoteRoom(),
     new ProcessDefaultStimulateFlag(),
     new ProcessDependentRoomOverride()
+];
+
+// Constants containing all instances of the class related to handling squad managers
+export const SQUAD_MANAGERS: ISquadManager[] = [
+    new SoloStalkerSquadManager(),
+    new SoloZealotSquadManager(),
+    new TowerDrainerSquadManager(),
+    new StandardSquadManager()
 ];

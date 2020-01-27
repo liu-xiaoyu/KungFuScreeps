@@ -31,6 +31,7 @@ export * from "Room/Room.Structure.Helper";
 export * from "Spawn/SpawnHelper";
 export * from "Memory/MemoryHelper";
 export * from "Memory/Memory.Room.Helper";
+export * from "Military/militaryData.Helper";
 // -----------------------------
 // Body/Option Helper Implementations
 export * from "Creeps/RoleHelpers/MinerBodyOptsHelper";
@@ -51,7 +52,6 @@ export * from "Creeps/RoleHelpers/RemoteHarvesterBodyOptsHelper";
 export * from "Creeps/RoleHelpers/ClaimerBodyOptsHelper";
 export * from "Creeps/RoleHelpers/RemoteReserverBodyOptsHelper";
 export * from "Creeps/RoleHelpers/ScoutBodyOptsHelper";
-export * from "Creeps/RoleHelpers/TowerDrainerMedicBodyOptsHelper";
 export * from "Creeps/RoleHelpers/TowerDrainerTankBodyOptsHelper";
 // ---------------------------
 // Room Spawn Limit Implementations
@@ -70,6 +70,11 @@ export * from "Empire/ProcessFlagHelpers/ProcessDefaultRemoteRoom";
 export * from "Empire/ProcessFlagHelpers/ProcessDependentRoomOverride";
 export * from "Empire/ProcessFlagHelpers/ProcessStimulateFlag";
 // -------------------------------
+// Squad Manager Implementations
+export * from "Military/SquadManagers/SoloStalkerSquadManager";
+export * from "Military/SquadManagers/SoloZealotSquadManager";
+export * from "Military/SquadManagers/StandardSquadManager";
+export * from "Military/SquadManagers/TowerDrainerSquadManager";
 // Import All Managers
 export * from "Creeps/CreepManager";
 export * from "Empire/EmpireManager";

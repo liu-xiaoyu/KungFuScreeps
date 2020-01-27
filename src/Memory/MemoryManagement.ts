@@ -1,5 +1,5 @@
 // @ts-ignore
-import {   MemoryApi_All, MemoryApi_Empire, MemoryApi_Room } from "Utils/Imports/internals";
+import { MemoryApi_All, MemoryApi_Empire, MemoryApi_Room } from "Utils/Imports/internals";
 
 // manager for the memory of the empire
 export class MemoryManager {

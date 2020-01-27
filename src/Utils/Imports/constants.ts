@@ -39,6 +39,12 @@ export const TIER_6 = 2300;
 export const TIER_7 = 5300;
 export const TIER_8 = 12300;
 
+// Squad Manager Name Constants
+export const SOLO_ZEALOT_MAN = "soloZealotSquad";
+export const SOLO_STALKER_MAN = "soloStalkerSquad";
+export const STANDARD_MAN = "soloZealotSquad";
+export const TOWER_DRAINER_MAN = "soloZealotSquad";
+
 // Attack Flag Constants
 export const ZEALOT_SOLO = 1;
 export const STALKER_SOLO = 2;

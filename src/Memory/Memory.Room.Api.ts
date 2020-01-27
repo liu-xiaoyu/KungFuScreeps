@@ -781,7 +781,6 @@ export class MemoryApi_Room {
      * @param room the room we are in
      */
     public static getAllCreepCount(room: Room): AllCreepCount {
-        // Only update the cache if it hasn't been done this tick
         const creepsInRoom: Creep[] = MemoryApi_Creep.getMyCreeps(room.name);
         const allCreepCount: AllCreepCount = MemoryHelper.generateDefaultAllCreepCountObject();
 

@@ -1025,6 +1025,16 @@ interface CreepLimits {
      * creep limits for domestic creeps
      */
     domesticLimits: DomesticCreepLimits;
+    /**
+     * The military queue
+     */
+    militaryQueue: MilitaryQueue[];
+}
+
+interface MilitaryQueue {
+    operationUUID: number;
+    squadUUID: number;
+    role: RoleConstant;
 }
 
 /**

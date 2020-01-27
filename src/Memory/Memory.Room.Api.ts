@@ -127,6 +127,7 @@ export class MemoryApi_Room {
                         remoteColonizer: 0,
                         claimer: 0
                     },
+                    militaryQueue: []
                 },
                 creeps: { data: null, cache: null },
                 defcon: -1,
@@ -705,15 +706,16 @@ export class MemoryApi_Room {
     public static getCreepLimits(room: Room): CreepLimits {
         // Make sure everything is defined at the memory level
         if (
-            !Memory.rooms[room.name].creepLimit ||
-            !Memory.rooms[room.name].creepLimit!.domesticLimits ||
-            !Memory.rooms[room.name].creepLimit!.remoteLimits
+            !Memory.rooms[room.name].creepLimit?.domesticLimits ||
+            !Memory.rooms[room.name].creepLimit?.remoteLimits ||
+            !Memory.rooms[room.name].creepLimit?.militaryQueue
         ) {
             MemoryApi_Room.initCreepLimits(room);
         }
         const creepLimits: CreepLimits = {
             domesticLimits: Memory.rooms[room.name].creepLimit!.domesticLimits,
             remoteLimits: Memory.rooms[room.name].creepLimit!.remoteLimits,
+            militaryQueue: Memory.rooms[room.name].creepLimit!.militaryQueue
         };
 
         return creepLimits;
@@ -742,6 +744,7 @@ export class MemoryApi_Room {
                 remoteColonizer: 0,
                 claimer: 0
             },
+            militaryQueue: []
         };
     }
 

@@ -133,6 +133,7 @@ export class SpawnApi {
         // Get Limits for each creep department
         const creepLimits: CreepLimits = MemoryApi_Room.getCreepLimits(room);
         const creepCount: AllCreepCount = MemoryApi_Room.getAllCreepCount(room);
+
         const spawns: StructureSpawn[] = _.filter(
             Game.spawns,
             (spawn: StructureSpawn) => spawn.room.name === room.name

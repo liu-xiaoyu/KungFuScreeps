@@ -124,7 +124,7 @@ export const CONSTR_CACHE_TTL = 50; // Construction Sites
 export const TOMBSTONE_CACHE_TTL = 50; // Tombstones
 export const RUINS_CACHE_TTL = 50; // Ruins
 export const DROPS_CACHE_TTL = 50; // Dropped Resources
-export const FCREEP_CACHE_TTL = 20; // Friendly Creep
+export const FCREEP_CACHE_TTL = 3; // Friendly Creep
 export const HCREEP_CACHE_TTL = 1; // Hostile Creep
 export const MOVEMENT_CACHE_TTL = 2500; // Empire cross-room movement data
 // GetEnergyJob Constants

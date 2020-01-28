@@ -2,7 +2,8 @@ import {
     UserException,
     SOLO_STALKER_MAN,
     SpawnApi,
-    ROLE_STALKER
+    ROLE_STALKER,
+    LOW_PRIORITY
 } from "Utils/Imports/internals";
 
 export class SoloStalkerSquadManager implements ISquadManager {
@@ -63,6 +64,13 @@ export class SoloStalkerSquadManager implements ISquadManager {
      */
     public getSquadArray(): RoleConstant[] {
         return [ROLE_STALKER];
+    }
+
+    /**
+     * Get the spawn priority of the military squad
+     */
+    public getSpawnPriority(): number {
+        return LOW_PRIORITY;
     }
 
 }

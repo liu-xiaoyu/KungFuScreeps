@@ -167,8 +167,10 @@ export const ROOM_STATUS_HOSTILE = "hostile";
 export const ROOM_STATUS_HOSTILE_REMOTE = "hostileRemote";
 export const ROOM_STATUS_UNKNOWN = "unknown";
 
-// Custom Event Type Constants
-export const C_EVENT_CREEP_SPAWNED = 1;
+// Spawn Priority constants for military squads
+export const HIGH_PRIORITY: number = 1;
+export const MED_PRIORITY: number = 2;
+export const LOW_PRIORITY: number = 3;
 
 // All civilian roles we have
 export const ALL_CIVILIAN_ROLES: RoleConstant[] = [

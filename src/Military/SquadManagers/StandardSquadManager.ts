@@ -3,7 +3,8 @@ import {
     STANDARD_MAN,
     SpawnApi,
     ROLE_MEDIC,
-    ROLE_ZEALOT
+    ROLE_ZEALOT,
+    LOW_PRIORITY
 } from "Utils/Imports/internals";
 
 export class StandardSquadManager implements ISquadManager {
@@ -64,6 +65,13 @@ export class StandardSquadManager implements ISquadManager {
      */
     public getSquadArray(): RoleConstant[] {
         return [ROLE_ZEALOT, ROLE_MEDIC];
+    }
+
+    /**
+     * Get the spawn priority of the military squad
+     */
+    public getSpawnPriority(): number {
+        return LOW_PRIORITY;
     }
 
 }

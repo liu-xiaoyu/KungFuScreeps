@@ -2,7 +2,8 @@ import {
     UserException,
     SOLO_ZEALOT_MAN,
     SpawnApi,
-    ROLE_ZEALOT
+    ROLE_ZEALOT,
+    LOW_PRIORITY
 } from "Utils/Imports/internals";
 
 export class SoloZealotSquadManager implements ISquadManager {
@@ -63,6 +64,13 @@ export class SoloZealotSquadManager implements ISquadManager {
      */
     public getSquadArray(): RoleConstant[] {
         return [ROLE_ZEALOT];
+    }
+
+    /**
+     * Get the spawn priority of the military squad
+     */
+    public getSpawnPriority(): number {
+        return LOW_PRIORITY;
     }
 
 }

@@ -63,7 +63,8 @@ export class Military_Spawn_Api {
         const squadUUID: number = squadInstance.squadUUID;
         const squadArray: RoleConstant[] = squadInstance.getSquadArray();
         const tickToSpawn: number = Game.time;
-        this.addSquadToSpawnQueue(squadUUID, operationUUID, squadArray, targetRoom, tickToSpawn);
+        const priority: number = squadInstance.getSpawnPriority();
+        this.addSquadToSpawnQueue(squadUUID, operationUUID, squadArray, targetRoom, tickToSpawn, priority);
     }
 
     /**
@@ -84,8 +85,9 @@ export class Military_Spawn_Api {
      * @param squadArray the role constant array
      * @param targetRoom the room we are doing the operation in
      * @param tickToSpawn the tick we want to start spawning on the squad
+     * @param priority the spawn priority of the bepso
      */
-    public static addSquadToSpawnQueue(squadUUID: number, operationUUID: number, squadArray: RoleConstant[], targetRoom: string, tickToSpawn: number): void {
+    public static addSquadToSpawnQueue(squadUUID: number, operationUUID: number, squadArray: RoleConstant[], targetRoom: string, tickToSpawn: number, priority: number): void {
         const dependentRoom: string = EmpireHelper.findDependentRoom(targetRoom);
         if (!Memory.rooms[dependentRoom].creepLimit?.militaryQueue) {
             MemoryApi_Room.initCreepLimits(Game.rooms[dependentRoom]);
@@ -95,6 +97,7 @@ export class Military_Spawn_Api {
         for (const i in squadArray) {
             const role: RoleConstant = squadArray[i];
             const queue: MilitaryQueue = {
+                priority,
                 tickToSpawn,
                 operationUUID,
                 squadUUID,

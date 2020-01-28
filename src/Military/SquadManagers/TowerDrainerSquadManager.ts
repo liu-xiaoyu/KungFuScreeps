@@ -4,6 +4,7 @@ import {
     SpawnApi,
     ROLE_MEDIC,
     ROLE_TOWER_TANK,
+    LOW_PRIORITY,
 } from "Utils/Imports/internals";
 
 export class TowerDrainerSquadManager implements ISquadManager {
@@ -64,6 +65,13 @@ export class TowerDrainerSquadManager implements ISquadManager {
      */
     public getSquadArray(): RoleConstant[] {
         return [ROLE_TOWER_TANK, ROLE_MEDIC];
+    }
+
+    /**
+     * Get the spawn priority of the military squad
+     */
+    public getSpawnPriority(): number {
+        return LOW_PRIORITY;
     }
 
 }

@@ -218,6 +218,7 @@ interface ISquadManager {
     createInstance: (targetroom: string, operationUUID: number) => ISquadManager;
     checkStatus: () => number;
     getSquadArray: () => RoleConstant[];
+    getSpawnPriority: () => number;
 }
 
 /**
@@ -1020,6 +1021,7 @@ interface CreepLimits {
 }
 
 interface MilitaryQueue {
+    priority: number;
     tickToSpawn: number;
     operationUUID: number;
     squadUUID: number;

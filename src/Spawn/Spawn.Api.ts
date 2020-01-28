@@ -21,6 +21,9 @@ import {
     MemoryHelper_Room,
     MemoryApi_Room,
     UserException,
+    LOW_PRIORITY,
+    MED_PRIORITY,
+    HIGH_PRIORITY,
 } from "Utils/Imports/internals";
 
 /**
@@ -116,6 +119,7 @@ export class SpawnApi {
         // Get Limits for each creep department
         const creepLimits: CreepLimits = MemoryApi_Room.getCreepLimits(room);
         const creepCount: AllCreepCount = MemoryApi_Room.getAllCreepCount(room);
+        let militaryRole: MilitaryQueue | null
 
         const spawns: StructureSpawn[] = _.filter(
             Game.spawns,
@@ -129,6 +133,12 @@ export class SpawnApi {
             return ROLE_HARVESTER;
         }
 
+        // Check for high priority military spawn
+        militaryRole = this.getNextMilitaryRoleToSpawn(room, HIGH_PRIORITY);
+        if (militaryRole) {
+            return militaryRole;
+        }
+
         // Check if we need a domestic creep -- Return role if one is found
         for (const role of domesticRolePriority) {
             // Skip the manager if we aren't on the center spawn
@@ -140,6 +150,12 @@ export class SpawnApi {
             }
         }
 
+        // Check for medium priority military spawn
+        militaryRole = this.getNextMilitaryRoleToSpawn(room, MED_PRIORITY);
+        if (militaryRole) {
+            return militaryRole;
+        }
+
         // Check if we need a remote creep -- Return role if one is found
         for (const role of remoteRolePriority) {
             if (creepCount[role] < creepLimits.remoteLimits[role]) {
@@ -147,6 +163,21 @@ export class SpawnApi {
             }
         }
 
+        // check for low priority military spawn
+        militaryRole = this.getNextMilitaryRoleToSpawn(room, LOW_PRIORITY);
+        if (militaryRole) {
+            return militaryRole;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if we need to spawn a military queue of the specified priority
+     * @param room the room we are checking in
+     * @param priority the priority constant we are checking for
+     */
+    private static getNextMilitaryRoleToSpawn(room: Room, priority: number): MilitaryQueue | null {
         return null;
     }
 

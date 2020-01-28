@@ -83,30 +83,14 @@ export class MedicBodyOptsHelper implements ICreepBodyOptsHelper {
      */
     public generateCreepOptions(
         roomState: RoomStateConstant,
-        squadSizeParam: number,
         squadUUIDParam: number | null,
-        rallyLocationParam: RoomPosition | null
+        operationUUIDParam: number | null,
     ): CreepOptionsMili | undefined {
         let creepOptions: CreepOptionsMili = SpawnHelper.getDefaultCreepOptionsMili();
-        switch (roomState) {
-            case ROOM_STATE_INTRO:
-            case ROOM_STATE_BEGINNER:
-            case ROOM_STATE_INTER:
-            case ROOM_STATE_ADVANCED:
-            case ROOM_STATE_STIMULATE:
-            case ROOM_STATE_UPGRADER:
-            case ROOM_STATE_NUKE_INBOUND:
-                creepOptions = {
-                    squadSize: squadSizeParam,
-                    squadUUID: squadUUIDParam,
-                    rallyLocation: rallyLocationParam,
-                    rallyDone: false,
-                    healer: true,
-                    flee: true
-                };
-
-                break;
-        }
+        creepOptions = {
+            squadUUID: squadUUIDParam,
+            operationUUID: operationUUIDParam,
+        };
 
         return creepOptions;
     }

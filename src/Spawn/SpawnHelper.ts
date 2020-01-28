@@ -117,7 +117,8 @@ export class SpawnHelper {
      */
     public static getDefaultCreepOptionsMili(): CreepOptionsMili {
         return {
-            squadSize: 1
+            squadUUID: null,
+            operationUUID: null,
         };
     }
 

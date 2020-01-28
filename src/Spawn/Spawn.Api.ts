@@ -112,7 +112,7 @@ export class SpawnApi {
      * TODO spawn squad members together
      * @param room the room we want to spawn them in
      */
-    public static getNextCreep(room: Room, openSpawn: StructureSpawn): RoleConstant | null {
+    public static getNextCreep(room: Room, openSpawn: StructureSpawn): RoleConstant | MilitaryQueue | null {
         // Get Limits for each creep department
         const creepLimits: CreepLimits = MemoryApi_Room.getCreepLimits(room);
         const creepCount: AllCreepCount = MemoryApi_Room.getAllCreepCount(room);
@@ -263,13 +263,11 @@ export class SpawnApi {
         // Set default values if military options aren't provided
         // If one of these aren't provided, then the entire purpose of them is nix,
         // So we just check if any of them aren't provided and set defaults for all in that case
-        let squadSize: number = squadMemory["squadSize"];
+        let operationUUID: number | null = squadMemory['operationUUID'];
         let squadUUID: number | null = squadMemory["squadUUID"];
-        let rallyLocation: RoomPosition | null = squadMemory["rallyLocation"];
-        if (!squadSize || !squadUUID || !rallyLocation) {
-            squadSize = 0;
+        if (!squadUUID || !operationUUID) {
+            operationUUID = null;
             squadUUID = null;
-            rallyLocation = null;
         }
 
         // If no role provided, throw warning
@@ -282,9 +280,8 @@ export class SpawnApi {
             if (CREEP_BODY_OPT_HELPERS[index].name === role) {
                 return CREEP_BODY_OPT_HELPERS[index].generateCreepOptions(
                     roomState,
-                    squadSize,
                     squadUUID,
-                    rallyLocation
+                    operationUUID
                 );
             }
         }
@@ -409,16 +406,20 @@ export class SpawnApi {
      * @param roleConst the role we are checking for
      * @param creepName the name of the creep we are checking for
      */
-    public static generateSquadOptions(room: Room, roleConst: RoleConstant, creepName: string): StringMap {
+    public static generateSquadOptions(room: Room, roleConst: RoleConstant | null | MilitaryQueue): StringMap {
         // Set to this for clarity that we aren't expecting any squad options in some cases
         const squadOptions: StringMap = {
-            squadSize: 0,
+            operationUUID: null,
             squadUUID: null,
-            rallyLocation: null
         };
 
-        // SUPERTODO will need to reimplement this function when we get this all working
-        return {};
+        if (!SpawnApi.isMilitaryQueue(roleConst)) {
+            return squadOptions;
+        }
+
+        squadOptions['operationUUID'] = roleConst.operationUUID;
+        squadOptions['squadUUID'] = roleConst.squadUUID;
+        return squadOptions;
     }
 
     /**
@@ -487,5 +488,13 @@ export class SpawnApi {
             "role: " + nextCreepRole + "\nCreep Home Room",
             ERROR_ERROR
         );
+    }
+
+    /**
+     * Check if the object is a military queue type
+     * @param obj the object we're checking
+     */
+    public static isMilitaryQueue(obj: any): obj is MilitaryQueue {
+        return obj.role !== undefined;
     }
 }

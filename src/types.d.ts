@@ -228,9 +228,8 @@ interface ICreepBodyOptsHelper {
     name: RoleConstant;
     generateCreepOptions: (
         roomState: RoomStateConstant,
-        squadSizeParam: number,
         squadUUIDParam: number | null,
-        rallyLocationParam: RoomPosition | null
+        operationUUIDParam: number | null,
     ) => (CreepOptionsCiv | undefined) | (CreepOptionsMili | undefined);
     generateCreepBody: (tier: TierConstant, room: Room) => BodyPartConstant[];
     getTargetRoom: (room: Room, roleConst: RoleConstant, creepBody: BodyPartConstant[], creepName: string) => string;
@@ -957,49 +956,13 @@ interface CreepOptionsCiv {
  */
 interface CreepOptionsMili {
     /**
-     * the number of other creeps in this creep's squad
-     */
-    squadSize?: number | null;
-    /**
      * the generated token that ties members of this squad together
      */
     squadUUID?: number | null;
     /**
-     * the area the squad is going to meet
+     * The generated token that ties members of this OPERATION together
      */
-    rallyLocation?: RoomPosition | null;
-    /**
-     * if the rally conditions have already been met
-     */
-    rallyDone?: boolean;
-    /**
-     * the attack target for an offensive military creep
-     */
-    attackTarget?: Creep | Structure<StructureConstant> | undefined;
-    /**
-     * if the creep is meant to seige the room to attrition (tower drain, etc)
-     */
-    seige?: boolean;
-    /**
-     * if the creep is meant to dismantle walls and structures
-     */
-    dismantler?: boolean;
-    /**
-     * if the creep is meant to heal other creeps/itself
-     */
-    healer?: boolean;
-    /**
-     * if the creep is meant to seek out enemy creeps
-     */
-    attacker?: boolean;
-    /**
-     * if the creep is meant to defend a room from invaders
-     */
-    defender?: boolean;
-    /**
-     * if the creep values it's life and flees at low health
-     */
-    flee?: boolean;
+    operationUUID?: number | null;
 }
 
 /**

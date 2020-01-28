@@ -66,13 +66,14 @@ export class TowerDrainerTankBodyOptsHelper implements ICreepBodyOptsHelper {
      */
     public generateCreepOptions(
         roomState: RoomStateConstant,
-        squadSizeParam: number,
         squadUUIDParam: number | null,
-        rallyLocationParam: RoomPosition | null
+        operationUUIDParam: number | null,
     ): CreepOptionsMili | undefined {
-
         let creepOptions: CreepOptionsMili = SpawnHelper.getDefaultCreepOptionsMili();
-        // TODO impelmeent
+        creepOptions = {
+            squadUUID: squadUUIDParam,
+            operationUUID: operationUUIDParam,
+        };
 
         return creepOptions;
     }

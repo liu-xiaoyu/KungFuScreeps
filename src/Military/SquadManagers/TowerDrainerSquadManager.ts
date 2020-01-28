@@ -1,4 +1,10 @@
-import { UserException, TOWER_DRAINER_MAN, SpawnApi } from "Utils/Imports/internals";
+import {
+    UserException,
+    TOWER_DRAINER_MAN,
+    SpawnApi,
+    ROLE_MEDIC,
+    ROLE_TOWER_TANK,
+} from "Utils/Imports/internals";
 
 export class TowerDrainerSquadManager implements ISquadManager {
     public name: SquadManagerConstant = TOWER_DRAINER_MAN;
@@ -11,7 +17,7 @@ export class TowerDrainerSquadManager implements ISquadManager {
         const self = this;
         self.runSquad = self.runSquad.bind(this);
         self.createInstance = self.createInstance.bind(this);
-        self.removeInstance = self.removeInstance.bind(this);
+        self.getSquadArray = self.getSquadArray.bind(this);
         self.checkStatus = self.checkStatus.bind(this);
         self.creeps = [];
     }
@@ -45,18 +51,19 @@ export class TowerDrainerSquadManager implements ISquadManager {
     }
 
     /**
-     * Remove this instance from the empire memory
-     */
-    public removeInstance(): void {
-
-    }
-
-    /**
      * Check the status of the squad
      * @returns boolean representing the squads current status
      */
-    public checkStatus(): boolean {
-        return true;
+    public checkStatus(): number {
+        return OK;
+    }
+
+    /**
+     * Gets the members of the squad in array form
+     * @returns array containing all squad member's role constants
+     */
+    public getSquadArray(): RoleConstant[] {
+        return [ROLE_TOWER_TANK, ROLE_MEDIC];
     }
 
 }

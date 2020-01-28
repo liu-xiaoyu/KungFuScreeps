@@ -228,8 +228,8 @@ interface ISquadManager {
     runSquad: (room: Room) => void;
     addCreep(creep: Creep): void;
     createInstance: (targetroom: string, operationUUID: number) => ISquadManager;
-    removeInstance: () => void;
-    checkStatus: () => boolean;
+    checkStatus: () => number;
+    getSquadArray: () => RoleConstant[];
 }
 
 /**

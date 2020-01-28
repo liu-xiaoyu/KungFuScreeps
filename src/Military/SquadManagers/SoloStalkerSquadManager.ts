@@ -1,4 +1,9 @@
-import { UserException, SOLO_STALKER_MAN, SpawnApi } from "Utils/Imports/internals";
+import {
+    UserException,
+    SOLO_STALKER_MAN,
+    SpawnApi,
+    ROLE_STALKER
+} from "Utils/Imports/internals";
 
 export class SoloStalkerSquadManager implements ISquadManager {
     public name: SquadManagerConstant = SOLO_STALKER_MAN;
@@ -11,7 +16,7 @@ export class SoloStalkerSquadManager implements ISquadManager {
         const self = this;
         self.runSquad = self.runSquad.bind(this);
         self.createInstance = self.createInstance.bind(this);
-        self.removeInstance = self.removeInstance.bind(this);
+        self.getSquadArray = self.getSquadArray.bind(this);
         self.checkStatus = self.checkStatus.bind(this);
         self.creeps = [];
     }
@@ -45,18 +50,19 @@ export class SoloStalkerSquadManager implements ISquadManager {
     }
 
     /**
-     * Remove this instance from the empire memory
-     */
-    public removeInstance(): void {
-
-    }
-
-    /**
      * Check the status of the squad
      * @returns boolean representing the squads current status
      */
-    public checkStatus(): boolean {
-        return true;
+    public checkStatus(): number {
+        return OK;
+    }
+
+    /**
+     * Gets the members of the squad in array form
+     * @returns array containing all squad member's role constants
+     */
+    public getSquadArray(): RoleConstant[] {
+        return [ROLE_STALKER];
     }
 
 }

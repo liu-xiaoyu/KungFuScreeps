@@ -23,6 +23,7 @@ export class RemoteColonizerCreepManager implements ICivCreepRoleManager {
             if (creep.carry.energy === 0) {
                 return this.newGetEnergyJob(creep, targetRoom);
             } else {
+                creep.memory.working = false;
                 return CreepCivApi.newWorkPartJob(creep, targetRoom);
             }
         }

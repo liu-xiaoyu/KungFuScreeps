@@ -96,7 +96,9 @@ export class CreepManager {
             if (role === "scout") {
             }
             creep.memory.job = managerImplementation!.getNewJob(creep, homeRoom, targetRoom);
-
+            if (creep.memory.role === ROLE_COLONIZER) {
+                console.log(creep.memory.job);
+            }
             if (creep.memory.job === undefined) {
                 return; // idle for a tick
             }
@@ -112,7 +114,7 @@ export class CreepManager {
         if (creep.memory.working) {
             // Special case for remote colonizer, ideally this gets handled a different way and removed from here please
             // TODO, do ^ find a cleaner solution for this patch
-            if (creep.memory.role === ROLE_COLONIZER && creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()) {
+            if (creep.memory.role === ROLE_COLONIZER && creep.store[RESOURCE_ENERGY] === creep.store.getCapacity() && creep.memory.job?.jobType === "getEnergyJob") {
                 delete creep.memory.job;
                 return;
             }

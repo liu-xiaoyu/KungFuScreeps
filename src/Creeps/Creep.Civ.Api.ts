@@ -7,6 +7,7 @@ import { ROLE_POWER_UPGRADER } from "utils/Imports/constants";
 import { MemoryApi_Jobs } from "Memory/Memory.Jobs.Api";
 import { MemoryApi_Creep } from "Memory/Memory.Creep.Api";
 import { RoomHelper_Structure, MemoryApi_Room } from "Utils/Imports/internals";
+import { stringify } from "querystring";
 
 export class CreepCivApi {
     /**

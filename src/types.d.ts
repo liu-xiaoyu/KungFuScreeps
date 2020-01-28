@@ -1020,6 +1020,7 @@ interface CreepLimits {
 }
 
 interface MilitaryQueue {
+    tickToSpawn: number;
     operationUUID: number;
     squadUUID: number;
     role: RoleConstant;

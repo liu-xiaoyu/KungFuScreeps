@@ -54,7 +54,7 @@ export class SpawnManager {
         // Get the options for the creep, handling military if need be
         const militarySquadOptions: StringMap = SpawnApi.generateSquadOptions(room, nextCreepToSpawn);
         const creepOptions: CreepOptionsCiv | CreepOptionsMili | undefined = SpawnApi.generateCreepOptions(
-            SpawnApi.isMilitaryQueue(nextCreepToSpawn) ? nextCreepToSpawn.role : nextCreepToSpawn,
+            nextCreepRoleName,
             roomState,
             militarySquadOptions
         );

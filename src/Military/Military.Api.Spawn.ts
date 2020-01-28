@@ -2,7 +2,9 @@ import {
     SQUAD_MANAGERS,
     UserException,
     SpawnApi,
-    ERROR_ERROR
+    ERROR_ERROR,
+    EmpireHelper,
+    MemoryApi_Room
 } from "Utils/Imports/internals";
 
 export class Military_Spawn_Api {
@@ -56,6 +58,11 @@ export class Military_Spawn_Api {
             // Update memory reference
             Memory.empire.militaryOperations = allOperations;
         }
+
+        // Add the squad operation to the dependent room's spawn queue
+        const squadUUID: number = squadInstance.squadUUID;
+        const squadArray: RoleConstant[] = squadInstance.getSquadArray();
+        this.addSquadToSpawnQueue(squadUUID, operationUUID, squadArray, targetRoom);
     }
 
     /**
@@ -71,6 +78,27 @@ export class Military_Spawn_Api {
 
     /**
      * Add the squad to the spawn
+     * @param squadUUID the squad uuid to reference
+     * @param operationUUID the operation uuid to reference
+     * @param squadArray the role constant array
+     * @param targetRoom the room we are doing the operation in
      */
+    public static addSquadToSpawnQueue(squadUUID: number, operationUUID: number, squadArray: RoleConstant[], targetRoom: string): void {
+        const dependentRoom: string = EmpireHelper.findDependentRoom(targetRoom);
+        if (!Memory.rooms[dependentRoom].creepLimit?.militaryQueue) {
+            MemoryApi_Room.initCreepLimits(Game.rooms[dependentRoom]);
+        }
+
+        // For each member of the squad, create a queue object and add to the dependent room's military queue
+        for (const i in squadArray) {
+            const role: RoleConstant = squadArray[i];
+            const queue: MilitaryQueue = {
+                operationUUID,
+                squadUUID,
+                role
+            };
+            Memory.rooms[dependentRoom].creepLimit!.militaryQueue.push(queue);
+        }
+    }
 
 }

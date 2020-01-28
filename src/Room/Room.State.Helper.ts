@@ -237,31 +237,6 @@ export class RoomHelper_State {
     }
 
     /**
-     * get number of remote defenders we need
-     * TODO move to spawn helper
-     * @param room The room to check the dependencies of
-     */
-    public static numRemoteDefenders(room: Room): number {
-        const remoteRooms: RemoteRoomMemory[] = Memory.rooms[room.name].remoteRooms!;
-        let numRemoteDefenders: number = 0;
-
-        _.forEach(remoteRooms, (rr: RemoteRoomMemory) => {
-            if (!rr) {
-                return;
-            }
-
-            // If there are any hostile creeps, add one to remoteDefenderCount
-            // Get hostile creeps in the remote room
-            const defconLevel = Memory.rooms[rr.roomName].defcon;
-            if (defconLevel >= 2) {
-                numRemoteDefenders++;
-            }
-        });
-
-        return numRemoteDefenders;
-    }
-
-    /**
      * get the number of claim rooms that have not yet been claimed
      * @param room the room we are checking for
      */
@@ -289,25 +264,6 @@ export class RoomHelper_State {
         }
 
         return sum;
-    }
-
-    /**
-     * get the number of domestic defenders by the defcon number
-     * TODO move to spawn helper
-     * @param defcon the defcon level of the room
-     * @param isTowers boolean representing if tower exists in room
-     * @returns the number of defenders to spawn
-     */
-    public static getDomesticDefenderLimitByDefcon(defcon: number, isTowers: boolean): number {
-        switch (defcon) {
-            case 2:
-                return isTowers === true ? 0 : 2;
-            case 3:
-                return isTowers === true ? 0 : 2;
-            case 4:
-                return isTowers === true ? 1 : 2;
-        }
-        return 0;
     }
 
     /**

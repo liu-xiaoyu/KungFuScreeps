@@ -9,7 +9,6 @@ import {
     ROLE_REMOTE_RESERVER,
     ROLE_COLONIZER,
     ROLE_CLAIMER,
-    ROLE_REMOTE_DEFENDER,
     ROOM_STATE_STIMULATE,
     SpawnHelper,
     MemoryApi_Room,
@@ -74,7 +73,6 @@ export class StimulateStateCreepLimits implements ICreepSpawnLimits {
             return remoteLimits;
         }
         // Gather the rest of the data only if we have a remote room or a claim room
-        const numRemoteDefenders: number = RoomHelper_State.numRemoteDefenders(room);
         const numRemoteSources: number = RoomHelper_State.numRemoteSources(room);
         const numCurrentlyUnclaimedClaimRooms: number = RoomHelper_State.numCurrentlyUnclaimedClaimRooms(room);
 

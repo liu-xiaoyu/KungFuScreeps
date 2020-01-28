@@ -89,13 +89,11 @@ declare const ROLE_SCOUT = "scout";
 declare const ROLE_REMOTE_MINER = "remoteMiner";
 declare const ROLE_REMOTE_HARVESTER = "remoteHarvester";
 declare const ROLE_REMOTE_RESERVER = "remoteReserver";
-declare const ROLE_REMOTE_DEFENDER = "remoteDefender";
 declare const ROLE_COLONIZER = "remoteColonizer";
 declare const ROLE_CLAIMER = "claimer";
 declare const ROLE_ZEALOT = "zealot";
 declare const ROLE_STALKER = "stalker";
 declare const ROLE_MEDIC = "medic";
-declare const ROLE_DOMESTIC_DEFENDER = "domesticDefender";
 declare const ROLE_TOWER_TANK = "towerTank";
 declare const ROLE_MANAGER = "manager";
 
@@ -113,13 +111,11 @@ type RoleConstant =
     | ROLE_REMOTE_MINER
     | ROLE_REMOTE_HARVESTER
     | ROLE_REMOTE_RESERVER
-    | ROLE_REMOTE_DEFENDER
     | ROLE_COLONIZER
     | ROLE_CLAIMER
     | ROLE_ZEALOT
     | ROLE_STALKER
     | ROLE_MEDIC
-    | ROLE_DOMESTIC_DEFENDER
     | ROLE_TOWER_TANK
     | ROLE_MANAGER;
 
@@ -164,10 +160,6 @@ type ROLE_REMOTE_HARVESTER = "remoteHarvester"; //
  */
 type ROLE_REMOTE_RESERVER = "remoteReserver"; //
 /**
- * goes into remote room and clears out invaders
- */
-type ROLE_REMOTE_DEFENDER = "remoteDefender"; //
-/**
  * goes into claim room and helps get the spawn up and running
  */
 type ROLE_COLONIZER = "remoteColonizer"; //
@@ -187,10 +179,6 @@ type ROLE_STALKER = "stalker"; //
  * Military Creep - offensive healer
  */
 type ROLE_MEDIC = "medic"; //
-/**
- * Military Creep - Defends the home room
- */
-type ROLE_DOMESTIC_DEFENDER = "domesticDefender"; //
 /**
  * Military Creep - tower drainer tank
  */

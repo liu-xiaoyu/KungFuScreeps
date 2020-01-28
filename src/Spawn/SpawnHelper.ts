@@ -8,7 +8,6 @@ import {
     ERROR_WARN,
     UserException,
     ALL_MILITARY_ROLES,
-    ALL_DEFENSIVE_ROLES,
     RESERVER_MIN_TTL,
     ROOM_STATE_INTRO,
     NUM_LIFESPANS_FOR_EXTRA_CREEP,
@@ -152,14 +151,6 @@ export class SpawnHelper {
             }
         }
         return false;
-    }
-
-    /**
-     * check if the creep is a defenive military creep
-     * @param creepRole the creep we are checking
-     */
-    public static isDefenseCreep(creepRole: RoleConstant): boolean {
-        return ALL_DEFENSIVE_ROLES.includes(creepRole);
     }
 
     /**

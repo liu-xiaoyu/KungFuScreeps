@@ -10,7 +10,6 @@ import {
     ROLE_CLAIMER,
     ROLE_SCOUT,
     ROLE_COLONIZER,
-    ROLE_REMOTE_DEFENDER,
     ROOM_STATE_UPGRADER,
     ROLE_MANAGER,
     SpawnHelper,
@@ -19,7 +18,6 @@ import {
     SpawnApi,
     MemoryApi_Room,
     RoomHelper_State,
-    TIER_8
 } from "Utils/Imports/internals";
 
 export class UpgraderStateCreepLimits implements ICreepSpawnLimits {

@@ -6,7 +6,6 @@ import {
     ROLE_LORRY,
     ROLE_REMOTE_HARVESTER,
     ROLE_REMOTE_MINER,
-    ROLE_REMOTE_DEFENDER,
     ROLE_REMOTE_RESERVER,
     ROLE_WORKER,
     ROLE_SCOUT,
@@ -90,7 +89,6 @@ export class RoomVisualApi {
             remoteHarvester: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_HARVESTER).length,
             claimer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_CLAIMER).length,
             remoteColonizer: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_COLONIZER).length,
-            remoteDefender: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_REMOTE_DEFENDER).length,
             manager: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_MANAGER).length,
             scout: _.filter(creepsInRoom, (c: Creep) => c.memory.role === ROLE_SCOUT).length
         };
@@ -164,14 +162,6 @@ export class RoomVisualApi {
             if (creepLimits.remoteLimits.remoteColonizer > 0) {
                 lines.push(
                     "Remote Colonizers:    " + roles[ROLE_COLONIZER] + " / " + creepLimits.remoteLimits.remoteColonizer
-                );
-            }
-            if (creepLimits.remoteLimits.remoteDefender > 0) {
-                lines.push(
-                    "Remote Defenders:    " +
-                    roles[ROLE_REMOTE_DEFENDER] +
-                    " / " +
-                    creepLimits.remoteLimits.remoteDefender
                 );
             }
             if (creepLimits.remoteLimits.claimer > 0) {

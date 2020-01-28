@@ -68,4 +68,9 @@ export class Military_Spawn_Api {
             (op: MilitaryOperation) => op.operationUUID === operationUUID
         );
     }
+
+    /**
+     * Add the squad to the spawn
+     */
+
 }

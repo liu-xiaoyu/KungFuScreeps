@@ -89,7 +89,6 @@ export class MemoryHelper {
         // Update here upon creating new role, can't generate dynamically due to typescript requiring explicit definition
         return {
             claimer: 0,
-            domesticDefender: 0,
             harvester: 0,
             lorry: 0,
             manager: 0,
@@ -98,7 +97,6 @@ export class MemoryHelper {
             mineralMiner: 0,
             powerUpgrader: 0,
             remoteColonizer: 0,
-            remoteDefender: 0,
             remoteHarvester: 0,
             remoteMiner: 0,
             remoteReserver: 0,

@@ -10,8 +10,8 @@ export class SoloStalkerSquadManager implements ISquadManager {
     public name: SquadManagerConstant = SOLO_STALKER_MAN;
     public creeps: Creep[] = [];
     public targetRoom: string = "";
-    public squadUUID: number = 0;
-    public operationUUID: number = 0;
+    public squadUUID: string = "";
+    public operationUUID: string = "";
 
     constructor() {
         const self = this;
@@ -33,8 +33,8 @@ export class SoloStalkerSquadManager implements ISquadManager {
      * Create an instance and place into the empire memory
      * @param targetRoom the room we are attacking
      */
-    public createInstance(targetRoom: string, operationUUID: number): SoloStalkerSquadManager {
-        const uuid: number = SpawnApi.generateSquadUUID();
+    public createInstance(targetRoom: string, operationUUID: string): SoloStalkerSquadManager {
+        const uuid: string = SpawnApi.generateSquadUUID(operationUUID);
         const instance = new SoloStalkerSquadManager();
         instance.squadUUID = uuid;
         instance.targetRoom = targetRoom;

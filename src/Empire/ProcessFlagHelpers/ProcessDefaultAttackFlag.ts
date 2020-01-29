@@ -25,7 +25,7 @@ export class ProcessDefaultAttackFlag implements IFlagProcesser {
     public processFlag(flag: Flag): void {
         // Get the host room and set the flags memory
         const roomName: string = flag.pos.roomName;
-        const operationUUID: number = SpawnApi.generateSquadUUID();
+        const operationUUID: string = SpawnApi.generateSquadUUID(roomName);
         Memory.flags[flag.name].complete = true;
         Memory.flags[flag.name].processed = true;
         Memory.flags[flag.name].timePlaced = Game.time;

@@ -83,8 +83,8 @@ export class MedicBodyOptsHelper implements ICreepBodyOptsHelper {
      */
     public generateCreepOptions(
         roomState: RoomStateConstant,
-        squadUUIDParam: number | null,
-        operationUUIDParam: number | null,
+        squadUUIDParam: string | null,
+        operationUUIDParam: string | null,
     ): CreepOptionsMili | undefined {
         let creepOptions: CreepOptionsMili = SpawnHelper.getDefaultCreepOptionsMili();
         creepOptions = {
@@ -116,14 +116,8 @@ export class MedicBodyOptsHelper implements ICreepBodyOptsHelper {
         creepBody: BodyPartConstant[],
         creepName: string
     ): string {
-
-        // TODO impelment this
-        // Throw exception if we couldn't find a definite room memory
-        throw new UserException(
-            "Couldn't get target room for [" + roleConst + " ]",
-            "room: [ " + room.name + " ]",
-            ERROR_ERROR
-        );
+        // Military creeps don't need a target room at the moment
+        return room.name;
     }
 
     /**

@@ -52,7 +52,7 @@ export class TowerDrainerTankBodyOptsHelper implements ICreepBodyOptsHelper {
 
         // ! Important DONT FORGET TO CHANGE
         // Temp override
-        // body = { attack: 1, move: 1 };
+        body = { tough: 1, move: 1 };
         // Generate creep body based on body array and options
         return SpawnApi.createCreepBody(body, opts);
     }
@@ -66,8 +66,8 @@ export class TowerDrainerTankBodyOptsHelper implements ICreepBodyOptsHelper {
      */
     public generateCreepOptions(
         roomState: RoomStateConstant,
-        squadUUIDParam: number | null,
-        operationUUIDParam: number | null,
+        squadUUIDParam: string | null,
+        operationUUIDParam: string | null,
     ): CreepOptionsMili | undefined {
         let creepOptions: CreepOptionsMili = SpawnHelper.getDefaultCreepOptionsMili();
         creepOptions = {
@@ -86,14 +86,8 @@ export class TowerDrainerTankBodyOptsHelper implements ICreepBodyOptsHelper {
      * @param creepName the name of the creep spawning
      */
     public getTargetRoom(room: Room, roleConst: RoleConstant, creepBody: BodyPartConstant[], creepName: string): string {
-        // TODO impelmeent
-
-        // Throw exception if we couldn't find a definite room memory
-        throw new UserException(
-            "Couldn't get target room for [" + roleConst + " ]",
-            "room: [ " + room.name + " ]",
-            ERROR_ERROR
-        );
+        // Military creeps don't need a target room at the moment
+        return room.name;
     }
 
     /**

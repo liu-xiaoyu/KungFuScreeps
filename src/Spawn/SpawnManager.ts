@@ -80,17 +80,26 @@ export class SpawnManager {
             );
         }
 
-        // Spawn the creep
-        SpawnApi.spawnNextCreep(
-            room,
-            creepBody,
-            creepOptions,
-            SpawnApi.isMilitaryQueue(nextCreepToSpawn) ? nextCreepToSpawn.role : nextCreepToSpawn,
-            openSpawn!,
-            homeRoom,
-            targetRoom,
-            name,
-            spawnDirection
-        );
+        // Spawn the creep, handling military if needed
+        if (
+            SpawnApi.spawnNextCreep(
+                room,
+                creepBody,
+                creepOptions,
+                nextCreepRoleName,
+                openSpawn!,
+                homeRoom,
+                targetRoom,
+                name,
+                spawnDirection
+            ) === OK
+        ) {
+            SpawnApi.handleMilitaryCreepSpawnSuccess(
+                nextCreepRoleName,
+                militarySquadOptions['operationUUID'],
+                militarySquadOptions['squadUUID'],
+                room
+            );
+        }
     }
 }

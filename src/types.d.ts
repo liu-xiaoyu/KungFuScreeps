@@ -211,11 +211,11 @@ interface ISquadManager {
     name: SquadManagerConstant;
     creeps: Creep[];
     targetRoom: string;
-    squadUUID: number;
-    operationUUID: number;
+    squadUUID: string;
+    operationUUID: string;
     runSquad: (room: Room) => void;
     addCreep(creep: Creep): void;
-    createInstance: (targetroom: string, operationUUID: number) => ISquadManager;
+    createInstance: (targetroom: string, operationUUID: string) => ISquadManager;
     checkStatus: () => number;
     getSquadArray: () => RoleConstant[];
     getSpawnPriority: () => number;
@@ -228,8 +228,8 @@ interface ICreepBodyOptsHelper {
     name: RoleConstant;
     generateCreepOptions: (
         roomState: RoomStateConstant,
-        squadUUIDParam: number | null,
-        operationUUIDParam: number | null,
+        squadUUIDParam: string | null,
+        operationUUIDParam: string | null,
     ) => (CreepOptionsCiv | undefined) | (CreepOptionsMili | undefined);
     generateCreepBody: (tier: TierConstant, room: Room) => BodyPartConstant[];
     getTargetRoom: (room: Room, roleConst: RoleConstant, creepBody: BodyPartConstant[], creepName: string) => string;
@@ -791,7 +791,7 @@ interface EmpireMemory {
 
 interface MilitaryOperation {
     squads: ISquadManager[];
-    operationUUID: number;
+    operationUUID: string;
 }
 
 interface MovementData {
@@ -958,11 +958,11 @@ interface CreepOptionsMili {
     /**
      * the generated token that ties members of this squad together
      */
-    squadUUID?: number | null;
+    squadUUID?: string | null;
     /**
      * The generated token that ties members of this OPERATION together
      */
-    operationUUID?: number | null;
+    operationUUID?: string | null;
 }
 
 /**
@@ -986,8 +986,8 @@ interface CreepLimits {
 interface MilitaryQueue {
     priority: number;
     tickToSpawn: number;
-    operationUUID: number;
-    squadUUID: number;
+    operationUUID: string;
+    squadUUID: string;
     role: RoleConstant;
 }
 

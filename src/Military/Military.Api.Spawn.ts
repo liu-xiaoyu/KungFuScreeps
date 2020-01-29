@@ -14,7 +14,7 @@ export class Military_Spawn_Api {
      * @param targetRoom the room we want to commence the operation in
      * @param operationUUID the operation uuid
      */
-    public static createSquadInstance(managerType: SquadManagerConstant, targetRoom: string, operationUUID: number): void {
+    public static createSquadInstance(managerType: SquadManagerConstant, targetRoom: string, operationUUID: string): void {
 
         // Find the implementation of the squad instance denoted by the manager type, error if none found
         let managerImplementation: ISquadManager | undefined;
@@ -60,7 +60,7 @@ export class Military_Spawn_Api {
         }
 
         // Add the squad operation to the dependent room's spawn queue
-        const squadUUID: number = squadInstance.squadUUID;
+        const squadUUID: string = squadInstance.squadUUID;
         const squadArray: RoleConstant[] = squadInstance.getSquadArray();
         const tickToSpawn: number = Game.time;
         const priority: number = squadInstance.getSpawnPriority();
@@ -72,7 +72,7 @@ export class Military_Spawn_Api {
      * @param operationUUID
      * @returns militaryOperations object with that UUID
      */
-    public static getOperationByUUID(operationUUID: number): MilitaryOperation | undefined {
+    public static getOperationByUUID(operationUUID: string): MilitaryOperation | undefined {
         return _.find(Memory.empire.militaryOperations,
             (op: MilitaryOperation) => op.operationUUID === operationUUID
         );
@@ -87,7 +87,7 @@ export class Military_Spawn_Api {
      * @param tickToSpawn the tick we want to start spawning on the squad
      * @param priority the spawn priority of the bepso
      */
-    public static addSquadToSpawnQueue(squadUUID: number, operationUUID: number, squadArray: RoleConstant[], targetRoom: string, tickToSpawn: number, priority: number): void {
+    public static addSquadToSpawnQueue(squadUUID: string, operationUUID: string, squadArray: RoleConstant[], targetRoom: string, tickToSpawn: number, priority: number): void {
         const dependentRoom: string = EmpireHelper.findDependentRoom(targetRoom);
         if (!Memory.rooms[dependentRoom].creepLimit?.militaryQueue) {
             MemoryApi_Room.initCreepLimits(Game.rooms[dependentRoom]);

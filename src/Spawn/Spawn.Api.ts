@@ -24,6 +24,7 @@ import {
     LOW_PRIORITY,
     MED_PRIORITY,
     HIGH_PRIORITY,
+    ALL_MILITARY_ROLES,
 } from "Utils/Imports/internals";
 
 /**
@@ -178,7 +179,59 @@ export class SpawnApi {
      * @param priority the priority constant we are checking for
      */
     private static getNextMilitaryRoleToSpawn(room: Room, priority: number): MilitaryQueue | null {
+        const miliQueue: MilitaryQueue[] | undefined = room.memory.creepLimit?.militaryQueue;
+        if (!miliQueue) {
+            return null;
+        }
+
+        for (const i in miliQueue) {
+            const item: MilitaryQueue = miliQueue[i];
+
+            // If we're past the tick to spawn, and the item is of the specified priority
+            if (item.tickToSpawn < Game.time && item.priority === priority) {
+                return item;
+            }
+        }
+
         return null;
+    }
+
+    /**
+     * Handle a newly spawned military creep
+     * @param roleName the role we spawned
+     * @param operationUUID the operation that triggered it
+     * @param squadUUID the squad that requested it
+     * @param room the room we are spawning it from
+     */
+    public static handleMilitaryCreepSpawnSuccess(roleName: RoleConstant, operationUUID: string, squadUUID: string, room: Room): void {
+        // Handle _only_ military roles in this function
+        if (!ALL_MILITARY_ROLES.includes(roleName)) {
+            return;
+        }
+        if (!(room.memory.creepLimit?.militaryQueue)) {
+            return;
+        }
+
+        // Loop over the military queue, finding and removing the creep re just spawned
+        for (let i = 0; i < room.memory.creepLimit.militaryQueue.length; ++i) {
+            if (
+                room.memory.creepLimit.militaryQueue[i].operationUUID === operationUUID &&
+                room.memory.creepLimit.militaryQueue[i].squadUUID === squadUUID &&
+                room.memory.creepLimit.militaryQueue[i].role === roleName
+            ) {
+                room.memory.creepLimit.militaryQueue.splice(i, 1);
+                return;
+            }
+        }
+
+        // If we didn't remove one, and it was a military spawn, something went wrong
+        throw new UserException(
+            "Couldn't remove military creep from spawn queue",
+            "Room: [ " + room.name + " ], \n" +
+            "OperationUUID: [ " + operationUUID + "], \n" +
+            "SquadUUID: [ " + squadUUID + " ]. \n",
+            ERROR_ERROR
+        );
     }
 
     /**
@@ -294,8 +347,8 @@ export class SpawnApi {
         // Set default values if military options aren't provided
         // If one of these aren't provided, then the entire purpose of them is nix,
         // So we just check if any of them aren't provided and set defaults for all in that case
-        let operationUUID: number | null = squadMemory['operationUUID'];
-        let squadUUID: number | null = squadMemory["squadUUID"];
+        let operationUUID: string | null = squadMemory['operationUUID'];
+        let squadUUID: string | null = squadMemory["squadUUID"];
         if (!squadUUID || !operationUUID) {
             operationUUID = null;
             squadUUID = null;
@@ -427,8 +480,10 @@ export class SpawnApi {
     /**
      * generates a UUID for a squad
      */
-    public static generateSquadUUID(seed?: number) {
-        return Math.random() * 10000000;
+    public static generateSquadUUID(initialValue: string): string {
+        const randomNumber: string = (Math.floor(Math.random() * 1000)).toString();
+        const tick: string = Game.time.toString();
+        return initialValue + "_" + randomNumber + "_" + tick;
     }
 
     /**

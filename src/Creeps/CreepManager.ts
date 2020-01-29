@@ -6,7 +6,8 @@ import {
     UtilHelper,
     UserException,
     CreepAllApi,
-    ROLE_COLONIZER
+    ROLE_COLONIZER,
+    ALL_MILITARY_ROLES
 } from "Utils/Imports/internals";
 
 // Call the creep manager for each role
@@ -49,6 +50,11 @@ export class CreepManager {
         // Of the helper functions within the creep manager files
         if (ALL_CIVILIAN_ROLES.includes(role)) {
             this.runSingleCivCreepManager(creep, role);
+            return;
+        }
+
+        // Military Roles are handled by the SquadManagers, so if its one of these just bounce out
+        if (ALL_MILITARY_ROLES.includes(role)) {
             return;
         }
 

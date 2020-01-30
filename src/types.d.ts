@@ -786,11 +786,19 @@ interface EmpireMemory {
     /**
      * Military operations
      */
-    militaryOperations: MilitaryOperation[];
+    militaryOperations: OperationData;
+}
+
+interface OperationData {
+    [key: string]: MilitaryOperation;
+}
+
+interface SquadData {
+    [key: string]: ISquadManager;
 }
 
 interface MilitaryOperation {
-    squads: ISquadManager[];
+    squads: SquadData;
     operationUUID: string;
 }
 

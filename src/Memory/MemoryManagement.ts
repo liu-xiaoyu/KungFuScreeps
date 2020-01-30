@@ -45,7 +45,7 @@ export class MemoryManager {
 
         if (!Memory.empire?.militaryOperations) {
             Memory.empire = {
-                militaryOperations: []
+                militaryOperations: {}
             };
         }
     }

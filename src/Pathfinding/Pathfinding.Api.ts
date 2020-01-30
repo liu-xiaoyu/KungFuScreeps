@@ -17,7 +17,7 @@ export class PathfindingApi {
         // Memory safeguarding
         if (!Memory.empire) {
             Memory.empire = {
-                militaryOperations: [],
+                militaryOperations: {},
             };
         }
 

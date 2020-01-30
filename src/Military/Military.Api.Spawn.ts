@@ -40,23 +40,17 @@ export class Military_Spawn_Api {
         // If none, create new operation and push onto memory, If existing, push instance onto it
         let operation: MilitaryOperation | undefined = this.getOperationByUUID(operationUUID);
         if (!operation) {
+            const squadData: SquadData = {};
+            squadData[squadInstance.squadUUID] = squadInstance;
             operation = {
-                squads: [squadInstance],
+                squads: squadData,
                 operationUUID
             };
-            Memory.empire.militaryOperations.push(operation);
+            Memory.empire.militaryOperations[operationUUID] = operation;
         }
         else {
             // Loop over military operations, and find a match to push the squad instance onto it
-            const allOperations: MilitaryOperation[] = Memory.empire.militaryOperations;
-            for (const i in allOperations) {
-                if (allOperations[i].operationUUID === operationUUID) {
-                    allOperations[i].squads.push(squadInstance);
-                    break;
-                }
-            }
-            // Update memory reference
-            Memory.empire.militaryOperations = allOperations;
+            Memory.empire.militaryOperations[operationUUID].squads[squadInstance.squadUUID] = squadInstance;
         }
 
         // Add the squad operation to the dependent room's spawn queue
@@ -73,9 +67,7 @@ export class Military_Spawn_Api {
      * @returns militaryOperations object with that UUID
      */
     public static getOperationByUUID(operationUUID: string): MilitaryOperation | undefined {
-        return _.find(Memory.empire.militaryOperations,
-            (op: MilitaryOperation) => op.operationUUID === operationUUID
-        );
+        return Memory.empire.militaryOperations[operationUUID];
     }
 
     /**

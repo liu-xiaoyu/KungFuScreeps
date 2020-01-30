@@ -58,13 +58,27 @@ export class MemoryApi_Military {
     }
 
     /**
-     * Remove Creep from squad
-     * TODO
+     * Clean the squad of dead creeps
+     * [GarbageCollector]
      * @param operationUUID
      * @param squadUUID
      */
-    public static removeCreepFromSquad(operationUUID: string, squadUUID: string, creepName: string): void {
-        return;
+    public static removeDeadCreepsFromSquad(operationUUID: string, squadUUID: string): void {
+        const squad: ISquadManager | undefined = this.getSquadByUUIDs(operationUUID, squadUUID);
+        if (!squad?.creeps) {
+            return;
+        }
+
+        const livingCreeps: string[] = [];
+        // Remove the creeps name from the squad
+        for (const i in squad.creeps) {
+            const creepName: string = squad.creeps[i];
+            if (Game.creeps[creepName]) {
+                livingCreeps.push(creepName);
+            }
+        }
+
+        squad.creeps = livingCreeps;
     }
 
     /**

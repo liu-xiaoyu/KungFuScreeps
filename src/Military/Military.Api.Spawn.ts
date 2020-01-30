@@ -1,10 +1,10 @@
 import {
     SQUAD_MANAGERS,
     UserException,
-    SpawnApi,
     ERROR_ERROR,
     EmpireHelper,
-    MemoryApi_Room
+    MemoryApi_Room,
+    MemoryApi_Military
 } from "Utils/Imports/internals";
 
 export class Military_Spawn_Api {
@@ -17,20 +17,7 @@ export class Military_Spawn_Api {
     public static createSquadInstance(managerType: SquadManagerConstant, targetRoom: string, operationUUID: string): void {
 
         // Find the implementation of the squad instance denoted by the manager type, error if none found
-        let managerImplementation: ISquadManager | undefined;
-        for (const i in SQUAD_MANAGERS) {
-            if (SQUAD_MANAGERS[i].name === managerType) {
-                managerImplementation = SQUAD_MANAGERS[i];
-                break;
-            }
-        }
-        if (!managerImplementation) {
-            throw new UserException(
-                "Unhandled squad manager, MilitarySpawnApi/createSquadInstance",
-                "tried to handle [" + managerType + "] but no implementation was found.",
-                ERROR_ERROR);
-        }
-
+        const managerImplementation: ISquadManager | undefined = MemoryApi_Military.getSingletonSquadManager(managerType);
         const squadInstance: ISquadManager = managerImplementation.createInstance(
             targetRoom,
             operationUUID
@@ -38,7 +25,7 @@ export class Military_Spawn_Api {
 
         // Check for existing instance
         // If none, create new operation and push onto memory, If existing, push instance onto it
-        let operation: MilitaryOperation | undefined = this.getOperationByUUID(operationUUID);
+        let operation: MilitaryOperation | undefined = MemoryApi_Military.getOperationByUUID(operationUUID);
         if (!operation) {
             const squadData: SquadData = {};
             squadData[squadInstance.squadUUID] = squadInstance;
@@ -61,14 +48,7 @@ export class Military_Spawn_Api {
         this.addSquadToSpawnQueue(squadUUID, operationUUID, squadArray, targetRoom, tickToSpawn, priority);
     }
 
-    /**
-     * Get an active operation of with the provided UUID
-     * @param operationUUID
-     * @returns militaryOperations object with that UUID
-     */
-    public static getOperationByUUID(operationUUID: string): MilitaryOperation | undefined {
-        return Memory.empire.militaryOperations[operationUUID];
-    }
+
 
     /**
      * Add the squad to the spawn

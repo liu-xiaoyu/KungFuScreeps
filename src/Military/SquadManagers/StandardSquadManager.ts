@@ -4,7 +4,8 @@ import {
     SpawnApi,
     ROLE_MEDIC,
     ROLE_ZEALOT,
-    LOW_PRIORITY
+    LOW_PRIORITY,
+    MemoryApi_Military
 } from "Utils/Imports/internals";
 
 export class StandardSquadManager implements ISquadManager {
@@ -49,7 +50,7 @@ export class StandardSquadManager implements ISquadManager {
      * @param creep the creep we are adding to the squad
      */
     public addCreep(creepName: string): void {
-        this.creeps.push(creepName);
+        MemoryApi_Military.addCreepToSquad(this.operationUUID, this.squadUUID, creepName);
     }
 
     /**

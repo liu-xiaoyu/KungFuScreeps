@@ -25,6 +25,7 @@ import {
     MED_PRIORITY,
     HIGH_PRIORITY,
     ALL_MILITARY_ROLES,
+    MemoryApi_Military,
 } from "Utils/Imports/internals";
 
 /**
@@ -224,8 +225,16 @@ export class SpawnApi {
                 // Remove from queue
                 room.memory.creepLimit.militaryQueue.splice(i, 1);
                 // Add reference to operation
-                // Won't work, need to make sure we have a fresh object every tick
-                Memory.empire.militaryOperations[operationUUID].squads[squadUUID].addCreep(creepName);
+                const managerType: SquadManagerConstant | undefined = MemoryApi_Military.getSquadByUUIDs(operationUUID, squadUUID)?.name;
+                if (!managerType) {
+                    throw new UserException(
+                        "Couldn't find the squad to add the creep to it",
+                        "In handleMilitaryCreepSpawnSuccess <- spawnApi",
+                        ERROR_ERROR
+                    );
+                }
+                const instance: ISquadManager | undefined = MemoryApi_Military.getSingletonSquadManager(managerType);
+                instance.addCreep(creepName);
                 return;
             }
         }

@@ -21,6 +21,7 @@ export * from "Pathfinding/Pathfinding.Api";
 export * from "Room/Room.State.Api";
 export * from "Room/Room.Structure.Api";
 export * from "Spawn/Spawn.Api";
+export * from "Memory/Memory.Military.Api";
 // ----------------------------
 // Export All Helpers
 export * from "AutoConstruction/AutoConstructionHelper";

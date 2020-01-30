@@ -3,7 +3,8 @@ import {
     SOLO_STALKER_MAN,
     SpawnApi,
     ROLE_STALKER,
-    LOW_PRIORITY
+    LOW_PRIORITY,
+    MemoryApi_Military
 } from "Utils/Imports/internals";
 
 export class SoloStalkerSquadManager implements ISquadManager {
@@ -48,7 +49,7 @@ export class SoloStalkerSquadManager implements ISquadManager {
      * @param creep the creep we are adding to the squad
      */
     public addCreep(creepName: string): void {
-        this.creeps.push(creepName);
+        MemoryApi_Military.addCreepToSquad(this.operationUUID, this.squadUUID, creepName);
     }
 
     /**

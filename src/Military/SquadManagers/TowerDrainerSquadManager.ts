@@ -5,6 +5,7 @@ import {
     ROLE_MEDIC,
     ROLE_TOWER_TANK,
     LOW_PRIORITY,
+    MemoryApi_Military,
 } from "Utils/Imports/internals";
 
 export class TowerDrainerSquadManager implements ISquadManager {
@@ -49,7 +50,7 @@ export class TowerDrainerSquadManager implements ISquadManager {
      * @param creepName the creep name we are adding to the squad
      */
     public addCreep(creepName: string): void {
-        this.creeps.push(creepName);
+        MemoryApi_Military.addCreepToSquad(this.operationUUID, this.squadUUID, creepName);
     }
 
     /**

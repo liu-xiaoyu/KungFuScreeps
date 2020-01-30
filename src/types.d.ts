@@ -213,10 +213,10 @@ interface ISquadManager {
     targetRoom: string;
     squadUUID: string;
     operationUUID: string;
-    runSquad: (room: Room) => void;
-    addCreep(creepName: string): void;
+    runSquad: (instance: ISquadManager, room: Room) => void;
+    addCreep(instance: ISquadManager, creepName: string): void;
     createInstance: (targetroom: string, operationUUID: string) => ISquadManager;
-    checkStatus: () => number;
+    checkStatus: (instance: ISquadManager) => number;
     getSquadArray: () => RoleConstant[];
     getSpawnPriority: () => number;
 }

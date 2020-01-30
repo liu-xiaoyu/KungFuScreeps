@@ -27,8 +27,9 @@ export class StandardSquadManager implements ISquadManager {
 
     /**
      * Run the squad manager
+     * @param instance the speecific instance of the squad we're running
      */
-    public runSquad(): void {
+    public runSquad(instance: ISquadManager): void {
 
     }
 
@@ -48,16 +49,18 @@ export class StandardSquadManager implements ISquadManager {
     /**
      * Add a creep to the class
      * @param creep the creep we are adding to the squad
+     * @param instance the speecific instance of the squad we're running
      */
-    public addCreep(creepName: string): void {
-        MemoryApi_Military.addCreepToSquad(this.operationUUID, this.squadUUID, creepName);
+    public addCreep(instance: ISquadManager, creepName: string): void {
+        MemoryApi_Military.addCreepToSquad(instance.operationUUID, instance.squadUUID, creepName);
     }
 
     /**
      * Check the status of the squad
+     * @param instance the speecific instance of the squad we're running
      * @returns boolean representing the squads current status
      */
-    public checkStatus(): number {
+    public checkStatus(instance: ISquadManager): number {
         return OK;
     }
 

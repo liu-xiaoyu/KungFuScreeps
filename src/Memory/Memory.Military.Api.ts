@@ -54,6 +54,8 @@ export class MemoryApi_Military {
      * @param squadUUID
      */
     public static addCreepToSquad(operationUUID: string, squadUUID: string, creepName: string): void {
+        console.log("op", operationUUID);
+        console.log("sq", squadUUID);
         Memory.empire.militaryOperations[operationUUID].squads[squadUUID].creeps.push(creepName);
     }
 

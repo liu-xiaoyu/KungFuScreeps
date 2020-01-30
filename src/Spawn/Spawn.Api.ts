@@ -225,16 +225,16 @@ export class SpawnApi {
                 // Remove from queue
                 room.memory.creepLimit.militaryQueue.splice(i, 1);
                 // Add reference to operation
-                const managerType: SquadManagerConstant | undefined = MemoryApi_Military.getSquadByUUIDs(operationUUID, squadUUID)?.name;
-                if (!managerType) {
+                const instance: ISquadManager | undefined = MemoryApi_Military.getSquadByUUIDs(operationUUID, squadUUID);
+                if (!instance) {
                     throw new UserException(
                         "Couldn't find the squad to add the creep to it",
                         "In handleMilitaryCreepSpawnSuccess <- spawnApi",
                         ERROR_ERROR
                     );
                 }
-                const instance: ISquadManager | undefined = MemoryApi_Military.getSingletonSquadManager(managerType);
-                instance.addCreep(creepName);
+                const singleton: ISquadManager | undefined = MemoryApi_Military.getSingletonSquadManager(instance.name);
+                singleton.addCreep(instance, creepName);
                 return;
             }
         }

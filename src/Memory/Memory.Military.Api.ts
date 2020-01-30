@@ -18,7 +18,7 @@ export class MemoryApi_Military {
      * @returns the squad we are referencing
      */
     public static getSquadByUUIDs(operationUUID: string, squadUUID: string): ISquadManager | undefined {
-        return Memory.empire.militaryOperations[operationUUID].squads[squadUUID];
+        return this.getOperationByUUID(operationUUID)?.squads[squadUUID];
     }
 
     /**
@@ -54,9 +54,7 @@ export class MemoryApi_Military {
      * @param squadUUID
      */
     public static addCreepToSquad(operationUUID: string, squadUUID: string, creepName: string): void {
-        console.log("op", operationUUID);
-        console.log("sq", squadUUID);
-        Memory.empire.militaryOperations[operationUUID].squads[squadUUID].creeps.push(creepName);
+        this.getSquadByUUIDs(operationUUID, squadUUID)?.creeps.push(creepName);
     }
 
     /**

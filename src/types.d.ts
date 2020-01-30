@@ -209,12 +209,12 @@ interface ICivCreepRoleManager {
 
 interface ISquadManager {
     name: SquadManagerConstant;
-    creeps: Creep[];
+    creeps: string[];
     targetRoom: string;
     squadUUID: string;
     operationUUID: string;
     runSquad: (room: Room) => void;
-    addCreep(creep: Creep): void;
+    addCreep(creepName: string): void;
     createInstance: (targetroom: string, operationUUID: string) => ISquadManager;
     checkStatus: () => number;
     getSquadArray: () => RoleConstant[];

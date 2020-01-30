@@ -98,7 +98,8 @@ export class SpawnManager {
                 nextCreepRoleName,
                 militarySquadOptions['operationUUID'],
                 militarySquadOptions['squadUUID'],
-                room
+                room,
+                name
             );
         }
     }

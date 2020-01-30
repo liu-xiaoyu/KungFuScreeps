@@ -202,8 +202,9 @@ export class SpawnApi {
      * @param operationUUID the operation that triggered it
      * @param squadUUID the squad that requested it
      * @param room the room we are spawning it from
+     * @param creepName the name of the creep we are saving the refrence for
      */
-    public static handleMilitaryCreepSpawnSuccess(roleName: RoleConstant, operationUUID: string, squadUUID: string, room: Room): void {
+    public static handleMilitaryCreepSpawnSuccess(roleName: RoleConstant, operationUUID: string, squadUUID: string, room: Room, creepName: string): void {
         // Handle _only_ military roles in this function
         if (!ALL_MILITARY_ROLES.includes(roleName)) {
             return;
@@ -213,13 +214,18 @@ export class SpawnApi {
         }
 
         // Loop over the military queue, finding and removing the creep re just spawned
+        // Also add its reference to the creep object in the operation->squad->creeps
         for (let i = 0; i < room.memory.creepLimit.militaryQueue.length; ++i) {
             if (
                 room.memory.creepLimit.militaryQueue[i].operationUUID === operationUUID &&
                 room.memory.creepLimit.militaryQueue[i].squadUUID === squadUUID &&
                 room.memory.creepLimit.militaryQueue[i].role === roleName
             ) {
+                // Remove from queue
                 room.memory.creepLimit.militaryQueue.splice(i, 1);
+                // Add reference to operation
+                // Won't work, need to make sure we have a fresh object every tick
+                Memory.empire.militaryOperations[operationUUID].squads[squadUUID].addCreep(creepName);
                 return;
             }
         }

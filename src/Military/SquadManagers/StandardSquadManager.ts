@@ -9,7 +9,7 @@ import {
 
 export class StandardSquadManager implements ISquadManager {
     public name: SquadManagerConstant = STANDARD_MAN;
-    public creeps: Creep[] = [];
+    public creeps: string[] = [];
     public targetRoom: string = "";
     public squadUUID: string = "";
     public operationUUID: string = "";
@@ -20,6 +20,7 @@ export class StandardSquadManager implements ISquadManager {
         self.createInstance = self.createInstance.bind(this);
         self.getSquadArray = self.getSquadArray.bind(this);
         self.checkStatus = self.checkStatus.bind(this);
+        self.addCreep = self.addCreep.bind(this);
         self.creeps = [];
     }
 
@@ -47,8 +48,8 @@ export class StandardSquadManager implements ISquadManager {
      * Add a creep to the class
      * @param creep the creep we are adding to the squad
      */
-    public addCreep(creep: Creep): void {
-        this.creeps.push(creep);
+    public addCreep(creepName: string): void {
+        this.creeps.push(creepName);
     }
 
     /**

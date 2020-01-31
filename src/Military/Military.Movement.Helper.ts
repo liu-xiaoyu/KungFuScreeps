@@ -1,5 +1,5 @@
-export class militaryMovementHelper { 
-    
+export class MilitaryMovement_Helper {
 
-    
+
+
 }

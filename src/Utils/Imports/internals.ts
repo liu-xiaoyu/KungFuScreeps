@@ -75,6 +75,8 @@ export * from "Military/SquadManagers/SoloStalkerSquadManager";
 export * from "Military/SquadManagers/SoloZealotSquadManager";
 export * from "Military/SquadManagers/StandardSquadManager";
 export * from "Military/SquadManagers/TowerDrainerSquadManager";
+export * from "Military/SquadManagers/RemoteDefenderSquadManager";
+export * from "Military/SquadManagers/DomesticDefenderSquadManager";
 // Import All Managers
 export * from "Creeps/CreepManager";
 export * from "Empire/EmpireManager";

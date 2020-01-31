@@ -193,8 +193,10 @@ type SOLO_ZEALOT_MAN = "soloZealotSquad";
 type SOLO_STALKER_MAN = "soloStalkerSquad";
 type STANDARD_MAN = "standardSquad";
 type TOWER_DRAINER_MAN = "towerDrainerSquad";
+type DOMESTIC_DEFENDER_MAN = "domesticDefenderSquad";
+type REMOTE_DEFENDER_MAN = "remoteDefenderSquad";
 
-type SquadManagerConstant = SOLO_STALKER_MAN | SOLO_ZEALOT_MAN | STANDARD_MAN | TOWER_DRAINER_MAN;
+type SquadManagerConstant = SOLO_STALKER_MAN | SOLO_ZEALOT_MAN | STANDARD_MAN | TOWER_DRAINER_MAN | DOMESTIC_DEFENDER_MAN | REMOTE_DEFENDER_MAN;
 
 // Military Squad Status Types
 type SQUAD_STATUS_OK = 0;

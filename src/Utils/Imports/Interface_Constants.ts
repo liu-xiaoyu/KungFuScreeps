@@ -46,11 +46,13 @@ import {
     ProcessDefaultStimulateFlag,
     ProcessDependentRoomOverride,
     TowerDrainerTankBodyOptsHelper,
+    SoloStalkerSquadManager,
+    SoloZealotSquadManager,
+    TowerDrainerSquadManager,
+    StandardSquadManager,
+    RemoteDefenderSquadManager,
+    DomesticDefenderSquadManager,
 } from "Utils/Imports/internals";
-import { SoloStalkerSquadManager } from "Military/SquadManagers/SoloStalkerSquadManager";
-import { SoloZealotSquadManager } from "Military/SquadManagers/SoloZealotSquadManager";
-import { TowerDrainerSquadManager } from "Military/SquadManagers/TowerDrainerSquadManager";
-import { StandardSquadManager } from "Military/SquadManagers/StandardSquadManager";
 
 // tslint:disable-next-line: interface-name
 export interface ICreepSpawnLimits {
@@ -132,5 +134,7 @@ export const SQUAD_MANAGERS: ISquadManager[] = [
     new SoloStalkerSquadManager(),
     new SoloZealotSquadManager(),
     new TowerDrainerSquadManager(),
-    new StandardSquadManager()
+    new StandardSquadManager(),
+    new RemoteDefenderSquadManager(),
+    new DomesticDefenderSquadManager()
 ];

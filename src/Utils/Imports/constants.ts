@@ -41,6 +41,8 @@ export const SOLO_ZEALOT_MAN = "soloZealotSquad";
 export const SOLO_STALKER_MAN = "soloStalkerSquad";
 export const STANDARD_MAN = "standardSquad";
 export const TOWER_DRAINER_MAN = "towerDrainerSquad";
+export const DOMESTIC_DEFENDER_MAN = "domesticDefenderSquad";
+export const REMOTE_DEFENDER_MAN = "remoteDefenderSquad";
 
 // Attack Flag Constants
 export const CLAIM_FLAG = 4;

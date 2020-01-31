@@ -835,6 +835,7 @@ type ROOM_STATUS_HIGHWAY = "highway";
 type ROOM_STATUS_SOURCE_KEEPER = "sourceKeeper";
 type ROOM_STATUS_HOSTILE = "hostile";
 type ROOM_STATUS_HOSTILE_REMOTE = "hostileRemote";
+type ROOM_STATUS_INVADER_REMOTE = "invaderRemote";
 type ROOM_STATUS_UNKNOWN = "unknown";
 type RoomStatusType =
     | ROOM_STATUS_ALLY
@@ -844,6 +845,7 @@ type RoomStatusType =
     | ROOM_STATUS_SOURCE_KEEPER
     | ROOM_STATUS_HOSTILE
     | ROOM_STATUS_HOSTILE_REMOTE
+    | ROOM_STATUS_INVADER_REMOTE
     | ROOM_STATUS_UNKNOWN;
 
 /**

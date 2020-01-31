@@ -165,6 +165,7 @@ export const ROOM_STATUS_HIGHWAY = "highway";
 export const ROOM_STATUS_SOURCE_KEEPER = "sourceKeeper";
 export const ROOM_STATUS_HOSTILE = "hostile";
 export const ROOM_STATUS_HOSTILE_REMOTE = "hostileRemote";
+export const ROOM_STATUS_INVADER_REMOTE = "invaderRemote";
 export const ROOM_STATUS_UNKNOWN = "unknown";
 
 // Spawn Priority constants for military squads

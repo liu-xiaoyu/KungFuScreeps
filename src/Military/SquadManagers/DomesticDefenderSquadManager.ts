@@ -2,7 +2,7 @@ import {
     UserException,
     DOMESTIC_DEFENDER_MAN,
     SpawnApi,
-    ROLE_ZEALOT,
+    ROLE_STALKER,
     MemoryApi_Military,
     SQUAD_STATUS_OK,
     HIGH_PRIORITY
@@ -73,11 +73,11 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      * @returns array containing all squad member's role constants
      */
     public getSquadArray(): SquadDefinition[] {
-        const zealot1: SquadDefinition = {
+        const stalker1: SquadDefinition = {
             role: ROLE_ZEALOT,
             caravanPos: 0
         };
-        return [zealot1];
+        return [stalker1];
     }
 
     /**

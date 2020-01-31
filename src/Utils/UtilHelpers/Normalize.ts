@@ -77,4 +77,13 @@ export class Normalize {
         }
         return convertedBody;
     }
+
+    /**
+     * Convert mock POS to real POS
+     * @param mockPos mock POS object to convert
+     * @returns room position objeect
+     */
+    public static convertMockToRealPos(mockPos: MockRoomPos): RoomPosition {
+        return new RoomPosition(mockPos.x, mockPos.y, mockPos.roomName);
+    }
 }

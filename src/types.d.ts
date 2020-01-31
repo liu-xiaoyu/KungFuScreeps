@@ -194,11 +194,14 @@ type SOLO_STALKER_MAN = "soloStalkerSquad";
 type STANDARD_MAN = "standardSquad";
 type TOWER_DRAINER_MAN = "towerDrainerSquad";
 
-type SquadManagerConstant =
-    SOLO_STALKER_MAN |
-    SOLO_ZEALOT_MAN |
-    STANDARD_MAN |
-    TOWER_DRAINER_MAN;
+type SquadManagerConstant = SOLO_STALKER_MAN | SOLO_ZEALOT_MAN | STANDARD_MAN | TOWER_DRAINER_MAN;
+
+// Military Squad Status Types
+type SQUAD_STATUS_OK = 0;
+type SQUAD_STATUS_RALLY = 1;
+type SQUAD_STATUS_DONE = 2;
+
+type SquadStatusConstant = SQUAD_STATUS_OK | SQUAD_STATUS_RALLY | SQUAD_STATUS_DONE;
 
 // Role Interfaces to be implemented  -------------
 interface ICivCreepRoleManager {
@@ -229,7 +232,7 @@ interface ICreepBodyOptsHelper {
     generateCreepOptions: (
         roomState: RoomStateConstant,
         squadUUIDParam: string | null,
-        operationUUIDParam: string | null,
+        operationUUIDParam: string | null
     ) => (CreepOptionsCiv | undefined) | (CreepOptionsMili | undefined);
     generateCreepBody: (tier: TierConstant, room: Room) => BodyPartConstant[];
     getTargetRoom: (room: Room, roleConst: RoleConstant, creepBody: BodyPartConstant[], creepName: string) => string;
@@ -803,7 +806,7 @@ interface MilitaryOperation {
 }
 
 interface MovementData {
-    [key: string]: RoomMovementData
+    [key: string]: RoomMovementData;
 }
 /**
  * Contains pathfinding information about a room
@@ -1200,11 +1203,7 @@ type STIMULATE_FLAG = 7;
 /**
  * type that holds all flag type constants
  */
-type FlagTypeConstant =
-    | CLAIM_FLAG
-    | REMOTE_FLAG
-    | OVERRIDE_D_ROOM_FLAG
-    | STIMULATE_FLAG
+type FlagTypeConstant = CLAIM_FLAG | REMOTE_FLAG | OVERRIDE_D_ROOM_FLAG | STIMULATE_FLAG;
 
 /**
  * Tier Definitions

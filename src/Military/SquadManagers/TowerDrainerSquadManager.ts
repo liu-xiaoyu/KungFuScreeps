@@ -60,7 +60,7 @@ export class TowerDrainerSquadManager implements ISquadManager {
      * @param instance the speecific instance of the squad we're running
      * @returns boolean representing the squads current status
      */
-    public checkStatus(instance: ISquadManager): number {
+    public checkStatus(instance: ISquadManager): SquadStatusConstant {
         return OK;
     }
 

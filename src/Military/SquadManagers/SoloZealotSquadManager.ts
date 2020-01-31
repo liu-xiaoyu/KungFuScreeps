@@ -4,7 +4,8 @@ import {
     SpawnApi,
     ROLE_ZEALOT,
     LOW_PRIORITY,
-    MemoryApi_Military
+    MemoryApi_Military,
+    SQUAD_STATUS_OK
 } from "Utils/Imports/internals";
 
 export class SoloZealotSquadManager implements ISquadManager {
@@ -59,8 +60,8 @@ export class SoloZealotSquadManager implements ISquadManager {
      * @param instance the speecific instance of the squad we're running
      * @returns boolean representing the squads current status
      */
-    public checkStatus(instance: ISquadManager): number {
-        return OK;
+    public checkStatus(instance: ISquadManager): SquadStatusConstant {
+        return SQUAD_STATUS_OK;
     }
 
     /**

@@ -168,6 +168,11 @@ export const ROOM_STATUS_HOSTILE_REMOTE = "hostileRemote";
 export const ROOM_STATUS_INVADER_REMOTE = "invaderRemote";
 export const ROOM_STATUS_UNKNOWN = "unknown";
 
+// Military Squad Status Types
+export const SQUAD_STATUS_OK = 0;
+export const SQUAD_STATUS_RALLY = 1;
+export const SQUAD_STATUS_DONE = 2;
+
 // Spawn Priority constants for military squads
 export const HIGH_PRIORITY: number = 1;
 export const MED_PRIORITY: number = 2;

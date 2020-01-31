@@ -112,7 +112,7 @@ export class PathfindingApi {
                 if (PathfindingApi.UseRoomForCostMatrix(roomName, costMatrix, creep)) {
                     PathfindingApi.SetCreepCostMatrix(roomName, costMatrix);
                 } else {
-                    PathfindingApi.BlockRoomForCostMatrix(roomName, costMatrix);
+                    PathfindingApi.BlockRoomForCostMatrix(roomName, costMatrix); 
                 }
                 return costMatrix;
             }

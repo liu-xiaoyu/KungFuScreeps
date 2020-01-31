@@ -72,7 +72,7 @@ export class WorkPartJobs implements IJobTypeHelper {
         CreepAllApi.nullCheck_target(creep, moveTarget);
 
         // Move options for target
-        const moveOpts = PathfindingApi.GetDefaultMoveOpts();
+        const moveOpts = PathfindingApi.GetDefaultMoveOpts(creep);
 
         if (job.actionType === "build" && moveTarget instanceof ConstructionSite) {
             moveOpts.range = 3;

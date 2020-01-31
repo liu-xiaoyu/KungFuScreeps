@@ -73,7 +73,7 @@ export class CarryPartJobs implements IJobTypeHelper {
         CreepAllApi.nullCheck_target(creep, moveTarget);
 
         // Move options for target
-        const moveOpts = PathfindingApi.GetDefaultMoveOpts();
+        const moveOpts = PathfindingApi.GetDefaultMoveOpts(creep);
 
         if (job.actionType === "transfer" && (moveTarget instanceof Structure || moveTarget instanceof Creep)) {
             moveOpts.range = 1;

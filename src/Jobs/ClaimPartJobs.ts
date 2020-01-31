@@ -86,7 +86,7 @@ export class ClaimPartJobs implements IJobTypeHelper {
         CreepAllApi.nullCheck_target(creep, moveTarget);
 
         // Move options for target
-        const moveOpts = PathfindingApi.GetDefaultMoveOpts();
+        const moveOpts = PathfindingApi.GetDefaultMoveOpts(creep);
 
         // All actiontypes that affect controller have range of 1
         if (moveTarget instanceof StructureController) {

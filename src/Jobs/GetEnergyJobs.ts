@@ -82,7 +82,7 @@ export class GetEnergyJobs implements IJobTypeHelper {
         CreepAllApi.nullCheck_target(creep, moveTarget);
 
         // Move options target
-        const moveOpts: MoveToOpts = PathfindingApi.GetDefaultMoveOpts();
+        const moveOpts: MoveToOpts = PathfindingApi.GetDefaultMoveOpts(creep);
 
         // In this case all actions are complete with a range of 1, but keeping for structure
         if (job.actionType === "harvest" && (moveTarget instanceof Source || moveTarget instanceof Mineral)) {

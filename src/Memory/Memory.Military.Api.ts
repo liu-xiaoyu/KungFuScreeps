@@ -27,7 +27,7 @@ export class MemoryApi_Military {
      * @param squadUUID
      * @returns array of creeps in the squad
      */
-    public static getCreepsInSquad(operationUUID: string, squadUUID: string): Creep[] | undefined {
+    public static getCreepsInSquadByUUIDs(operationUUID: string, squadUUID: string): Creep[] | undefined {
         const creepNames: string[] | undefined = this.getSquadByUUIDs(operationUUID, squadUUID)?.creeps;
         if (!creepNames) {
             return undefined;
@@ -45,6 +45,22 @@ export class MemoryApi_Military {
             creeps.push(Game.creeps[creepNames[i]]);
         }
 
+        return creeps;
+    }
+
+    /**
+     * Gets the creeps in the squad by instance reference
+     * @param instance the implmeentation instance of the squad
+     * @returns array of creeps in the squad
+     */
+    public static getCreepsInSquadByInstance(instance: ISquadManager): Creep[] {
+        const creeps: Creep[] = [];
+        if (!instance.creeps) {
+            return creeps;
+        }
+        for (const i in instance.creeps) {
+            creeps.push(Game.creeps[instance.creeps[i]]);
+        }
         return creeps;
     }
 

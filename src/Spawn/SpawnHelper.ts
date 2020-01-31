@@ -119,6 +119,7 @@ export class SpawnHelper {
         return {
             squadUUID: null,
             operationUUID: null,
+            caravanPos: null
         };
     }
 

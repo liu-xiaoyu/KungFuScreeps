@@ -87,11 +87,13 @@ export class StalkerBodyOptsHelper implements ICreepBodyOptsHelper {
         roomState: RoomStateConstant,
         squadUUIDParam: string | null,
         operationUUIDParam: string | null,
+        caravanPosParam: number | null
     ): CreepOptionsMili | undefined {
         let creepOptions: CreepOptionsMili = SpawnHelper.getDefaultCreepOptionsMili();
         creepOptions = {
             squadUUID: squadUUIDParam,
             operationUUID: operationUUIDParam,
+            caravanPos: caravanPosParam
         };
 
         return creepOptions;

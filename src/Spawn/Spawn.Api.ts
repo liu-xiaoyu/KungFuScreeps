@@ -364,9 +364,11 @@ export class SpawnApi {
         // So we just check if any of them aren't provided and set defaults for all in that case
         let operationUUID: string | null = squadMemory['operationUUID'];
         let squadUUID: string | null = squadMemory["squadUUID"];
+        let caravanPos: number | null = squadMemory["caravanPos"];
         if (!squadUUID || !operationUUID) {
             operationUUID = null;
             squadUUID = null;
+            caravanPos = null;
         }
 
         // If no role provided, throw warning
@@ -380,7 +382,8 @@ export class SpawnApi {
                 return CREEP_BODY_OPT_HELPERS[index].generateCreepOptions(
                     roomState,
                     squadUUID,
-                    operationUUID
+                    operationUUID,
+                    caravanPos
                 );
             }
         }
@@ -512,6 +515,7 @@ export class SpawnApi {
         const squadOptions: StringMap = {
             operationUUID: null,
             squadUUID: null,
+            caravanPos: null
         };
 
         if (!SpawnApi.isMilitaryQueue(roleConst)) {
@@ -520,6 +524,7 @@ export class SpawnApi {
 
         squadOptions['operationUUID'] = roleConst.operationUUID;
         squadOptions['squadUUID'] = roleConst.squadUUID;
+        squadOptions['caravanPos'] = roleConst.caravanPos;
         return squadOptions;
     }
 

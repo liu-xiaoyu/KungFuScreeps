@@ -14,6 +14,8 @@ export class SoloZealotSquadManager implements ISquadManager {
     public targetRoom: string = "";
     public squadUUID: string = "";
     public operationUUID: string = "";
+    public initialRallyComplete: boolean = false;
+    public rallyPos: MockRoomPos | undefined;
 
     constructor() {
         const self = this;
@@ -43,6 +45,8 @@ export class SoloZealotSquadManager implements ISquadManager {
         instance.squadUUID = uuid;
         instance.targetRoom = targetRoom;
         instance.operationUUID = operationUUID;
+        instance.initialRallyComplete = false;
+        instance.rallyPos = undefined;
         return instance;
     }
 
@@ -68,8 +72,12 @@ export class SoloZealotSquadManager implements ISquadManager {
      * Gets the members of the squad in array form
      * @returns array containing all squad member's role constants
      */
-    public getSquadArray(): RoleConstant[] {
-        return [ROLE_ZEALOT];
+    public getSquadArray(): SquadDefinition[] {
+        const zealot1: SquadDefinition = {
+            role: ROLE_ZEALOT,
+            caravanPos: 0
+        };
+        return [zealot1];
     }
 
     /**

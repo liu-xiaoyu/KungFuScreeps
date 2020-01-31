@@ -14,6 +14,8 @@ export class TowerDrainerSquadManager implements ISquadManager {
     public targetRoom: string = "";
     public squadUUID: string = "";
     public operationUUID: string = "";
+    public initialRallyComplete: boolean = false;
+    public rallyPos: MockRoomPos | undefined;
 
     constructor() {
         const self = this;
@@ -43,6 +45,8 @@ export class TowerDrainerSquadManager implements ISquadManager {
         instance.squadUUID = uuid;
         instance.targetRoom = targetRoom;
         instance.operationUUID = operationUUID;
+        instance.initialRallyComplete = false;
+        instance.rallyPos = undefined
         return instance;
     }
 
@@ -68,8 +72,16 @@ export class TowerDrainerSquadManager implements ISquadManager {
      * Gets the members of the squad in array form
      * @returns array containing all squad member's role constants
      */
-    public getSquadArray(): RoleConstant[] {
-        return [ROLE_TOWER_TANK, ROLE_MEDIC];
+    public getSquadArray(): SquadDefinition[] {
+        const tank1: SquadDefinition = {
+            role: ROLE_TOWER_TANK,
+            caravanPos: 0
+        };
+        const medic1: SquadDefinition = {
+            role: ROLE_MEDIC,
+            caravanPos: 1
+        };
+        return [tank1, medic1];
     }
 
     /**

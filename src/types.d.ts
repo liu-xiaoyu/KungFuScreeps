@@ -216,15 +216,16 @@ interface ISquadManager {
     targetRoom: string;
     squadUUID: string;
     operationUUID: string;
-    // Booleans flags used in check status 
+    // Booleans flags used in check status
     initialRallyComplete?: boolean;
+    rallyPos: MockRoomPos | undefined;
 
 
     runSquad: (instance: ISquadManager, room: Room) => void;
     addCreep(instance: ISquadManager, creepName: string): void;
     createInstance: (targetroom: string, operationUUID: string) => ISquadManager;
     checkStatus: (instance: ISquadManager) => number;
-    getSquadArray: () => RoleConstant[];
+    getSquadArray: () => SquadDefinition[];
     getSpawnPriority: () => number;
 }
 
@@ -236,7 +237,8 @@ interface ICreepBodyOptsHelper {
     generateCreepOptions: (
         roomState: RoomStateConstant,
         squadUUIDParam: string | null,
-        operationUUIDParam: string | null
+        operationUUIDParam: string | null,
+        caravanPosParam: number | null
     ) => (CreepOptionsCiv | undefined) | (CreepOptionsMili | undefined);
     generateCreepBody: (tier: TierConstant, room: Room) => BodyPartConstant[];
     getTargetRoom: (room: Room, roleConst: RoleConstant, creepBody: BodyPartConstant[], creepName: string) => string;
@@ -980,6 +982,10 @@ interface CreepOptionsMili {
      * The generated token that ties members of this OPERATION together
      */
     operationUUID?: string | null;
+    /**
+     * Caravan position
+     */
+    caravanPos?: number | null;
 }
 
 /**
@@ -1006,6 +1012,18 @@ interface MilitaryQueue {
     operationUUID: string;
     squadUUID: string;
     role: RoleConstant;
+    caravanPos: number;
+}
+
+interface SquadDefinition {
+    role: RoleConstant
+    caravanPos: number;
+}
+
+interface MockRoomPos {
+    x: number,
+    y: number,
+    roomName: string
 }
 
 /**

@@ -216,6 +216,10 @@ interface ISquadManager {
     targetRoom: string;
     squadUUID: string;
     operationUUID: string;
+    // Booleans flags used in check status 
+    initialRallyComplete?: boolean;
+
+
     runSquad: (instance: ISquadManager, room: Room) => void;
     addCreep(instance: ISquadManager, creepName: string): void;
     createInstance: (targetroom: string, operationUUID: string) => ISquadManager;

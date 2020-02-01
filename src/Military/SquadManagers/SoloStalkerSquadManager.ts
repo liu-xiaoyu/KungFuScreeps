@@ -5,7 +5,10 @@ import {
     ROLE_STALKER,
     LOW_PRIORITY,
     MemoryApi_Military,
-    SQUAD_STATUS_OK
+    SQUAD_STATUS_OK,
+    OP_STRATEGY_NONE,
+    OP_STRATEGY_COMBINED,
+    OP_STRATEGY_FFA
 } from "Utils/Imports/internals";
 
 export class SoloStalkerSquadManager implements ISquadManager {
@@ -27,12 +30,20 @@ export class SoloStalkerSquadManager implements ISquadManager {
         self.creeps = [];
     }
 
+    public supportedImplementations: OpStrategyConstant[] = [OP_STRATEGY_COMBINED, OP_STRATEGY_FFA];
+
     /**
      * Run the squad manager
      * @param instance the speecific instance of the squad we're running
      */
     public runSquad(instance: ISquadManager): void {
+        const operation = MemoryApi_Military.getOperationByUUID(instance.operationUUID);
 
+        // TOD̶O̶ Create a function that returns the implementation for the current strategy, or default if none
+
+        if (operation && operation.operationStrategy !== OP_STRATEGY_NONE) {
+            this[operation.operationStrategy].testfunc();
+        }
     }
 
     /**
@@ -87,4 +98,25 @@ export class SoloStalkerSquadManager implements ISquadManager {
         return LOW_PRIORITY;
     }
 
+    /**
+     * Implementation of OP_STRATEGY_FFA
+     */
+    public ffa: SquadStrategyImplementation = {
+        runSquad(instance: ISquadManager): void {
+            return;
+        }
+    };
+
+    /**
+     * Implementation of OP_STRATEGY_COMBINED
+     */
+    public combined: SquadStrategyImplementation = {
+        runSquad(instance: ISquadManager): void {
+            return;
+        },
+
+        testFunction(test: number): void {
+            return;
+        }
+    };
 }

@@ -56,15 +56,17 @@ export class MemoryApi_Room {
             throw new UserException(
                 "Tried to getUpgraderLink of a room with no controller",
                 "Get Upgrader Link was called for room [" +
-                room.name +
-                "]" +
-                ", but theres no controller in this room.",
+                    room.name +
+                    "]" +
+                    ", but theres no controller in this room.",
                 ERROR_WARN
             );
         }
 
         // Find the closest link to the controller, this is our upgrader link
-        const closestLink: Structure<StructureConstant> | null = controller!.pos.findClosestByRange(links) as Structure<StructureConstant>;
+        const closestLink: Structure<StructureConstant> | null = controller!.pos.findClosestByRange(links) as Structure<
+            StructureConstant
+        >;
         return controller.pos.inRangeTo(closestLink.pos.x, closestLink.pos.y, 3) ? closestLink : null;
     }
 
@@ -162,7 +164,7 @@ export class MemoryApi_Room {
                 jobs: {},
                 structures: { data: null, cache: null },
                 hostileStructures: { data: null, cache: null },
-                upgradeLink: "",
+                upgradeLink: ""
             };
         } else {
             Memory.rooms[roomName] = {
@@ -175,7 +177,7 @@ export class MemoryApi_Room {
                 droppedResources: { data: null, cache: null },
                 constructionSites: { data: null, cache: null },
                 defcon: -1,
-                hostiles: { data: null, cache: null },
+                hostiles: { data: null, cache: null }
             };
         }
 
@@ -639,10 +641,7 @@ export class MemoryApi_Room {
             );
         } else {
             // No target room provided, just return them all
-            remoteRooms = _.filter(
-                Memory.rooms[room.name].remoteRooms!,
-                () => filterFunction
-            );
+            remoteRooms = _.filter(Memory.rooms[room.name].remoteRooms!, () => filterFunction);
         }
 
         if (remoteRooms.length === 0) {
@@ -805,7 +804,7 @@ export class MemoryApi_Room {
     public static getAllCreepCount(room: Room): AllCreepCount {
         const creepsInRoom: Creep[] = MemoryApi_Creep.getMyCreeps(room.name);
         const allCreepCount: AllCreepCount = MemoryHelper.generateDefaultAllCreepCountObject();
-
+        
         // sum up the number of each role we come across
         for (const creep of creepsInRoom) {
             if (creep.ticksToLive && creep.ticksToLive < creep.body.length * 3) {

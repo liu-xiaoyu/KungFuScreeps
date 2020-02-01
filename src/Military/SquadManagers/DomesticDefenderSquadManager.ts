@@ -5,6 +5,9 @@ import {
     ROLE_STALKER,
     MemoryApi_Military,
     SQUAD_STATUS_OK,
+    OP_STRATEGY_NONE,
+    OP_STRATEGY_COMBINED,
+    OP_STRATEGY_FFA,
     HIGH_PRIORITY
 } from "Utils/Imports/internals";
 
@@ -85,6 +88,28 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      */
     public getSpawnPriority(): number {
         return HIGH_PRIORITY;
+    }
+
+    /**
+     * Implementation of OP_STRATEGY_FFA 
+     */
+    public ffa = { 
+
+        runSquad(instance: ISquadManager): void { 
+            return;
+        }
+
+    }
+
+    /**
+     * Implementation of OP_STRATEGY_COMBINED
+     */
+    public combined = {
+
+        runSquad(instance: ISquadManager): void { 
+            return;
+        }
+
     }
 
 }

@@ -195,6 +195,8 @@ type OP_STRATEGY_COMBINED = "combined"; // Each squad should move together
 
 type OpStrategyConstant = OP_STRATEGY_NONE | OP_STRATEGY_FFA | OP_STRATEGY_COMBINED;
 
+type OpStrategyTypes = { [key in OpStrategyConstant]?: string }
+
 // Squad Manager Name Constants
 type SOLO_ZEALOT_MAN = "soloZealotSquad";
 type SOLO_STALKER_MAN = "soloStalkerSquad";
@@ -229,13 +231,19 @@ interface ISquadManager {
     initialRallyComplete?: boolean;
     rallyPos: MockRoomPos | undefined;
 
-
     runSquad: (instance: ISquadManager, room: Room) => void;
     addCreep(instance: ISquadManager, creepName: string): void;
     createInstance: (targetroom: string, operationUUID: string) => ISquadManager;
     checkStatus: (instance: ISquadManager) => number;
     getSquadArray: () => SquadDefinition[];
     getSpawnPriority: () => number;
+    
+    strategyImplementation?: SquadStrategyImplementation;
+}
+
+type SquadStrategyImplementation = {
+    runSquad: (instance: ISquadManager, room: Room) => void;
+    [functionName: string]: Function;
 }
 
 /**

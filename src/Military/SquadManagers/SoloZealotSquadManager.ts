@@ -87,4 +87,26 @@ export class SoloZealotSquadManager implements ISquadManager {
         return LOW_PRIORITY;
     }
 
+    
+    /**
+     * Implementation of OP_STRATEGY_FFA 
+     */
+    public ffa = { 
+
+        runSquad(instance: ISquadManager): void { 
+            return;
+        }
+
+    }
+
+    /**
+     * Implementation of OP_STRATEGY_COMBINED
+     */
+    public combined = {
+
+        runSquad(instance: ISquadManager): void { 
+            return;
+        }
+
+    }
 }

@@ -188,6 +188,13 @@ type ROLE_TOWER_TANK = "towerTank"; //
  */
 type ROLE_MANAGER = "manager"; //
 
+// Operation Strategy Constants
+type OP_STRATEGY_NONE = "none"; // Default implementation for each squad
+type OP_STRATEGY_FFA = "ffa"; // Each squad should act independently of each other
+type OP_STRATEGY_COMBINED = "combined"; // Each squad should move together 
+
+type OpStrategyConstant = OP_STRATEGY_NONE | OP_STRATEGY_FFA | OP_STRATEGY_COMBINED;
+
 // Squad Manager Name Constants
 type SOLO_ZEALOT_MAN = "soloZealotSquad";
 type SOLO_STALKER_MAN = "soloStalkerSquad";
@@ -811,6 +818,7 @@ interface SquadData {
 interface MilitaryOperation {
     squads: SquadData;
     operationUUID: string;
+    operationStrategy: OpStrategyConstant;
 }
 
 interface MovementData {

@@ -4,7 +4,8 @@ import {
     ERROR_ERROR,
     EmpireHelper,
     MemoryApi_Room,
-    MemoryApi_Military
+    MemoryApi_Military,
+    OP_STRATEGY_NONE
 } from "Utils/Imports/internals";
 
 export class Military_Spawn_Api {
@@ -31,7 +32,8 @@ export class Military_Spawn_Api {
             squadData[squadInstance.squadUUID] = squadInstance;
             operation = {
                 squads: squadData,
-                operationUUID
+                operationUUID,
+                operationStrategy: OP_STRATEGY_NONE // Default to no strategy
             };
             Memory.empire.militaryOperations[operationUUID] = operation;
         }

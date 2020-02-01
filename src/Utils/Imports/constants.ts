@@ -44,6 +44,11 @@ export const TOWER_DRAINER_MAN = "towerDrainerSquad";
 export const DOMESTIC_DEFENDER_MAN = "domesticDefenderSquad";
 export const REMOTE_DEFENDER_MAN = "remoteDefenderSquad";
 
+// Operation Strategy Constants
+export const OP_STRATEGY_NONE = "none";
+export const OP_STRATEGY_FFA = "ffa";
+export const OP_STRATEGY_COMBINED = "combined";
+
 // Attack Flag Constants
 export const CLAIM_FLAG = 4;
 export const REMOTE_FLAG = 5;

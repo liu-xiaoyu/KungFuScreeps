@@ -242,7 +242,7 @@ interface ISquadManager {
 }
 
 type SquadStrategyImplementation = {
-    runSquad: (instance: ISquadManager, room: Room) => void;
+    runSquad: (instance: ISquadManager) => void;
     [functionName: string]: Function;
 }
 

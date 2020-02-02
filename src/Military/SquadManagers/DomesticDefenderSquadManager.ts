@@ -35,7 +35,24 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      * @param instance the speecific instance of the squad we're running
      */
     public runSquad(instance: ISquadManager): void {
+        const operation = MemoryApi_Military.getOperationByUUID(instance.operationUUID);
+        const squadImplementation = this.getSquadStrategyImplementation(operation!);
+        
+        // Run the specific strategy for the current operation
+        squadImplementation.runSquad(instance);
 
+    }
+
+    /**
+     * Returns the implementation object for the squad
+     * @param operation The parent operation of the squad
+     */
+    public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation { 
+        switch(operation.operationStrategy) { 
+            case OP_STRATEGY_COMBINED: return this[OP_STRATEGY_COMBINED];
+            case OP_STRATEGY_FFA: return this[OP_STRATEGY_FFA];
+            default: return this[OP_STRATEGY_FFA];
+        }
     }
 
     /**

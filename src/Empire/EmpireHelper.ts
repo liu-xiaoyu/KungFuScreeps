@@ -179,6 +179,15 @@ export class EmpireHelper {
                     MemoryApi_Empire.createEmpireAlertNode("Completing flag for claim room [" + claimRoom.roomName + "].", 10);
                     Game.flags[currentFlagName].memory.complete = true;
                 }
+
+                // Destroy all the structures in the claim room EXCEPT our spawn
+                const room: Room = Game.rooms[claimRoom.roomName];
+                if (room) {
+                    room.find(FIND_HOSTILE_SPAWNS).forEach((struct: AnyOwnedStructure) => struct.destroy());
+                    room.find(FIND_STRUCTURES, {
+                        filter: (struct: AnyStructure) => struct.structureType !== STRUCTURE_SPAWN
+                    }).forEach((struct: AnyStructure) => struct.destroy());
+                }
             }
         }
     }
@@ -195,7 +204,7 @@ export class EmpireHelper {
             return false;
         }
 
-        const spawns = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_SPAWN);
+        const spawns = MemoryApi_Room.getStructureOfType(room.name, STRUCTURE_SPAWN, (struct: StructureSpawn) => struct.my);
         return (spawns.length > 0);
     }
 

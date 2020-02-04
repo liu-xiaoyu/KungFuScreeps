@@ -71,6 +71,14 @@ export class ManagerManager {
                 UtilHelper.printError(e);
             }
         }
+        else {
+            try {
+                RoomVisualManager.runRoomVisualManagerSlim();
+            }
+            catch (e) {
+                UtilHelper.printError(e);
+            }
+        }
 
         // run the empire
         if (!Game.cpu["bucket"] || Game.cpu["bucket"] > EMPIRE_MANAGER_BUCKET_LIMIT) {

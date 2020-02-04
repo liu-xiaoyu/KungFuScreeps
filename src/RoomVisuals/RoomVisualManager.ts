@@ -9,18 +9,21 @@ import {
 // Manager for room visuals
 export class RoomVisualManager {
     /**
-     * FUTURE PLANS FOR THIS MANAGER
-     *
-     * Create progreess bars for all the percentages
-     * Place more ideas here --
-     */
-    /**
      * run the manager for each room
      */
     public static runRoomVisualManager(): void {
         const ownedRooms = MemoryApi_Empire.getOwnedRooms();
 
         _.forEach(ownedRooms, (room: Room) => this.runSingleRoomVisualManager(room));
+    }
+
+    /**
+     * Run the slim room visual manager for each room
+     */
+    public static runRoomVisualManagerSlim(): void {
+        const ownedRooms = MemoryApi_Empire.getOwnedRooms();
+
+        _.forEach(ownedRooms, (room: Room) => this.runSingleRoomVisualManagerSlim(room));
     }
 
     /**
@@ -66,6 +69,22 @@ export class RoomVisualManager {
         if (ROOM_DEBUG_OVERLAY_ON) {
             // RoomVisualApi.debug_towerDamageOverlay_perTile(room);
             // RoomVisualApi.debug_towerDamageOverlay_perCreep(room);
+        }
+    }
+
+    /**
+     * Run a much slimmer version of room visuals that just shows mostly CPU/Empire info
+     * This runs in the case that full room visuals get turned off to assist with debugging cpu issues
+     * @param room the room we are displaying the visuals for
+     */
+    private static runSingleRoomVisualManagerSlim(room: Room): void {
+        let endLeftLine: number = 1;
+        const LEFT_START_X = 1;
+
+        if (ROOM_OVERLAY_ON) {
+            // Left Side -----
+            // Display the Empire box in the top left
+            endLeftLine = RoomVisualApi.createEmpireInfoVisual(room, LEFT_START_X, endLeftLine);
         }
     }
 }

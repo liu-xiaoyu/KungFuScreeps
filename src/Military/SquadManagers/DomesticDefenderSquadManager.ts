@@ -8,7 +8,12 @@ import {
     OP_STRATEGY_NONE,
     OP_STRATEGY_COMBINED,
     OP_STRATEGY_FFA,
-    HIGH_PRIORITY
+    HIGH_PRIORITY,
+    SQUAD_STATUS_RALLY,
+    SQUAD_STATUS_DONE,
+    MilitaryMovment_Api,
+    MilitaryCombat_Api,
+    SQUAD_STATUS_DEAD
 } from "Utils/Imports/internals";
 
 export class DomesticDefenderSquadManager implements ISquadManager {
@@ -37,7 +42,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
     public runSquad(instance: ISquadManager): void {
         const operation = MemoryApi_Military.getOperationByUUID(instance.operationUUID);
         const squadImplementation = this.getSquadStrategyImplementation(operation!);
-        
+
         // Run the specific strategy for the current operation
         squadImplementation.runSquad(instance);
 
@@ -47,8 +52,8 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      * Returns the implementation object for the squad
      * @param operation The parent operation of the squad
      */
-    public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation { 
-        switch(operation.operationStrategy) { 
+    public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation {
+        switch (operation.operationStrategy) {
             case OP_STRATEGY_COMBINED: return this[OP_STRATEGY_COMBINED];
             case OP_STRATEGY_FFA: return this[OP_STRATEGY_FFA];
             default: return this[OP_STRATEGY_FFA];
@@ -85,6 +90,27 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      * @returns boolean representing the squads current status
      */
     public checkStatus(instance: ISquadManager): SquadStatusConstant {
+
+        // Handle initial rally status
+        if (!instance.initialRallyComplete) {
+            if (MilitaryMovment_Api.isSquadRallied(instance)) {
+                instance.initialRallyComplete = true;
+                return SQUAD_STATUS_OK;
+            }
+            return SQUAD_STATUS_RALLY;
+        }
+
+        // Check if the squad is done with the attack (ie, attack success)
+        if (MilitaryCombat_Api.isOperationDone(instance)) {
+            return SQUAD_STATUS_DONE;
+        }
+
+        // Check if the squad was killed
+        if (MilitaryCombat_Api.isSquadDead(instance)) {
+            return SQUAD_STATUS_DEAD;
+        }
+
+        // If nothing else, we are OK
         return SQUAD_STATUS_OK;
     }
 
@@ -108,11 +134,11 @@ export class DomesticDefenderSquadManager implements ISquadManager {
     }
 
     /**
-     * Implementation of OP_STRATEGY_FFA 
+     * Implementation of OP_STRATEGY_FFA
      */
-    public ffa = { 
+    public ffa = {
 
-        runSquad(instance: ISquadManager): void { 
+        runSquad(instance: ISquadManager): void {
             return;
         }
 
@@ -123,7 +149,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      */
     public combined = {
 
-        runSquad(instance: ISquadManager): void { 
+        runSquad(instance: ISquadManager): void {
             return;
         }
 

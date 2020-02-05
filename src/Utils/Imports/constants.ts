@@ -179,6 +179,7 @@ export const ROOM_STATUS_UNKNOWN = "unknown";
 export const SQUAD_STATUS_OK = 0;
 export const SQUAD_STATUS_RALLY = 1;
 export const SQUAD_STATUS_DONE = 2;
+export const SQUAD_STATUS_DEAD = 3;
 
 // Spawn Priority constants for military squads
 export const HIGH_PRIORITY: number = 1;

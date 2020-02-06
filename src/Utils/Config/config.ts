@@ -151,6 +151,7 @@ export const ROOM_MANAGER_BUCKET_LIMIT = 500;
 export const MEMORY_MANAGER_BUCKET_LIMIT = 1;
 export const EVENT_MANAGER_BUCKET_LIMIT = 5000;
 export const ROOM_OVERLAY_BUCKET_LIMIT = 7000;
+export const MILITARY_MANAGER_BUCKET_LIMIT = 2000;
 
 /**
  * List of allies

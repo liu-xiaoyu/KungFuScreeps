@@ -232,10 +232,10 @@ interface ISquadManager {
     initialRallyComplete?: boolean;
     rallyPos: MockRoomPos | undefined;
 
-    runSquad: (instance: ISquadManager, room: Room) => void;
+    runSquad: (instance: ISquadManager) => void;
     addCreep(instance: ISquadManager, creepName: string): void;
     createInstance: (targetroom: string, operationUUID: string) => ISquadManager;
-    checkStatus: (instance: ISquadManager) => number;
+    checkStatus: (instance: ISquadManager) => SquadStatusConstant;
     getSquadArray: () => SquadDefinition[];
     getSpawnPriority: () => number;
 

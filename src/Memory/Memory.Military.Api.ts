@@ -135,4 +135,11 @@ export class MemoryApi_Military {
             ERROR_ERROR
         );
     }
+
+    /**
+     * Get all operations in the empire
+     */
+    public static getAllOperations(): OperationData {
+        return Memory.empire.militaryOperations;
+    }
 }

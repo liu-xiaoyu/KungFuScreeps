@@ -15,7 +15,8 @@ import {
     MilitaryCombat_Api,
     SQUAD_STATUS_DEAD,
     MemoryApi_Room,
-    MemoryApi_Creep
+    MemoryApi_Creep,
+    SQUAD_MANAGERS
 } from "Utils/Imports/internals";
 
 export class DomesticDefenderSquadManager implements ISquadManager {
@@ -44,7 +45,6 @@ export class DomesticDefenderSquadManager implements ISquadManager {
     public runSquad(instance: ISquadManager): void {
         const operation = MemoryApi_Military.getOperationByUUID(instance.operationUUID);
         const squadImplementation = this.getSquadStrategyImplementation(operation!);
-
         // Run the specific strategy for the current operation
         squadImplementation.runSquad(instance);
 
@@ -141,6 +141,19 @@ export class DomesticDefenderSquadManager implements ISquadManager {
     public ffa = {
 
         runSquad(instance: ISquadManager): void {
+            // find squad implementation
+            const singleton: ISquadManager = MemoryApi_Military.getSingletonSquadManager(instance.name);
+            const status: SquadStatusConstant = singleton.checkStatus(instance);
+
+            if (status === SQUAD_STATUS_RALLY) {
+                // rally creep
+                return;
+            }
+
+            if (status !== SQUAD_STATUS_OK) {
+                return;
+            }
+
             const CREEP_RANGE: number = 3;
             const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
             const enemies: Creep[] = MemoryApi_Creep.getHostileCreeps(instance.targetRoom);

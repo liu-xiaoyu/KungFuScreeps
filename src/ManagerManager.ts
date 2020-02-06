@@ -15,7 +15,9 @@ import {
     RoomManager,
     MemoryManager,
     EmpireManager,
-    RoomHelper_Structure
+    RoomHelper_Structure,
+    MILITARY_MANAGER_BUCKET_LIMIT,
+    MilitaryManager
 } from "Utils/Imports/internals";
 
 export class ManagerManager {
@@ -84,6 +86,15 @@ export class ManagerManager {
         if (!Game.cpu["bucket"] || Game.cpu["bucket"] > EMPIRE_MANAGER_BUCKET_LIMIT) {
             try {
                 EmpireManager.runEmpireManager();
+            } catch (e) {
+                UtilHelper.printError(e);
+            }
+        }
+
+        // run the military
+        if (!Game.cpu["bucket"] || Game.cpu["bucket"] > MILITARY_MANAGER_BUCKET_LIMIT) {
+            try {
+                MilitaryManager.runOperations();
             } catch (e) {
                 UtilHelper.printError(e);
             }

@@ -65,6 +65,26 @@ export class MemoryApi_Military {
     }
 
     /**
+     * Gets the LIVING creeps in the squad by instance reference
+     * @param instance the implmeentation instance of the squad
+     * @returns array of creeps in the squad that are alive
+     */
+    public static getLivingCreepsInSquadByInstance(instance: ISquadManager): Creep[] {
+        const creeps: Creep[] = [];
+        if (!instance.creeps) {
+            return creeps;
+        }
+        for (const i in instance.creeps) {
+            const creep: Creep | undefined = Game.creeps[instance.creeps[i]];
+            if (!creep) {
+                continue;
+            }
+            creeps.push(creep);
+        }
+        return creeps;
+    }
+
+    /**
      * Add Creep to squad
      * @param operationUUID
      * @param squadUUID

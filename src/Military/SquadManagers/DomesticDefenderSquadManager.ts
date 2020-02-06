@@ -13,7 +13,9 @@ import {
     SQUAD_STATUS_DONE,
     MilitaryMovment_Api,
     MilitaryCombat_Api,
-    SQUAD_STATUS_DEAD
+    SQUAD_STATUS_DEAD,
+    MemoryApi_Room,
+    MemoryApi_Creep
 } from "Utils/Imports/internals";
 
 export class DomesticDefenderSquadManager implements ISquadManager {
@@ -139,7 +141,38 @@ export class DomesticDefenderSquadManager implements ISquadManager {
     public ffa = {
 
         runSquad(instance: ISquadManager): void {
-            return;
+            const CREEP_RANGE: number = 3;
+            const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
+            const enemies: Creep[] = MemoryApi_Creep.getHostileCreeps(instance.targetRoom);
+            const ramparts: Structure[] = MemoryApi_Room.getStructureOfType(instance.targetRoom, STRUCTURE_RAMPART);
+
+            // Behavior for each creep, all stalkers so no need to split into different behavior
+            // But we will want to split into the different roles for other managers, and possible
+            // do the same here for the ability to plug and play roles into managers
+            for (const i in creeps) {
+                const creep: Creep = creeps[i];
+                const defenseRampart: Structure | null = MilitaryMovment_Api.findDefenseRampart(creep, enemies, ramparts);
+                if (!defenseRampart) {
+                    continue;
+                }
+
+                // Move to the rampart
+                if (!creep.pos.isEqualTo(defenseRampart.pos)) {
+                    creep.moveTo(defenseRampart.pos);
+                    continue;
+                }
+
+                // We're on the rampart, check for enemies in range and fire away
+                const target: Creep | null = creep.pos.findClosestByRange(enemies);
+                if (!target) {
+                    continue;
+                }
+
+                if (creep.pos.inRangeTo(target.pos, CREEP_RANGE)) {
+                    creep.rangedAttack(target);
+                    continue;
+                }
+            }
         }
 
     }

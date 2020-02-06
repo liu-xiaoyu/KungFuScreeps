@@ -38,4 +38,37 @@ export class MilitaryMovment_Api {
         // We make it here, everyones rallied
         return true;
     }
+
+    /**
+     * Find the rampart we want to stay put and defend on
+     * @param creep the creep we are checking for
+     * @param enemies the enemy creeps in the room
+     * @param ramparts the ramparts we have to choose from
+     */
+    public static findDefenseRampart(creep: Creep, enemies: Creep[], ramparts: Structure[]): Structure | null {
+
+        // Get an array of the rampart closest to each enemy for a list of viable options
+        const viableRamparts: Structure[] = [];
+        for (const i in enemies) {
+            const enemy: Creep = enemies[i];
+            const closeRampart: Structure | null = enemy.pos.findClosestByRange(ramparts);
+            if (closeRampart) {
+                viableRamparts.push(closeRampart);
+            }
+        }
+
+        // Return the closest one to the creep that isn't occupied
+        return creep.pos.findClosestByPath(viableRamparts, {
+            filter:
+                (rampart: Structure) => {
+                    const creepOnRampart: Creep[] = rampart.pos.lookFor(LOOK_CREEPS);
+                    // Creep can only occupy one space, so safe to use first value here
+                    // Returns true only if rampart is empty OR you're the one on it
+                    if (creepOnRampart.length > 0) {
+                        return creepOnRampart[0].name === creep.name;
+                    }
+                    return true;
+                }
+        });
+    }
 }

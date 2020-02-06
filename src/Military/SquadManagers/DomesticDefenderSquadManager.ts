@@ -120,7 +120,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      */
     public getSquadArray(): SquadDefinition[] {
         const stalker1: SquadDefinition = {
-            role: ROLE_ZEALOT,
+            role: ROLE_STALKER,
             caravanPos: 0
         };
         return [stalker1];

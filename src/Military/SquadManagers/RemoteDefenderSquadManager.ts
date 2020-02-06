@@ -36,7 +36,7 @@ export class RemoteDefenderSquadManager implements ISquadManager {
     public runSquad(instance: ISquadManager): void {
         const operation = MemoryApi_Military.getOperationByUUID(instance.operationUUID);
         const squadImplementation = this.getSquadStrategyImplementation(operation!);
-        
+
         // Run the specific strategy for the current operation
         squadImplementation.runSquad(instance);
 
@@ -46,8 +46,8 @@ export class RemoteDefenderSquadManager implements ISquadManager {
      * Returns the implementation object for the squad
      * @param operation The parent operation of the squad
      */
-    public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation { 
-        switch(operation.operationStrategy) { 
+    public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation {
+        switch (operation.operationStrategy) {
             case OP_STRATEGY_COMBINED: return this[OP_STRATEGY_COMBINED];
             case OP_STRATEGY_FFA: return this[OP_STRATEGY_FFA];
             default: return this[OP_STRATEGY_FFA];
@@ -108,11 +108,11 @@ export class RemoteDefenderSquadManager implements ISquadManager {
 
 
     /**
-     * Implementation of OP_STRATEGY_FFA 
+     * Implementation of OP_STRATEGY_FFA
      */
-    public ffa = { 
+    public ffa = {
 
-        runSquad(instance: ISquadManager): void { 
+        runSquad(instance: ISquadManager): void {
             return;
         }
 
@@ -123,7 +123,7 @@ export class RemoteDefenderSquadManager implements ISquadManager {
      */
     public combined = {
 
-        runSquad(instance: ISquadManager): void { 
+        runSquad(instance: ISquadManager): void {
             return;
         }
 

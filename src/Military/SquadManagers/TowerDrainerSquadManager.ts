@@ -8,6 +8,7 @@ import {
     MemoryApi_Military,
     OP_STRATEGY_COMBINED,
     OP_STRATEGY_FFA,
+    OP_STRATEGY_NONE,
 } from "Utils/Imports/internals";
 
 export class TowerDrainerSquadManager implements ISquadManager {
@@ -36,7 +37,7 @@ export class TowerDrainerSquadManager implements ISquadManager {
     public runSquad(instance: ISquadManager): void {
         const operation = MemoryApi_Military.getOperationByUUID(instance.operationUUID);
         const squadImplementation = this.getSquadStrategyImplementation(operation!);
-        
+
         // Run the specific strategy for the current operation
         squadImplementation.runSquad(instance);
 
@@ -46,8 +47,8 @@ export class TowerDrainerSquadManager implements ISquadManager {
      * Returns the implementation object for the squad
      * @param operation The parent operation of the squad
      */
-    public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation { 
-        switch(operation.operationStrategy) { 
+    public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation {
+        switch (operation.operationStrategy) {
             case OP_STRATEGY_COMBINED: return this[OP_STRATEGY_COMBINED];
             case OP_STRATEGY_FFA: return this[OP_STRATEGY_FFA];
             default: return this[OP_STRATEGY_FFA];
@@ -110,13 +111,13 @@ export class TowerDrainerSquadManager implements ISquadManager {
         return LOW_PRIORITY;
     }
 
-    
-    /**
-     * Implementation of OP_STRATEGY_FFA 
-     */
-    public ffa = { 
 
-        runSquad(instance: ISquadManager): void { 
+    /**
+     * Implementation of OP_STRATEGY_FFA
+     */
+    public ffa = {
+
+        runSquad(instance: ISquadManager): void {
             return;
         }
 
@@ -127,7 +128,7 @@ export class TowerDrainerSquadManager implements ISquadManager {
      */
     public combined = {
 
-        runSquad(instance: ISquadManager): void { 
+        runSquad(instance: ISquadManager): void {
             return;
         }
 

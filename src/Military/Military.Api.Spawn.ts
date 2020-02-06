@@ -14,8 +14,9 @@ export class Military_Spawn_Api {
      * @param managerType the manager constant of the instance we want to create
      * @param targetRoom the room we want to commence the operation in
      * @param operationUUID the operation uuid
+     * @param operationStrategy [Optional] defaults to none, the operation override constant for the operation
      */
-    public static createSquadInstance(managerType: SquadManagerConstant, targetRoom: string, operationUUID: string): void {
+    public static createSquadInstance(managerType: SquadManagerConstant, targetRoom: string, operationUUID: string, operationStrategy: OpStrategyConstant = OP_STRATEGY_NONE): void {
 
         // Find the implementation of the squad instance denoted by the manager type, error if none found
         const managerImplementation: ISquadManager | undefined = MemoryApi_Military.getSingletonSquadManager(managerType);
@@ -33,12 +34,13 @@ export class Military_Spawn_Api {
             operation = {
                 squads: squadData,
                 operationUUID,
-                operationStrategy: OP_STRATEGY_NONE // Default to no strategy
+                operationStrategy
             };
             Memory.empire.militaryOperations[operationUUID] = operation;
         }
         else {
             // Loop over military operations, and find a match to push the squad instance onto it
+            Memory.empire.militaryOperations[operationUUID].operationStrategy = operationStrategy;
             Memory.empire.militaryOperations[operationUUID].squads[squadInstance.squadUUID] = squadInstance;
         }
 

@@ -53,7 +53,7 @@ export class MemoryApi_Military {
      * @param instance the implmeentation instance of the squad
      * @returns array of creeps in the squad
      */
-    public static getCreepsInSquadByInstance(instance: ISquadManager): Creep[] {
+    public static getCreepsInSquadByInstance(instance: ISquadManager): Array<Creep | undefined> {
         const creeps: Creep[] = [];
         if (!instance.creeps) {
             return creeps;

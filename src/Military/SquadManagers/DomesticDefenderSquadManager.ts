@@ -152,9 +152,9 @@ export class DomesticDefenderSquadManager implements ISquadManager {
                 return;
             }
 
-            this.decideMoveIntents(status);
-            this.decideAttackIntents(status);
-            this.decideHealIntents(status);
+            this.decideMoveIntents(instance, status);
+            this.decideAttackIntents(instance, status);
+            this.decideHealIntents(instance, status);
 
             for (const i in creeps) {
                 const creep: Creep = creeps[i];
@@ -162,15 +162,15 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             }
         },
 
-        decideMoveIntents(status: SquadStatusConstant): void {
+        decideMoveIntents(instance: ISquadManager, status: SquadStatusConstant): void {
             return;
         },
 
-        decideAttackIntents(status: SquadStatusConstant): void {
+        decideAttackIntents(instance: ISquadManager, status: SquadStatusConstant): void {
             return;
         },
 
-        decideHealIntents(status: SquadStatusConstant): void {
+        decideHealIntents(instance: ISquadManager, status: SquadStatusConstant): void {
             return;
         },
     }

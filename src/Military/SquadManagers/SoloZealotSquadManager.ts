@@ -12,7 +12,7 @@ import {
 
 export class SoloZealotSquadManager implements ISquadManager {
     public name: SquadManagerConstant = SOLO_ZEALOT_MAN;
-    public creeps: string[] = [];
+    public creeps: SquadStack[] = [];
     public targetRoom: string = "";
     public squadUUID: string = "";
     public operationUUID: string = "";

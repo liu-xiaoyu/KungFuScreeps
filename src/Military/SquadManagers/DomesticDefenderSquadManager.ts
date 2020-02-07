@@ -21,7 +21,7 @@ import {
 
 export class DomesticDefenderSquadManager implements ISquadManager {
     public name: SquadManagerConstant = DOMESTIC_DEFENDER_MAN;
-    public creeps: string[] = [];
+    public creeps: SquadStack[] = [];
     public targetRoom: string = "";
     public squadUUID: string = "";
     public operationUUID: string = "";
@@ -156,38 +156,10 @@ export class DomesticDefenderSquadManager implements ISquadManager {
                 return;
             }
 
-            const CREEP_RANGE: number = 3;
-            const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
-            const enemies: Creep[] = MemoryApi_Creep.getHostileCreeps(instance.targetRoom);
-            const ramparts: Structure[] = MemoryApi_Room.getStructureOfType(instance.targetRoom, STRUCTURE_RAMPART);
 
-            // Behavior for each creep, all stalkers so no need to split into different behavior
-            // But we will want to split into the different roles for other managers, and possible
-            // do the same here for the ability to plug and play roles into managers
-            for (const i in creeps) {
-                const creep: Creep = creeps[i];
-                const defenseRampart: Structure | null = MilitaryMovment_Api.findDefenseRampart(creep, enemies, ramparts);
-                if (!defenseRampart) {
-                    continue;
-                }
+            // implement the mili intent getter here
 
-                // Move to the rampart
-                if (!creep.pos.isEqualTo(defenseRampart.pos)) {
-                    creep.moveTo(defenseRampart.pos);
-                    continue;
-                }
-
-                // We're on the rampart, check for enemies in range and fire away
-                const target: Creep | null = creep.pos.findClosestByRange(enemies);
-                if (!target) {
-                    continue;
-                }
-
-                if (creep.pos.inRangeTo(target.pos, CREEP_RANGE)) {
-                    creep.rangedAttack(target);
-                    continue;
-                }
-            }
+            // then run the stalker
         }
 
     }

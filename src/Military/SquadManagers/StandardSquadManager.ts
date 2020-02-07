@@ -13,7 +13,7 @@ import {
 
 export class StandardSquadManager implements ISquadManager {
     public name: SquadManagerConstant = STANDARD_MAN;
-    public creeps: string[] = [];
+    public creeps: SquadStack[] = [];
     public targetRoom: string = "";
     public squadUUID: string = "";
     public operationUUID: string = "";

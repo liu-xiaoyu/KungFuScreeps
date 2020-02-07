@@ -13,7 +13,7 @@ import {
 
 export class SoloStalkerSquadManager implements ISquadManager {
     public name: SquadManagerConstant = SOLO_STALKER_MAN;
-    public creeps: string[] = [];
+    public creeps: SquadStack[] = [];
     public targetRoom: string = "";
     public squadUUID: string = "";
     public operationUUID: string = "";

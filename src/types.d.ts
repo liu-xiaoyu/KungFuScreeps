@@ -245,7 +245,7 @@ interface ICivCreepRoleManager {
 
 interface ISquadManager {
     name: SquadManagerConstant;
-    creeps: string[];
+    creeps: SquadStack[];
     targetRoom: string;
     squadUUID: string;
     operationUUID: string;
@@ -261,6 +261,11 @@ interface ISquadManager {
     getSpawnPriority: () => number;
 
     strategyImplementation?: SquadStrategyImplementation;
+}
+
+interface SquadStack {
+    name: string;
+    intents: MiliIntent | undefined;
 }
 
 type SquadStrategyImplementation = {

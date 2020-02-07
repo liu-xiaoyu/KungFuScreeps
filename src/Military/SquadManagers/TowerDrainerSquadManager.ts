@@ -13,7 +13,7 @@ import {
 
 export class TowerDrainerSquadManager implements ISquadManager {
     public name: SquadManagerConstant = TOWER_DRAINER_MAN;
-    public creeps: string[] = [];
+    public creeps: SquadStack[] = [];
     public targetRoom: string = "";
     public squadUUID: string = "";
     public operationUUID: string = "";

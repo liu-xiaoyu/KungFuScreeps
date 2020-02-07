@@ -28,7 +28,7 @@ export class MemoryApi_Military {
      * @returns array of creeps in the squad
      */
     public static getCreepsInSquadByUUIDs(operationUUID: string, squadUUID: string): Creep[] | undefined {
-        const creepNames: string[] | undefined = this.getSquadByUUIDs(operationUUID, squadUUID)?.creeps;
+        const creepNames: SquadStack[] | undefined = this.getSquadByUUIDs(operationUUID, squadUUID)?.creeps;
         if (!creepNames) {
             return undefined;
         }
@@ -38,11 +38,11 @@ export class MemoryApi_Military {
             if (!creepNames[i]) {
                 continue;
             }
-            if (!Game.creeps[creepNames[i]]) {
+            if (!Game.creeps[creepNames[i].name]) {
                 continue;
             }
 
-            creeps.push(Game.creeps[creepNames[i]]);
+            creeps.push(Game.creeps[creepNames[i].name]);
         }
 
         return creeps;
@@ -59,7 +59,7 @@ export class MemoryApi_Military {
             return creeps;
         }
         for (const i in instance.creeps) {
-            creeps.push(Game.creeps[instance.creeps[i]]);
+            creeps.push(Game.creeps[instance.creeps[i].name]);
         }
         return creeps;
     }
@@ -75,7 +75,7 @@ export class MemoryApi_Military {
             return creeps;
         }
         for (const i in instance.creeps) {
-            const creep: Creep | undefined = Game.creeps[instance.creeps[i]];
+            const creep: Creep | undefined = Game.creeps[instance.creeps[i].name];
             if (!creep) {
                 continue;
             }
@@ -90,7 +90,10 @@ export class MemoryApi_Military {
      * @param squadUUID
      */
     public static addCreepToSquad(operationUUID: string, squadUUID: string, creepName: string): void {
-        this.getSquadByUUIDs(operationUUID, squadUUID)?.creeps.push(creepName);
+        this.getSquadByUUIDs(operationUUID, squadUUID)?.creeps.push({
+            name: creepName,
+            intents: undefined
+        });
     }
 
     /**
@@ -105,12 +108,16 @@ export class MemoryApi_Military {
             return;
         }
 
-        const livingCreeps: string[] = [];
+        const livingCreeps: SquadStack[] = [];
         // Remove the creeps name from the squad
         for (const i in squad.creeps) {
-            const creepName: string = squad.creeps[i];
+            const creepName: string = squad.creeps[i].name;
+            const intentStack: MiliIntent | undefined = squad.creeps[i].intents;
             if (Game.creeps[creepName]) {
-                livingCreeps.push(creepName);
+                livingCreeps.push({
+                    name: creepName,
+                    intents: intentStack
+                });
             }
         }
 

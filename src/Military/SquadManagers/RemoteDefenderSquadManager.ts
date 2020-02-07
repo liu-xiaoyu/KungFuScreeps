@@ -12,7 +12,7 @@ import {
 
 export class RemoteDefenderSquadManager implements ISquadManager {
     public name: SquadManagerConstant = REMOTE_DEFENDER_MAN;
-    public creeps: string[] = [];
+    public creeps: SquadStack[] = [];
     public targetRoom: string = "";
     public squadUUID: string = "";
     public operationUUID: string = "";

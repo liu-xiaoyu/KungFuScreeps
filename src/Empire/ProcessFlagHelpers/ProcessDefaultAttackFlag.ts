@@ -6,7 +6,8 @@ import {
     SOLO_ZEALOT_MAN,
     TOWER_DRAINER_MAN,
     UserException,
-    ERROR_ERROR
+    ERROR_ERROR,
+    DOMESTIC_DEFENDER_MAN
 } from "Utils/Imports/internals";
 
 export class ProcessDefaultAttackFlag implements IFlagProcesser {
@@ -38,7 +39,8 @@ export class ProcessDefaultAttackFlag implements IFlagProcesser {
                 break;
 
             case COLOR_BLUE:    // Solo Zealot
-                Military_Spawn_Api.createSquadInstance(SOLO_ZEALOT_MAN, roomName, operationUUID);
+                // Military_Spawn_Api.createSquadInstance(SOLO_ZEALOT_MAN, roomName, operationUUID);
+                Military_Spawn_Api.createSquadInstance(DOMESTIC_DEFENDER_MAN, roomName, operationUUID); // TEMP DOMESTIC DEFENDER TESTING
                 break;
 
             case COLOR_BROWN:   // Solo Stalker

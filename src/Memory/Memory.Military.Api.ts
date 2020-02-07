@@ -53,13 +53,33 @@ export class MemoryApi_Military {
      * @param instance the implmeentation instance of the squad
      * @returns array of creeps in the squad
      */
-    public static getCreepsInSquadByInstance(instance: ISquadManager): Creep[] {
+    public static getCreepsInSquadByInstance(instance: ISquadManager): Array<Creep | undefined> {
         const creeps: Creep[] = [];
         if (!instance.creeps) {
             return creeps;
         }
         for (const i in instance.creeps) {
             creeps.push(Game.creeps[instance.creeps[i]]);
+        }
+        return creeps;
+    }
+
+    /**
+     * Gets the LIVING creeps in the squad by instance reference
+     * @param instance the implmeentation instance of the squad
+     * @returns array of creeps in the squad that are alive
+     */
+    public static getLivingCreepsInSquadByInstance(instance: ISquadManager): Creep[] {
+        const creeps: Creep[] = [];
+        if (!instance.creeps) {
+            return creeps;
+        }
+        for (const i in instance.creeps) {
+            const creep: Creep | undefined = Game.creeps[instance.creeps[i]];
+            if (!creep) {
+                continue;
+            }
+            creeps.push(creep);
         }
         return creeps;
     }
@@ -114,5 +134,12 @@ export class MemoryApi_Military {
             "tried to handle [" + managerType + "] but no implementation was found.",
             ERROR_ERROR
         );
+    }
+
+    /**
+     * Get all operations in the empire
+     */
+    public static getAllOperations(): OperationData {
+        return Memory.empire.militaryOperations;
     }
 }

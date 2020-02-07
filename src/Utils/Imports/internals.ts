@@ -11,6 +11,8 @@ export * from "Utils/UtilHelpers/Normalize";
 export * from "AutoConstruction/AutoConstruction.Api";
 export * from "Creeps/Creep.All.Api";
 export * from "Military/Military.Api.Spawn";
+export * from "Military/Military.Api.Combat";
+export * from "Military/Military.Api.Movement";
 export * from "Empire/Empire.Api";
 export * from "Memory/Memory.All.Api";
 export * from "Memory/Memory.Creep.Api";
@@ -84,6 +86,7 @@ export * from "ManagerManager";
 export * from "Memory/MemoryManagement";
 export * from "Room/RoomManager";
 export * from "Spawn/SpawnManager";
+export * from "Military/MilitaryManager";
 // ---------------------------------
 // Import Room Visuals
 export * from "RoomVisuals/RoomVisual.Api";

@@ -191,7 +191,7 @@ type ROLE_MANAGER = "manager"; //
 // Operation Strategy Constants
 type OP_STRATEGY_NONE = "none"; // Default implementation for each squad
 type OP_STRATEGY_FFA = "ffa"; // Each squad should act independently of each other
-type OP_STRATEGY_COMBINED = "combined"; // Each squad should move together 
+type OP_STRATEGY_COMBINED = "combined"; // Each squad should move together
 
 type OpStrategyConstant = OP_STRATEGY_NONE | OP_STRATEGY_FFA | OP_STRATEGY_COMBINED;
 
@@ -211,8 +211,9 @@ type SquadManagerConstant = SOLO_STALKER_MAN | SOLO_ZEALOT_MAN | STANDARD_MAN | 
 type SQUAD_STATUS_OK = 0;
 type SQUAD_STATUS_RALLY = 1;
 type SQUAD_STATUS_DONE = 2;
+type SQUAD_STATUS_DEAD = 3;
 
-type SquadStatusConstant = SQUAD_STATUS_OK | SQUAD_STATUS_RALLY | SQUAD_STATUS_DONE;
+type SquadStatusConstant = SQUAD_STATUS_OK | SQUAD_STATUS_RALLY | SQUAD_STATUS_DONE | SQUAD_STATUS_DEAD;
 
 type RallyOpts = {
     avoidedRoomTypes?: RoomStatusType[],
@@ -238,13 +239,13 @@ interface ISquadManager {
     initialRallyComplete?: boolean;
     rallyPos: MockRoomPos | undefined;
 
-    runSquad: (instance: ISquadManager, room: Room) => void;
+    runSquad: (instance: ISquadManager) => void;
     addCreep(instance: ISquadManager, creepName: string): void;
     createInstance: (targetroom: string, operationUUID: string) => ISquadManager;
-    checkStatus: (instance: ISquadManager) => number;
+    checkStatus: (instance: ISquadManager) => SquadStatusConstant;
     getSquadArray: () => SquadDefinition[];
     getSpawnPriority: () => number;
-    
+
     strategyImplementation?: SquadStrategyImplementation;
 }
 

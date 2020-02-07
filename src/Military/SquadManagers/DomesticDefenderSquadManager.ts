@@ -8,7 +8,15 @@ import {
     OP_STRATEGY_NONE,
     OP_STRATEGY_COMBINED,
     OP_STRATEGY_FFA,
-    HIGH_PRIORITY
+    HIGH_PRIORITY,
+    SQUAD_STATUS_RALLY,
+    SQUAD_STATUS_DONE,
+    MilitaryMovment_Api,
+    MilitaryCombat_Api,
+    SQUAD_STATUS_DEAD,
+    MemoryApi_Room,
+    MemoryApi_Creep,
+    SQUAD_MANAGERS
 } from "Utils/Imports/internals";
 
 export class DomesticDefenderSquadManager implements ISquadManager {
@@ -37,7 +45,6 @@ export class DomesticDefenderSquadManager implements ISquadManager {
     public runSquad(instance: ISquadManager): void {
         const operation = MemoryApi_Military.getOperationByUUID(instance.operationUUID);
         const squadImplementation = this.getSquadStrategyImplementation(operation!);
-        
         // Run the specific strategy for the current operation
         squadImplementation.runSquad(instance);
 
@@ -47,8 +54,8 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      * Returns the implementation object for the squad
      * @param operation The parent operation of the squad
      */
-    public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation { 
-        switch(operation.operationStrategy) { 
+    public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation {
+        switch (operation.operationStrategy) {
             case OP_STRATEGY_COMBINED: return this[OP_STRATEGY_COMBINED];
             case OP_STRATEGY_FFA: return this[OP_STRATEGY_FFA];
             default: return this[OP_STRATEGY_FFA];
@@ -85,6 +92,27 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      * @returns boolean representing the squads current status
      */
     public checkStatus(instance: ISquadManager): SquadStatusConstant {
+
+        // Handle initial rally status
+        if (!instance.initialRallyComplete) {
+            if (MilitaryMovment_Api.isSquadRallied(instance)) {
+                instance.initialRallyComplete = true;
+                return SQUAD_STATUS_OK;
+            }
+            return SQUAD_STATUS_RALLY;
+        }
+
+        // Check if the squad is done with the attack (ie, attack success)
+        if (MilitaryCombat_Api.isOperationDone(instance)) {
+            return SQUAD_STATUS_DONE;
+        }
+
+        // Check if the squad was killed
+        if (MilitaryCombat_Api.isSquadDead(instance)) {
+            return SQUAD_STATUS_DEAD;
+        }
+
+        // If nothing else, we are OK
         return SQUAD_STATUS_OK;
     }
 
@@ -94,7 +122,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      */
     public getSquadArray(): SquadDefinition[] {
         const stalker1: SquadDefinition = {
-            role: ROLE_ZEALOT,
+            role: ROLE_STALKER,
             caravanPos: 0
         };
         return [stalker1];
@@ -108,12 +136,56 @@ export class DomesticDefenderSquadManager implements ISquadManager {
     }
 
     /**
-     * Implementation of OP_STRATEGY_FFA 
+     * Implementation of OP_STRATEGY_FFA
      */
-    public ffa = { 
+    public ffa = {
 
-        runSquad(instance: ISquadManager): void { 
-            return;
+        runSquad(instance: ISquadManager): void {
+            // find squad implementation
+            const singleton: ISquadManager = MemoryApi_Military.getSingletonSquadManager(instance.name);
+            const status: SquadStatusConstant = singleton.checkStatus(instance);
+
+            if (status === SQUAD_STATUS_RALLY) {
+                // rally creep
+                return;
+            }
+
+            if (status !== SQUAD_STATUS_OK) {
+                return;
+            }
+
+            const CREEP_RANGE: number = 3;
+            const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
+            const enemies: Creep[] = MemoryApi_Creep.getHostileCreeps(instance.targetRoom);
+            const ramparts: Structure[] = MemoryApi_Room.getStructureOfType(instance.targetRoom, STRUCTURE_RAMPART);
+
+            // Behavior for each creep, all stalkers so no need to split into different behavior
+            // But we will want to split into the different roles for other managers, and possible
+            // do the same here for the ability to plug and play roles into managers
+            for (const i in creeps) {
+                const creep: Creep = creeps[i];
+                const defenseRampart: Structure | null = MilitaryMovment_Api.findDefenseRampart(creep, enemies, ramparts);
+                if (!defenseRampart) {
+                    continue;
+                }
+
+                // Move to the rampart
+                if (!creep.pos.isEqualTo(defenseRampart.pos)) {
+                    creep.moveTo(defenseRampart.pos);
+                    continue;
+                }
+
+                // We're on the rampart, check for enemies in range and fire away
+                const target: Creep | null = creep.pos.findClosestByRange(enemies);
+                if (!target) {
+                    continue;
+                }
+
+                if (creep.pos.inRangeTo(target.pos, CREEP_RANGE)) {
+                    creep.rangedAttack(target);
+                    continue;
+                }
+            }
         }
 
     }
@@ -123,7 +195,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      */
     public combined = {
 
-        runSquad(instance: ISquadManager): void { 
+        runSquad(instance: ISquadManager): void {
             return;
         }
 

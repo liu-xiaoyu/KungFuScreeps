@@ -219,8 +219,16 @@ type RallyOpts = {
     avoidedRoomTypes?: RoomStatusType[],
     preferredRoomTypes?: RoomStatusType[],
     rallyInTargetRoom?: boolean,
-    
 }
+
+// Military Actions
+type ACTION_ATTACK = 0;
+type ACTION_MOVE = 1;
+type ACTION_RANGED_ATTACK = 2;
+type ACTION_MASS_RANGED = 3;
+type ACTION_HEAL = 4;
+
+type MilitaryActionConstants = ACTION_ATTACK | ACTION_MASS_RANGED | ACTION_MOVE | ACTION_RANGED_ATTACK | ACTION_HEAL;
 
 // Role Interfaces to be implemented  -------------
 interface ICivCreepRoleManager {

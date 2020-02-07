@@ -145,11 +145,13 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             const singleton: ISquadManager = MemoryApi_Military.getSingletonSquadManager(instance.name);
             const status: SquadStatusConstant = singleton.checkStatus(instance);
 
+            // As of right now, the defender creep doesn't need to rally, if that changes in the future add the code here
             if (status === SQUAD_STATUS_RALLY) {
                 // rally creep
                 return;
             }
 
+            // Anything else besides OK and we idle
             if (status !== SQUAD_STATUS_OK) {
                 return;
             }

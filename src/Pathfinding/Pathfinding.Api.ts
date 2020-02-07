@@ -49,9 +49,9 @@ export class PathfindingApi {
             roomStatus = ROOM_STATUS_HOSTILE;
         } else if (!room.controller.my && room.controller.reservation !== undefined) {
 
-            if(room.controller.reservation.username === "Invader"){
+            if (room.controller.reservation.username === "Invader") {
                 roomStatus = ROOM_STATUS_INVADER_REMOTE;
-            } else { 
+            } else {
                 roomStatus = ROOM_STATUS_HOSTILE_REMOTE;
             }
 
@@ -107,14 +107,14 @@ export class PathfindingApi {
             range: 0, // Assume we want to go to the location, if not told otherwise
             ignoreCreeps: true,
             reusePath: 999,
-            maxRooms: 64, // TODO Look into a way to make this dynamic, so that we don't waste CPU when doing things like finding a path to an object in the same room, but there's no path so we cycle through 64 rooms and halt
+            maxRooms: 16, // TODO Look into a way to make this dynamic, so that we don't waste CPU when doing things like finding a path to an object in the same room, but there's no path so we cycle through 64 rooms and halt
             // swampCost: 5, // Putting this here as a reminder that we can make bigger creeps that can move on swamps
             visualizePathStyle: {}, // Empty object for now, just uses default visualization
             costCallback(roomName: string, costMatrix: CostMatrix) {
                 if (PathfindingApi.UseRoomForCostMatrix(roomName, costMatrix, creep)) {
                     PathfindingApi.SetCreepCostMatrix(roomName, costMatrix);
                 } else {
-                    PathfindingApi.BlockRoomForCostMatrix(roomName, costMatrix); 
+                    PathfindingApi.BlockRoomForCostMatrix(roomName, costMatrix);
                 }
                 return costMatrix;
             }
@@ -167,12 +167,12 @@ export class PathfindingApi {
      * @param costMatrx The costMatrix object to set the values on
      */
     public static UseRoomForCostMatrix(roomName: string, costMatrix?: CostMatrix, creep?: Creep): boolean {
-        
+
         // Always allow pathing in the creeps current room and target room
-        if(creep?.room.name === roomName || creep?.memory.targetRoom === roomName) { 
+        if (creep?.room.name === roomName || creep?.memory.targetRoom === roomName) {
             return true;
         }
-        
+
         const roomStatus = this.retrieveRoomStatus(roomName);
 
         // Todo - Retrieve the lastSeen for the room as well for decisions about rooms that haven't been seen in a while
@@ -196,7 +196,7 @@ export class PathfindingApi {
                 return true;
             case ROOM_STATUS_INVADER_REMOTE:
                 return true;
-            default: 
+            default:
                 return false;
         }
     }

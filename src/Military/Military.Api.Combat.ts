@@ -28,12 +28,12 @@ export class MilitaryCombat_Api {
     }
 
     /**
-     * Run the intents for the stalker creep
+     * Run the intents for the squad creep
      * TODO
      * @instance the instance of the squad we're running this from
      * @creep the creep we are commiting the intents for
      */
-    public static runStalker(instance: ISquadManager, creep: Creep): void {
+    public static runIntents(instance: ISquadManager, creep: Creep): void {
         return;
     }
 }

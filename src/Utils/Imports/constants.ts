@@ -187,6 +187,7 @@ export const ACTION_MOVE = 1;
 export const ACTION_RANGED_ATTACK = 2;
 export const ACTION_MASS_RANGED = 3;
 export const ACTION_HEAL = 4;
+export const ACTION_RANGED_HEAL = 5;
 
 // Spawn Priority constants for military squads
 export const HIGH_PRIORITY: number = 1;

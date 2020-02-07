@@ -227,8 +227,14 @@ type ACTION_MOVE = 1;
 type ACTION_RANGED_ATTACK = 2;
 type ACTION_MASS_RANGED = 3;
 type ACTION_HEAL = 4;
+type ACTION_RANGED_HEAL = 5;
 
-type MilitaryActionConstants = ACTION_ATTACK | ACTION_MASS_RANGED | ACTION_MOVE | ACTION_RANGED_ATTACK | ACTION_HEAL;
+type MilitaryActionConstants = ACTION_ATTACK | ACTION_MASS_RANGED | ACTION_MOVE | ACTION_RANGED_ATTACK | ACTION_HEAL | ACTION_RANGED_HEAL;
+
+interface MiliIntent {
+    action: MilitaryActionConstants;
+    target: string | MockRoomPos;
+}
 
 // Role Interfaces to be implemented  -------------
 interface ICivCreepRoleManager {

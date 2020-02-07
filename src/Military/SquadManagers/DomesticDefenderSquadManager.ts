@@ -144,24 +144,35 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             // find squad implementation
             const singleton: ISquadManager = MemoryApi_Military.getSingletonSquadManager(instance.name);
             const status: SquadStatusConstant = singleton.checkStatus(instance);
-
-            // As of right now, the defender creep doesn't need to rally, if that changes in the future add the code here
-            if (status === SQUAD_STATUS_RALLY) {
-                // rally creep
-                return;
-            }
+            const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
 
             // Anything else besides OK and we idle
-            if (status !== SQUAD_STATUS_OK) {
+            if (status === SQUAD_STATUS_DEAD) {
+                delete Memory.empire.militaryOperations[instance.operationUUID].squads[instance.squadUUID];
                 return;
             }
 
+            this.decideMoveIntents(status);
+            this.decideAttackIntents(status);
+            this.decideHealIntents(status);
 
-            // implement the mili intent getter here
+            for (const i in creeps) {
+                const creep: Creep = creeps[i];
+                MilitaryCombat_Api.runStalker(instance, creep);
+            }
+        },
 
-            // then run the stalker
-        }
+        decideMoveIntents(status: SquadStatusConstant): void {
+            return;
+        },
 
+        decideAttackIntents(status: SquadStatusConstant): void {
+            return;
+        },
+
+        decideHealIntents(status: SquadStatusConstant): void {
+            return;
+        },
     }
 
     /**

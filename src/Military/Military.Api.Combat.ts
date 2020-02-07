@@ -26,4 +26,14 @@ export class MilitaryCombat_Api {
     public static isOperationDone(instance: ISquadManager): boolean {
         return false;
     }
+
+    /**
+     * Run the intents for the stalker creep
+     * TODO
+     * @instance the instance of the squad we're running this from
+     * @creep the creep we are commiting the intents for
+     */
+    public static runStalker(instance: ISquadManager, creep: Creep): void {
+        return;
+    }
 }

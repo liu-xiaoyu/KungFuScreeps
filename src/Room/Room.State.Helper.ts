@@ -53,8 +53,9 @@ export class RoomHelper_State {
         if (room.controller === undefined) {
             return false;
         } else if (
+            // TODO Fix this to actually use our Ally List
             room.controller.owner !== undefined &&
-            (room.controller.owner.username === "UhmBrock" || room.controller.owner.username === "jakesboy2")
+            (room.controller.owner.username === "UhmBrock" || room.controller.owner.username === "jakesboy2" || room.controller.owner.username === "atanner")
         ) {
             return true;
         } else if (this.isAllyReserved(room)) {
@@ -76,7 +77,8 @@ export class RoomHelper_State {
             room.controller.reservation !== undefined &&
             room.controller.reservation.username !== undefined &&
             (room.controller.reservation!.username === "UhmBrock" ||
-                room.controller.reservation!.username === "jakesboy2")
+                room.controller.reservation!.username === "jakesboy2" ||
+                room.controller.reservation!.username === "atanner")
         );
     }
 

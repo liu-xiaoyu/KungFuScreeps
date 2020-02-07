@@ -214,6 +214,13 @@ type SQUAD_STATUS_DONE = 2;
 
 type SquadStatusConstant = SQUAD_STATUS_OK | SQUAD_STATUS_RALLY | SQUAD_STATUS_DONE;
 
+type RallyOpts = {
+    avoidedRoomTypes?: RoomStatusType[],
+    preferredRoomTypes?: RoomStatusType[],
+    rallyInTargetRoom?: boolean,
+    
+}
+
 // Role Interfaces to be implemented  -------------
 interface ICivCreepRoleManager {
     name: RoleConstant;
@@ -335,9 +342,10 @@ interface CreepBodyDescriptor {
 /**
  * Ally Names
  */
-type AllyConstant = JAKESBOY2 | UHMBROCK;
+type AllyConstant = JAKESBOY2 | UHMBROCK | ATANNER;
 type JAKESBOY2 = "jakesboy2";
 type UHMBROCK = "uhmbrock";
+type ATANNER = "atanner";
 
 /**
  * Generic

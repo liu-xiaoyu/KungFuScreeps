@@ -7,7 +7,8 @@ import {
     ROOM_STATUS_UNKNOWN,
     ROOM_STATUS_HOSTILE_REMOTE,
     RoomHelper_State,
-    ROOM_STATUS_INVADER_REMOTE
+    ROOM_STATUS_INVADER_REMOTE,
+    ROOM_STATUS_ALLY_REMOTE
 } from "Utils/Imports/internals";
 
 export class PathfindingApi {
@@ -106,6 +107,7 @@ export class PathfindingApi {
             range: 0, // Assume we want to go to the location, if not told otherwise
             ignoreCreeps: true,
             reusePath: 999,
+            maxRooms: 64, // TODO Look into a way to make this dynamic, so that we don't waste CPU when doing things like finding a path to an object in the same room, but there's no path so we cycle through 64 rooms and halt
             // swampCost: 5, // Putting this here as a reminder that we can make bigger creeps that can move on swamps
             visualizePathStyle: {}, // Empty object for now, just uses default visualization
             costCallback(roomName: string, costMatrix: CostMatrix) {
@@ -166,8 +168,8 @@ export class PathfindingApi {
      */
     public static UseRoomForCostMatrix(roomName: string, costMatrix?: CostMatrix, creep?: Creep): boolean {
         
-        // Always allow pathing in the creeps current room
-        if(creep?.room.name === roomName) { 
+        // Always allow pathing in the creeps current room and target room
+        if(creep?.room.name === roomName || creep?.memory.targetRoom === roomName) { 
             return true;
         }
         
@@ -178,27 +180,32 @@ export class PathfindingApi {
         switch (roomStatus) {
             case ROOM_STATUS_ALLY:
                 return true;
+            case ROOM_STATUS_ALLY_REMOTE:
+                return true;
             case ROOM_STATUS_HIGHWAY:
                 return true;
             case ROOM_STATUS_NEUTRAL:
                 return true;
             case ROOM_STATUS_HOSTILE:
                 return false;
+            case ROOM_STATUS_HOSTILE_REMOTE:
+                return false;
             case ROOM_STATUS_UNKNOWN:
                 return true;
             case ROOM_STATUS_SOURCE_KEEPER:
+                return true;
+            case ROOM_STATUS_INVADER_REMOTE:
+                return true;
+            default: 
                 return false;
         }
-
-        return true;
     }
 
     /**
      * Creates a room where all sides are considered unwalkable
      */
     public static BlockRoomForCostMatrix(roomName: string, costMatrix: CostMatrix): void {
-        // x = 0 y = 0-49
-        // x = 49, y = 0-49
+
         for (let i = 0; i < 50; i++) {
             costMatrix.set(i, 0, 255);
             costMatrix.set(i, 49, 255);

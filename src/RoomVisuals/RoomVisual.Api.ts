@@ -54,6 +54,7 @@ export class RoomVisualApi {
         lines.push("GCL:   " + gclPercent + "%");
         lines.push("LVL:    " + Game.gcl["level"]);
         lines.push("");
+        lines.push("Tick: " + Game.time);
         lines.push("Viewing:  [ " + room.name + " ]");
         RoomVisualHelper.multiLineText(lines, x, y, room.name, true);
 

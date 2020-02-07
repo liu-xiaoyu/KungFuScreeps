@@ -234,6 +234,7 @@ type MilitaryActionConstants = ACTION_ATTACK | ACTION_MASS_RANGED | ACTION_MOVE 
 interface MiliIntent {
     action: MilitaryActionConstants;
     target: string | MockRoomPos;
+    targetType: string;
 }
 
 // Role Interfaces to be implemented  -------------

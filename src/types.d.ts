@@ -195,7 +195,7 @@ type OP_STRATEGY_COMBINED = "combined"; // Each squad should move together
 
 type OpStrategyConstant = OP_STRATEGY_NONE | OP_STRATEGY_FFA | OP_STRATEGY_COMBINED;
 
-type OpStrategyTypes = { [key in OpStrategyConstant]?: string }
+type OpStrategyTypes = { [key in OpStrategyConstant]?: string };
 
 // Squad Manager Name Constants
 type SOLO_ZEALOT_MAN = "soloZealotSquad";
@@ -205,7 +205,13 @@ type TOWER_DRAINER_MAN = "towerDrainerSquad";
 type DOMESTIC_DEFENDER_MAN = "domesticDefenderSquad";
 type REMOTE_DEFENDER_MAN = "remoteDefenderSquad";
 
-type SquadManagerConstant = SOLO_STALKER_MAN | SOLO_ZEALOT_MAN | STANDARD_MAN | TOWER_DRAINER_MAN | DOMESTIC_DEFENDER_MAN | REMOTE_DEFENDER_MAN;
+type SquadManagerConstant =
+    | SOLO_STALKER_MAN
+    | SOLO_ZEALOT_MAN
+    | STANDARD_MAN
+    | TOWER_DRAINER_MAN
+    | DOMESTIC_DEFENDER_MAN
+    | REMOTE_DEFENDER_MAN;
 
 // Military Squad Status Types
 type SQUAD_STATUS_OK = 0;
@@ -216,10 +222,10 @@ type SQUAD_STATUS_DEAD = 3;
 type SquadStatusConstant = SQUAD_STATUS_OK | SQUAD_STATUS_RALLY | SQUAD_STATUS_DONE | SQUAD_STATUS_DEAD;
 
 type RallyOpts = {
-    avoidedRoomTypes?: RoomStatusType[],
-    preferredRoomTypes?: RoomStatusType[],
-    rallyInTargetRoom?: boolean,
-}
+    avoidedRoomTypes?: RoomStatusType[];
+    preferredRoomTypes?: RoomStatusType[];
+    rallyInTargetRoom?: boolean;
+};
 
 // Military Actions
 type ACTION_ATTACK = 0;
@@ -229,11 +235,17 @@ type ACTION_MASS_RANGED = 3;
 type ACTION_HEAL = 4;
 type ACTION_RANGED_HEAL = 5;
 
-type MilitaryActionConstants = ACTION_ATTACK | ACTION_MASS_RANGED | ACTION_MOVE | ACTION_RANGED_ATTACK | ACTION_HEAL | ACTION_RANGED_HEAL;
+type MilitaryActionConstants =
+    | ACTION_ATTACK
+    | ACTION_MASS_RANGED
+    | ACTION_MOVE
+    | ACTION_RANGED_ATTACK
+    | ACTION_HEAL
+    | ACTION_RANGED_HEAL;
 
 interface MiliIntent {
     action: MilitaryActionConstants;
-    target: string | MockRoomPos;
+    target: string | MockRoomPos | DirectionConstant;
     targetType: string;
 }
 
@@ -266,13 +278,13 @@ interface ISquadManager {
 
 interface SquadStack {
     name: string;
-    intents: MiliIntent | undefined;
+    intents: MiliIntent[];
 }
 
 type SquadStrategyImplementation = {
     runSquad: (instance: ISquadManager) => void;
     [functionName: string]: Function;
-}
+};
 
 /**
  * Interface for Creep Role Helpers (for body and options)
@@ -781,7 +793,7 @@ interface RoomMemory {
     /**
      * the center of the bunker for auto construction and spawn referencing
      */
-    bunkerCenter?: RoomPosition;
+    bunkerCenter?: MockRoomPos;
     /**
      * Cache of all creeps
      */
@@ -1063,14 +1075,14 @@ interface MilitaryQueue {
 }
 
 interface SquadDefinition {
-    role: RoleConstant
+    role: RoleConstant;
     caravanPos: number;
 }
 
 interface MockRoomPos {
-    x: number,
-    y: number,
-    roomName: string
+    x: number;
+    y: number;
+    roomName: string;
 }
 
 /**

@@ -16,7 +16,8 @@ import {
     MemoryApi_Creep,
     MemoryApi_Jobs,
     MemoryApi_Empire,
-    RoomHelper_State
+    RoomHelper_State,
+    Normalize
 } from "Utils/Imports/internals";
 
 export class MemoryApi_Room {
@@ -302,6 +303,48 @@ export class MemoryApi_Room {
         }
 
         let structures: Structure[] = MemoryHelper.getOnlyObjectsFromIDs<Structure<StructureConstant>>(structureIDs);
+
+        if (filterFunction !== undefined) {
+            structures = _.filter(structures, filterFunction);
+        }
+
+        return structures;
+    }
+
+    /**
+     * Get structures of a single type in a room, updating if necessary
+     *
+     * [Cached] Memory.rooms[room.name].structures
+     * @param roomName The room to check in
+     * @param filterFunction [Optional] A function to filter by
+     * @param forceUpdate [Optional] Force structures memory to be updated
+     * @returns Structure[] An array of structures of a single type
+     */
+    public static getStructure<T extends Structure>(
+        roomName: string,
+        type: StructureConstant,
+        filterFunction?: (object: T) => boolean,
+        forceUpdate?: boolean
+    ): T[] {
+        // If we have no vision of the room, return an empty array
+        if (!Memory.rooms[roomName]) {
+            return [];
+        }
+
+        if (
+            NO_CACHING_MEMORY ||
+            forceUpdate ||
+            Memory.rooms[roomName].structures === undefined ||
+            Memory.rooms[roomName].structures.data === null ||
+            Memory.rooms[roomName].structures.data[type] === undefined ||
+            Memory.rooms[roomName].structures.cache < Game.time - STRUCT_CACHE_TTL
+        ) {
+            MemoryHelper_Room.updateStructures(roomName);
+        }
+
+        const structureIDs: string[] = Memory.rooms[roomName].structures.data[type];
+
+        let structures: T[] = MemoryHelper.getOnlyObjectsFromIDs<T>(structureIDs);
 
         if (filterFunction !== undefined) {
             structures = _.filter(structures, filterFunction);
@@ -794,7 +837,7 @@ export class MemoryApi_Room {
             MemoryHelper_Room.updateBunkerCenter(room);
         }
 
-        return room.memory.bunkerCenter!;
+        return Normalize.convertMockToRealPos(room.memory.bunkerCenter!);
     }
 
     /**
@@ -804,7 +847,7 @@ export class MemoryApi_Room {
     public static getAllCreepCount(room: Room): AllCreepCount {
         const creepsInRoom: Creep[] = MemoryApi_Creep.getMyCreeps(room.name);
         const allCreepCount: AllCreepCount = MemoryHelper.generateDefaultAllCreepCountObject();
-        
+
         // sum up the number of each role we come across
         for (const creep of creepsInRoom) {
             if (creep.ticksToLive && creep.ticksToLive < creep.body.length * 3) {

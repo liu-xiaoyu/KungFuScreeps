@@ -1,7 +1,6 @@
 import { SQUAD_MANAGERS, UserException } from "Utils/Imports/internals";
 
 export class MemoryApi_Military {
-
     /**
      * Get an active operation of with the provided UUID
      * @param operationUUID
@@ -92,7 +91,7 @@ export class MemoryApi_Military {
     public static addCreepToSquad(operationUUID: string, squadUUID: string, creepName: string): void {
         this.getSquadByUUIDs(operationUUID, squadUUID)?.creeps.push({
             name: creepName,
-            intents: undefined
+            intents: []
         });
     }
 
@@ -112,7 +111,7 @@ export class MemoryApi_Military {
         // Remove the creeps name from the squad
         for (const i in squad.creeps) {
             const creepName: string = squad.creeps[i].name;
-            const intentStack: MiliIntent | undefined = squad.creeps[i].intents;
+            const intentStack: MiliIntent[] = squad.creeps[i].intents;
             if (Game.creeps[creepName]) {
                 livingCreeps.push({
                     name: creepName,

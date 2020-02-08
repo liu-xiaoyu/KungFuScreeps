@@ -16,7 +16,10 @@ import {
     SQUAD_STATUS_DEAD,
     MemoryApi_Room,
     MemoryApi_Creep,
-    SQUAD_MANAGERS
+    SQUAD_MANAGERS,
+    militaryDataHelper,
+    RoomManager,
+    ACTION_MOVE
 } from "Utils/Imports/internals";
 
 export class DomesticDefenderSquadManager implements ISquadManager {
@@ -47,7 +50,6 @@ export class DomesticDefenderSquadManager implements ISquadManager {
         const squadImplementation = this.getSquadStrategyImplementation(operation!);
         // Run the specific strategy for the current operation
         squadImplementation.runSquad(instance);
-
     }
 
     /**
@@ -56,9 +58,12 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      */
     public getSquadStrategyImplementation(operation: MilitaryOperation): SquadStrategyImplementation {
         switch (operation.operationStrategy) {
-            case OP_STRATEGY_COMBINED: return this[OP_STRATEGY_COMBINED];
-            case OP_STRATEGY_FFA: return this[OP_STRATEGY_FFA];
-            default: return this[OP_STRATEGY_FFA];
+            case OP_STRATEGY_COMBINED:
+                return this[OP_STRATEGY_COMBINED];
+            case OP_STRATEGY_FFA:
+                return this[OP_STRATEGY_FFA];
+            default:
+                return this[OP_STRATEGY_FFA];
         }
     }
 
@@ -92,7 +97,6 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      * @returns boolean representing the squads current status
      */
     public checkStatus(instance: ISquadManager): SquadStatusConstant {
-
         // Handle initial rally status
         if (!instance.initialRallyComplete) {
             if (MilitaryMovment_Api.isSquadRallied(instance)) {
@@ -139,7 +143,6 @@ export class DomesticDefenderSquadManager implements ISquadManager {
      * Implementation of OP_STRATEGY_FFA
      */
     public ffa = {
-
         runSquad(instance: ISquadManager): void {
             // find squad implementation
             const singleton: ISquadManager = MemoryApi_Military.getSingletonSquadManager(instance.name);
@@ -152,9 +155,11 @@ export class DomesticDefenderSquadManager implements ISquadManager {
                 return;
             }
 
-            this.decideMoveIntents(instance, status);
-            this.decideAttackIntents(instance, status);
-            this.decideHealIntents(instance, status);
+            const roomData: StringMap = this.getRoomData(creeps);
+
+            this.decideMoveIntents(instance, status, roomData);
+            this.decideRangedAttackIntents(instance, status, roomData);
+            this.decideHealIntents(instance, status, roomData);
 
             for (const i in creeps) {
                 const creep: Creep = creeps[i];
@@ -162,28 +167,93 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             }
         },
 
-        decideMoveIntents(instance: ISquadManager, status: SquadStatusConstant): void {
+        getRoomData(creeps: Creep[]): StringMap {
+            const roomData: StringMap = {};
+
+            _.forEach(creeps, (creep: Creep) => {
+                const roomName = creep.room.name;
+
+                if (roomData[roomName] === undefined) {
+                    roomData[roomName] = {};
+                }
+
+                roomData[roomName].hostiles = militaryDataHelper.getHostileCreeps(roomName);
+                roomData[roomName].openRamparts = militaryDataHelper.getOpenRamparts(roomName);
+            });
+
+            return roomData;
+        },
+
+        decideMoveIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
+            // If status === RALLY {   // code here }
+            if (status !== SQUAD_STATUS_OK) {
+                throw new UserException(
+                    "Unhandled status in DomesticDefenderSquadManager.FFA.decideMoveIntents",
+                    "Status: " + status + "\nCheck that this status is being handled appropriately.",
+                    ERROR_ERROR
+                );
+            }
+
+            // Get objective
+            // if rcl < 4, objective is to seek and destroy
+            // get every creep onto the nearest rampart to the enemy closest to the center of bunker?
+            const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
+
+            const hostileTarget = militaryDataHelper.getHostileClosestToBunkerCenter(
+                roomData[instance.targetRoom].hostiles.allHostiles,
+                instance.targetRoom
+            );
+
+            if (hostileTarget === null) {
+                return;
+            }
+
+            // Find the closest rampart to the hostileTarget, set that as objective
+            const targetRampart = hostileTarget.pos.findClosestByRange<StructureRampart>(
+                roomData[instance.targetRoom].openRamparts
+            );
+
+            if (targetRampart === null) {
+                return;
+            }
+
+            _.forEach(creeps, (creep: Creep) => {
+                // Check if they have already completed the objective
+                // If they have, return early, no intent needed
+
+                const directionToTarget = creep.pos.getDirectionTo(targetRampart.pos);
+                const intent: MiliIntent = {
+                    action: ACTION_MOVE,
+                    target: directionToTarget,
+                    targetType: "direction"
+                };
+
+                // abstract into function
+                _.find(instance.creeps, (searchCreep: SquadStack) => searchCreep.name === creep.name)?.intents.push(
+                    intent
+                );
+            });
+            // Assess what needs to happen to achieve objective
+            // Act - Insert intents to get creeps toward completing objective
+
             return;
         },
 
-        decideAttackIntents(instance: ISquadManager, status: SquadStatusConstant): void {
+        decideRangedAttackIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
             return;
         },
 
-        decideHealIntents(instance: ISquadManager, status: SquadStatusConstant): void {
+        decideHealIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
             return;
-        },
-    }
+        }
+    };
 
     /**
      * Implementation of OP_STRATEGY_COMBINED
      */
     public combined = {
-
         runSquad(instance: ISquadManager): void {
             return;
         }
-
-    }
-
+    };
 }

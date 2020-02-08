@@ -19,7 +19,9 @@ import {
     SQUAD_MANAGERS,
     militaryDataHelper,
     RoomManager,
-    ACTION_MOVE
+    ACTION_MOVE,
+    ACTION_RANGED_ATTACK,
+    ACTION_HEAL
 } from "Utils/Imports/internals";
 
 export class DomesticDefenderSquadManager implements ISquadManager {
@@ -209,6 +211,8 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             }
 
             // Find the closest rampart to the hostileTarget, set that as objective
+            // TODO Move this targetRampart gathering to the creep specific area below, and filter
+            // TODO     out the ramparts that are being targetted by other members of the squad / Operation
             const targetRampart = hostileTarget.pos.findClosestByRange<StructureRampart>(
                 roomData[instance.targetRoom].openRamparts
             );
@@ -218,32 +222,92 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             }
 
             _.forEach(creeps, (creep: Creep) => {
-                // Check if they have already completed the objective
-                // If they have, return early, no intent needed
 
                 const directionToTarget = creep.pos.getDirectionTo(targetRampart.pos);
+
+                // If direction is undefined, they are on the targetRampart position
+                if(directionToTarget === undefined) { 
+                    return;
+                }
+
                 const intent: MiliIntent = {
                     action: ACTION_MOVE,
                     target: directionToTarget,
                     targetType: "direction"
                 };
 
-                // abstract into function
-                _.find(instance.creeps, (searchCreep: SquadStack) => searchCreep.name === creep.name)?.intents.push(
-                    intent
-                );
-            });
-            // Assess what needs to happen to achieve objective
-            // Act - Insert intents to get creeps toward completing objective
+                const creepStack: SquadStack | undefined = MemoryApi_Military.findCreepInSquadByInstance(instance, creep.name);
+                
+                if(creepStack === undefined) { 
+                    return;
+                }
 
-            return;
+                creepStack.intents.push(intent);
+            });
         },
 
         decideRangedAttackIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
-            return;
+
+            const bestTargetHostile = militaryDataHelper.getHostileClosestToBunkerCenter(roomData.hostiles.allHostiles, instance.targetRoom);
+
+            if(bestTargetHostile === null) {
+                return;
+            }
+
+            const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
+
+            _.forEach(creeps, (creep: Creep) => {
+
+                if(creep.pos.inRangeTo(bestTargetHostile.pos, 3)) {
+                    
+                    const intent: MiliIntent = {
+                        action: ACTION_RANGED_ATTACK,
+                        target: bestTargetHostile.name,
+                        targetType: "creep"
+                    };
+                    
+                    MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
+                    return;
+                }
+
+                // Find any other attackable creep if we can't hit the best target
+                const closestHostileCreep: Creep | undefined = _.find(roomData.hostiles.allHostiles, (hostile: Creep) => hostile.pos.getRangeTo(creep.pos) <= 3);
+
+                if(closestHostileCreep !== undefined) {
+                    const intent: MiliIntent = {
+                        action: ACTION_RANGED_ATTACK,
+                        target: closestHostileCreep.name,
+                        targetType: "creep"
+                    };
+
+                    MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
+                    return;
+                }
+            });
         },
 
         decideHealIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
+
+            // Heal yourself every tick, as long as there are hostiles in the room
+            if(roomData.hostiles.allHostiles.length > 0) { 
+
+                const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
+
+                _.forEach(creeps, (creep: Creep) => { 
+                    
+                    const intent: MiliIntent = {
+                        action: ACTION_HEAL,
+                        target: creep.name,
+                        targetType: "creep"
+                    };
+
+                    MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
+                    return;
+
+                })
+
+            }
+
             return;
         }
     };

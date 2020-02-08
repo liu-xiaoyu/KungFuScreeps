@@ -123,6 +123,29 @@ export class MemoryApi_Military {
         squad.creeps = livingCreeps;
     }
 
+    public static pushIntentToCreepStack(instance: ISquadManager, creepName: string, intent: MiliIntent) {
+        const creepStack = this.findCreepInSquadByInstance(instance, creepName);
+
+        if (creepStack === undefined) {
+            throw new UserException(
+                "Could not find creepStack to push intent onto.",
+                "Op UUID: " + instance.operationUUID + "\nSquad UUID: " + instance.squadUUID + "\nCreep: " + creepName,
+                ERROR_ERROR
+            );
+        }
+
+        creepStack.intents.push(intent);
+    }
+
+    /**
+     * Retrieves the SquadStack for a specific creep in a squad
+     * @param instance The squad instance
+     * @param creepName the name of the creep to find
+     */
+    public static findCreepInSquadByInstance(instance: ISquadManager, creepName: string): SquadStack | undefined {
+        return _.find(instance.creeps, (searchCreep: SquadStack) => searchCreep.name === creepName);
+    }
+
     /**
      * Return the master implementation in the code for the specfici instance
      * this is so we can call implementation functions on it

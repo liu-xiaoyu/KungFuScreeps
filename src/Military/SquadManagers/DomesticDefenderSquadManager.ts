@@ -165,7 +165,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
 
             for (const i in creeps) {
                 const creep: Creep = creeps[i];
-                MilitaryCombat_Api.runIntents(instance, creep);
+                MilitaryCombat_Api.runIntents(instance, creep, roomData);
             }
         },
 

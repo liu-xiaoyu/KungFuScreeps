@@ -104,7 +104,7 @@ export class militaryDataHelper {
             }
         });
 
-        return { allCreeps,  attack: attackCreeps, rangedAttack: rangedAttackCreeps, heal: healCreeps };
+        return { allCreeps, attack: attackCreeps, rangedAttack: rangedAttackCreeps, heal: healCreeps };
     }
 
     /**

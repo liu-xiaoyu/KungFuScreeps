@@ -19,6 +19,11 @@ export class MilitaryCombat_Api {
      */
     public static isSquadDead(instance: ISquadManager): boolean {
         const creeps: Array<Creep | undefined> = MemoryApi_Military.getCreepsInSquadByInstance(instance);
+
+        if (creeps.length === 0) {
+            return false;
+        }
+
         for (const i in creeps) {
             const creep: Creep | undefined = creeps[i];
             if (creep) {
@@ -78,8 +83,8 @@ export class MilitaryCombat_Api {
                     throw new UserException(
                         "Unhandle Action Type in runIntents()",
                         "Attempted to handle action of type: " +
-                            intent.action +
-                            ", but no implementation has been defined.",
+                        intent.action +
+                        ", but no implementation has been defined.",
                         ERROR_ERROR
                     );
             }
@@ -97,7 +102,7 @@ export class MilitaryCombat_Api {
         // TODO Type intents more strongly so that we can handle all cases better
         // * For now I'm only handling directions
 
-        if (intent.targetType === "direction" && typeof(intent.target) === "number") {
+        if (intent.targetType === "direction" && typeof (intent.target) === "number") {
             creep.move(intent.target);
         }
     }
@@ -109,7 +114,7 @@ export class MilitaryCombat_Api {
      */
     public static runIntent_HEAL(intent: MiliIntent, creep: Creep, roomData: StringMap): void {
 
-        if(intent.targetType === "creep" && typeof(intent.target) === "string") {
+        if (intent.targetType === "creep" && typeof (intent.target) === "string") {
             creep.heal(Game.creeps[intent.target]);
         }
         return;
@@ -140,10 +145,10 @@ export class MilitaryCombat_Api {
      */
     public static runIntent_RANGED_ATTACK(intent: MiliIntent, creep: Creep, roomData: StringMap): void {
 
-        if(intent.targetType === "creep" && typeof(intent.target) === "string") {
+        if (intent.targetType === "creep" && typeof (intent.target) === "string") {
             const target: Creep | null = Game.getObjectById(intent.target);
 
-            if(target === null) {
+            if (target === null) {
                 throw new UserException("Invalid target passed to runIntent_RANGED_ATTACK", "Target could not be found: " + intent.target, ERROR_ERROR);
             }
 
@@ -161,5 +166,5 @@ export class MilitaryCombat_Api {
     public static runIntent_MASS_RANGED(intent: MiliIntent, creep: Creep, roomData: StringMap): void {
         return;
     }
-    
+
 }

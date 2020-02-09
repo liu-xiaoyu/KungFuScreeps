@@ -6,7 +6,8 @@ import {
     ACTION_HEAL,
     ACTION_ATTACK,
     ACTION_MASS_RANGED,
-    ACTION_RANGED_HEAL
+    ACTION_RANGED_HEAL,
+    ERROR_ERROR
 } from "Utils/Imports/internals";
 import { stringify } from "querystring";
 
@@ -140,7 +141,13 @@ export class MilitaryCombat_Api {
     public static runIntent_RANGED_ATTACK(intent: MiliIntent, creep: Creep, roomData: StringMap): void {
 
         if(intent.targetType === "creep" && typeof(intent.target) === "string") {
-            creep.rangedAttack(Game.creeps[intent.target]);
+            const target: Creep | null = Game.getObjectById(intent.target);
+
+            if(target === null) {
+                throw new UserException("Invalid target passed to runIntent_RANGED_ATTACK", "Target could not be found: " + intent.target, ERROR_ERROR);
+            }
+
+            creep.rangedAttack(target);
         }
 
         return;

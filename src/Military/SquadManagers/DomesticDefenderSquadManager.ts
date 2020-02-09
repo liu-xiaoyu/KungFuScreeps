@@ -23,6 +23,7 @@ import {
     ACTION_RANGED_ATTACK,
     ACTION_HEAL
 } from "Utils/Imports/internals";
+import { join } from "path";
 
 export class DomesticDefenderSquadManager implements ISquadManager {
     public name: SquadManagerConstant = DOMESTIC_DEFENDER_MAN;
@@ -159,6 +160,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
 
             const roomData: StringMap = this.getRoomData(creeps);
 
+            this.resetSquadIntents(instance, status, roomData);
             this.decideMoveIntents(instance, status, roomData);
             this.decideRangedAttackIntents(instance, status, roomData);
             this.decideHealIntents(instance, status, roomData);
@@ -184,6 +186,20 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             });
 
             return roomData;
+        },
+
+        resetSquadIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
+            const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
+
+            _.forEach(creeps, (creep: Creep) => {
+                const creepStack = MemoryApi_Military.findCreepInSquadByInstance(instance, creep.name);
+
+                if(creepStack === undefined) {
+                    return;
+                }
+
+                creepStack.intents = [];
+            });
         },
 
         decideMoveIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
@@ -213,7 +229,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             // Find the closest rampart to the hostileTarget, set that as objective
             // TODO Move this targetRampart gathering to the creep specific area below, and filter
             // TODO     out the ramparts that are being targetted by other members of the squad / Operation
-            const targetRampart = hostileTarget.pos.findClosestByRange<StructureRampart>(
+            const targetRampart = hostileTarget.pos.findClosestByPath<StructureRampart>(
                 roomData[instance.targetRoom].openRamparts
             );
 
@@ -223,12 +239,12 @@ export class DomesticDefenderSquadManager implements ISquadManager {
 
             _.forEach(creeps, (creep: Creep) => {
 
-                const directionToTarget = creep.pos.getDirectionTo(targetRampart.pos);
-
-                // If direction is undefined, they are on the targetRampart position
-                if(directionToTarget === undefined) { 
+                if(creep.pos.isEqualTo(targetRampart.pos)) {
                     return;
                 }
+
+                // TODO Create a place we can store data like this for use from tick to tick
+                const directionToTarget = creep.pos.findPathTo(targetRampart.pos)[0].direction;
 
                 const intent: MiliIntent = {
                     action: ACTION_MOVE,
@@ -248,7 +264,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
 
         decideRangedAttackIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
 
-            const bestTargetHostile = militaryDataHelper.getHostileClosestToBunkerCenter(roomData.hostiles.allHostiles, instance.targetRoom);
+            const bestTargetHostile = militaryDataHelper.getHostileClosestToBunkerCenter(roomData[instance.targetRoom].hostiles.allHostiles, instance.targetRoom);
 
             if(bestTargetHostile === null) {
                 return;
@@ -262,7 +278,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
                     
                     const intent: MiliIntent = {
                         action: ACTION_RANGED_ATTACK,
-                        target: bestTargetHostile.name,
+                        target: bestTargetHostile.id,
                         targetType: "creep"
                     };
                     
@@ -271,12 +287,12 @@ export class DomesticDefenderSquadManager implements ISquadManager {
                 }
 
                 // Find any other attackable creep if we can't hit the best target
-                const closestHostileCreep: Creep | undefined = _.find(roomData.hostiles.allHostiles, (hostile: Creep) => hostile.pos.getRangeTo(creep.pos) <= 3);
+                const closestHostileCreep: Creep | undefined = _.find(roomData[instance.targetRoom].hostiles.allHostiles, (hostile: Creep) => hostile.pos.getRangeTo(creep.pos) <= 3);
 
                 if(closestHostileCreep !== undefined) {
                     const intent: MiliIntent = {
                         action: ACTION_RANGED_ATTACK,
-                        target: closestHostileCreep.name,
+                        target: closestHostileCreep.id,
                         targetType: "creep"
                     };
 
@@ -289,7 +305,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
         decideHealIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
 
             // Heal yourself every tick, as long as there are hostiles in the room
-            if(roomData.hostiles.allHostiles.length > 0) { 
+            if(roomData[instance.targetRoom].hostiles.allHostiles.length > 0) { 
 
                 const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
 

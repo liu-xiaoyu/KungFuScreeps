@@ -64,10 +64,8 @@ export class militaryDataHelper {
      */
     public static getHostileCreeps(
         roomName: string
-    ): { allCreeps: Creep[]; attack: Creep[]; rangedAttack: Creep[]; heal: Creep[] } {
+    ): { allHostiles: Creep[]; attack: Creep[]; rangedAttack: Creep[]; heal: Creep[] } {
         const allHostiles = MemoryApi_Creep.getHostileCreeps(roomName);
-
-        const allCreeps: Creep[] = [];
         const attackCreeps: Creep[] = [];
         const rangedAttackCreeps: Creep[] = [];
         const healCreeps: Creep[] = [];
@@ -104,7 +102,7 @@ export class militaryDataHelper {
             }
         });
 
-        return { allCreeps, attack: attackCreeps, rangedAttack: rangedAttackCreeps, heal: healCreeps };
+        return { allHostiles, attack: attackCreeps, rangedAttack: rangedAttackCreeps, heal: healCreeps };
     }
 
     /**

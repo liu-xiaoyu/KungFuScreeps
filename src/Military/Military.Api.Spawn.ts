@@ -16,14 +16,17 @@ export class Military_Spawn_Api {
      * @param operationUUID the operation uuid
      * @param operationStrategy [Optional] defaults to none, the operation override constant for the operation
      */
-    public static createSquadInstance(managerType: SquadManagerConstant, targetRoom: string, operationUUID: string, operationStrategy: OpStrategyConstant = OP_STRATEGY_NONE): void {
-
+    public static createSquadInstance(
+        managerType: SquadManagerConstant,
+        targetRoom: string,
+        operationUUID: string,
+        operationStrategy: OpStrategyConstant = OP_STRATEGY_NONE
+    ): void {
         // Find the implementation of the squad instance denoted by the manager type, error if none found
-        const managerImplementation: ISquadManager | undefined = MemoryApi_Military.getSingletonSquadManager(managerType);
-        const squadInstance: ISquadManager = managerImplementation.createInstance(
-            targetRoom,
-            operationUUID
+        const managerImplementation: ISquadManager | undefined = MemoryApi_Military.getSingletonSquadManager(
+            managerType
         );
+        const squadInstance: ISquadManager = managerImplementation.createInstance(targetRoom, operationUUID);
 
         // Check for existing instance
         // If none, create new operation and push onto memory, If existing, push instance onto it
@@ -31,14 +34,15 @@ export class Military_Spawn_Api {
         if (!operation) {
             const squadData: SquadData = {};
             squadData[squadInstance.squadUUID] = squadInstance;
+
             operation = {
                 squads: squadData,
                 operationUUID,
                 operationStrategy
             };
+
             Memory.empire.militaryOperations[operationUUID] = operation;
-        }
-        else {
+        } else {
             // Loop over military operations, and find a match to push the squad instance onto it
             Memory.empire.militaryOperations[operationUUID].operationStrategy = operationStrategy;
             Memory.empire.militaryOperations[operationUUID].squads[squadInstance.squadUUID] = squadInstance;
@@ -52,8 +56,6 @@ export class Military_Spawn_Api {
         this.addSquadToSpawnQueue(squadUUID, operationUUID, squadArray, targetRoom, tickToSpawn, priority);
     }
 
-
-
     /**
      * Add the squad to the spawn
      * @param squadUUID the squad uuid to reference
@@ -63,7 +65,14 @@ export class Military_Spawn_Api {
      * @param tickToSpawn the tick we want to start spawning on the squad
      * @param priority the spawn priority of the bepso
      */
-    public static addSquadToSpawnQueue(squadUUID: string, operationUUID: string, squadArray: SquadDefinition[], targetRoom: string, tickToSpawn: number, priority: number): void {
+    public static addSquadToSpawnQueue(
+        squadUUID: string,
+        operationUUID: string,
+        squadArray: SquadDefinition[],
+        targetRoom: string,
+        tickToSpawn: number,
+        priority: number
+    ): void {
         const dependentRoom: string = EmpireHelper.findDependentRoom(targetRoom);
         if (!Memory.rooms[dependentRoom].creepLimit?.militaryQueue) {
             MemoryApi_Room.initCreepLimits(Game.rooms[dependentRoom]);

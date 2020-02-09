@@ -309,24 +309,24 @@ export class DomesticDefenderSquadManager implements ISquadManager {
         decideHealIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
 
             // Heal yourself every tick, as long as there are hostiles in the room
-            if (roomData[instance.targetRoom].hostiles.allHostiles.length > 0) {
+            
 
                 const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
 
                 _.forEach(creeps, (creep: Creep) => {
 
-                    const intent: MiliIntent = {
-                        action: ACTION_HEAL,
-                        target: creep.name,
-                        targetType: "creep"
-                    };
+                    if (roomData[instance.targetRoom].hostiles.allHostiles.length > 0 || creep.hits < creep.hitsMax) {
+                     
+                        const intent: MiliIntent = {
+                            action: ACTION_HEAL,
+                            target: creep.name,
+                            targetType: "creep"
+                        };
 
-                    MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
-                    return;
-
-                })
-
-            }
+                        MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
+                        return;
+                    }
+                });
 
             return;
         }

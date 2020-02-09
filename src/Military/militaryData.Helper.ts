@@ -16,8 +16,9 @@ export class militaryDataHelper {
     }
 
     /**
-     * Gets open ramparts (ramparts that do not have a structure or other creep in them)
+     * Gets open ramparts (ramparts that do not have a structure)
      * @param roomName The room to check for ramparts in
+     * @returns ramparts with only creeps on them or empty or roads
      */
     public static getOpenRamparts(roomName: string): StructureRampart[] {
         const openRamparts = MemoryApi_Room.getStructure<StructureRampart>(
@@ -30,12 +31,6 @@ export class militaryDataHelper {
                 }
 
                 if (!rampart.my && !rampart.isPublic) {
-                    return false;
-                }
-
-                const creepsInPos = rampart.pos.lookFor(LOOK_CREEPS);
-
-                if (Object.keys(creepsInPos).length > 0) {
                     return false;
                 }
 

@@ -173,7 +173,7 @@ export class CreepCivApi {
     public static newGetEnergyJob(creep: Creep, room: Room): GetEnergyJob | undefined {
         const creepOptions: CreepOptionsCiv = creep.memory.options as CreepOptionsCiv;
         // Indicates if the room is safe to travel freely out of the bunker
-        const isEmergecyProtocol: boolean = (MemoryApi_Room.getDefconLevel(room) > 0) && room.memory.roomState ? room.memory.roomState >= ROOM_STATE_ADVANCED : false;
+        const isEmergecyProtocol: boolean = (MemoryApi_Room.getDefconLevel(room) >= 2) && room.memory.roomState ? room.memory.roomState >= ROOM_STATE_ADVANCED : false;
 
         if (creepOptions.getFromContainer && !isEmergecyProtocol) {
             // get a container job based on the filter function returned from the helper

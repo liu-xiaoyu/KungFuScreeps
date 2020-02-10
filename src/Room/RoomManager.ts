@@ -68,7 +68,7 @@ export class RoomManager {
             if (rampart) {
                 RoomApi_Structure.runTowersEmergecyRampartRepair(rampart as StructureRampart);
             } else if (defcon >= 1) {
-                // RoomApi_Structure.runTowersDefense(room);
+                RoomApi_Structure.runTowersDefense(room);
             } else if (roomState === ROOM_STATE_UPGRADER || roomState === ROOM_STATE_NUKE_INBOUND) {
                 room.memory.shotLastTick = false;
                 RoomApi_Structure.runTowersRepair(room);

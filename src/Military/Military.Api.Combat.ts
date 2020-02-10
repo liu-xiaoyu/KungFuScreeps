@@ -102,7 +102,7 @@ export class MilitaryCombat_Api {
         // TODO Type intents more strongly so that we can handle all cases better
         // * For now I'm only handling directions
 
-        if (intent.targetType === "direction" && typeof (intent.target) === "number") {
+        if (intent.targetType === "direction" && typeof (intent.target) === "number" && creep.fatigue === 0) {
             creep.move(intent.target);
         }
     }

@@ -316,7 +316,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
 
         decideHealIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll): void {
 
-            if (!roomData[instance.targetRoom]?.hostiles || !roomData[instance.targetRoom]?.openRamparts) {
+            if (!roomData[instance.targetRoom]?.hostiles) {
                 return;
             }
             // Heal yourself every tick, as long as there are hostiles in the room

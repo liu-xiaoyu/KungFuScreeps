@@ -7,7 +7,8 @@ import {
     ACTION_ATTACK,
     ACTION_MASS_RANGED,
     ACTION_RANGED_HEAL,
-    ERROR_ERROR
+    ERROR_ERROR,
+    militaryDataHelper
 } from "Utils/Imports/internals";
 import { stringify } from "querystring";
 
@@ -172,10 +173,25 @@ export class MilitaryCombat_Api {
      * TODO
      * @param hostiles the hostiles in the room
      * @param creepsInSquad the creeps in the squad
+     * @param targetRoom the room we want to find hostiles in
      * @returns creep that we want to target
      */
-    public static getRemoteDefenderAttackTarget(hostiles: Creep[] | undefined, creepsInSquad: Creep[]): Creep | undefined {
-        return undefined;
+    public static getRemoteDefenderAttackTarget(hostiles: Creep[] | undefined, creepsInSquad: Creep[], targetRoom: string): Creep | undefined {
+        if (!hostiles || !(hostiles?.length > 0) || !(creepsInSquad.length > 0)) {
+            return undefined;
+        }
+
+        const creepsInTargetRoom: Creep[] = _.filter(creepsInSquad, (c: Creep) => c.room.name === targetRoom);
+        let closestEnemy: Creep = hostiles[0];
+        let closestDistance: number = militaryDataHelper.getAverageDistanceToTarget(creepsInTargetRoom, closestEnemy);
+        for (const i in hostiles) {
+            const currentDistance: number = militaryDataHelper.getAverageDistanceToTarget(creepsInTargetRoom, hostiles[i]);
+            if (currentDistance < closestDistance) {
+                closestEnemy = hostiles[i];
+                closestDistance = currentDistance;
+            }
+        }
+        return closestEnemy;
     }
 
     /**

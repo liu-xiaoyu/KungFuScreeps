@@ -215,7 +215,7 @@ export class RemoteDefenderSquadManager implements ISquadManager {
             // get every creep onto the nearest rampart to the enemy closest to the center of bunker?
             const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
             const hostiles: Creep[] | undefined = roomData[instance.targetRoom].hostiles?.allHostiles;
-            const targetHostile: Creep | undefined = MilitaryCombat_Api.getRemoteDefenderAttackTarget(hostiles, creeps);
+            const targetHostile: Creep | undefined = MilitaryCombat_Api.getRemoteDefenderAttackTarget(hostiles, creeps, instance.targetRoom);
 
             _.forEach(creeps, (creep: Creep) => {
 
@@ -267,7 +267,7 @@ export class RemoteDefenderSquadManager implements ISquadManager {
 
             const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
             const hostiles: Creep[] | undefined = roomData[instance.targetRoom].hostiles?.allHostiles;
-            const bestTargetHostile: Creep | undefined = MilitaryCombat_Api.getRemoteDefenderAttackTarget(hostiles, creeps);
+            const bestTargetHostile: Creep | undefined = MilitaryCombat_Api.getRemoteDefenderAttackTarget(hostiles, creeps, instance.targetRoom);
 
             if (!bestTargetHostile) {
                 return;
@@ -305,7 +305,7 @@ export class RemoteDefenderSquadManager implements ISquadManager {
 
         decideHealIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll): void {
 
-            if (!roomData[instance.targetRoom]?.hostiles || !roomData[instance.targetRoom]?.openRamparts) {
+            if (!roomData[instance.targetRoom]?.hostiles) {
                 return;
             }
             // Heal yourself every tick, as long as there are hostiles in the room

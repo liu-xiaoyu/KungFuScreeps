@@ -320,11 +320,13 @@ export class DomesticDefenderSquadManager implements ISquadManager {
                 return;
             }
             // Heal yourself every tick, as long as there are hostiles in the room
-            const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
+            const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance)
 
             _.forEach(creeps, (creep: Creep) => {
 
-                if (roomData[instance.targetRoom].hostiles.allHostiles.length > 0 || creep.hits < creep.hitsMax) {
+                // Heal if we are below full, preheal if theres hostiles and we aren't under a rampart
+                const creepIsOnRampart: boolean = _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (struct: Structure) => struct.structureType === STRUCTURE_RAMPART).length > 0;
+                if ((roomData[instance.targetRoom].hostiles.allHostiles.length > 0 && !creepIsOnRampart) || creep.hits < creep.hitsMax) {
 
                     const intent: MiliIntent = {
                         action: ACTION_HEAL,

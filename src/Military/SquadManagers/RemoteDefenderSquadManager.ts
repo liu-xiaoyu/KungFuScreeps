@@ -228,12 +228,24 @@ export class RemoteDefenderSquadManager implements ISquadManager {
                                 directionToTarget = MilitaryCombat_Api.getKitingDirection(creep, targetHostile);
                             }
                             else {
-                                const path = creep.pos.findPathTo(targetHostile.pos, { range: 3 });
-                                directionToTarget = path[0].direction;
+                                const closeEnemy: Creep | null = creep.pos.findClosestByPath(hostiles!);
+                                if (closeEnemy && MilitaryCombat_Api.isInAttackRange(creep, closeEnemy.pos, false)) {
+                                    directionToTarget = MilitaryCombat_Api.getKitingDirection(creep, closeEnemy);
+                                }
+                                else {
+                                    const path = creep.pos.findPathTo(targetHostile.pos, { range: 3 });
+                                    directionToTarget = path[0].direction;
+                                }
                             }
                         }
                     }
-                    else {                                          // not in target room
+                }
+                else {                                          // not in target room
+                    const closeEnemy: Creep | null = creep.pos.findClosestByPath(creep.room.find(FIND_HOSTILE_CREEPS));
+                    if (closeEnemy && MilitaryCombat_Api.isInAttackRange(creep, closeEnemy.pos, false)) {
+                        directionToTarget = MilitaryCombat_Api.getKitingDirection(creep, closeEnemy);
+                    }
+                    else {
                         const path = creep.pos.findPathTo(new RoomPosition(25, 25, instance.targetRoom), { range: 25 });
                         directionToTarget = path[0].direction;
                     }

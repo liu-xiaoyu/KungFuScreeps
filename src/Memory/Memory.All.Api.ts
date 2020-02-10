@@ -63,5 +63,12 @@ export class MemoryApi_All {
                 delete Memory.flags[flag];
             }
         }
+
+        // Remove dead operations from memory
+        for (const op in Memory.empire.militaryOperations) {
+            if (Object.keys(Memory.empire.militaryOperations[op].squads).length === 0) {
+                delete Memory.empire.militaryOperations[op];
+            }
+        }
     }
 }

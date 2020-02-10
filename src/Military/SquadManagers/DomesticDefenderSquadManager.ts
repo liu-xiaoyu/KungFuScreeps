@@ -248,7 +248,8 @@ export class DomesticDefenderSquadManager implements ISquadManager {
                 }
 
                 // TODO Create a place we can store data like this for use from tick to tick
-                const directionToTarget = creep.pos.findPathTo(targetRampart.pos)[0].direction;
+                const pathOpts: FindPathOpts = MilitaryMovment_Api.getDomesticDefenderCostMatrix(instance.targetRoom, false, roomData.openRamparts);
+                const directionToTarget = creep.pos.findPathTo(targetRampart.pos, pathOpts)[0].direction;
 
                 const intent: MiliIntent = {
                     action: ACTION_MOVE,
@@ -309,24 +310,24 @@ export class DomesticDefenderSquadManager implements ISquadManager {
         decideHealIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: StringMap): void {
 
             // Heal yourself every tick, as long as there are hostiles in the room
-            
 
-                const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
 
-                _.forEach(creeps, (creep: Creep) => {
+            const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
 
-                    if (roomData[instance.targetRoom].hostiles.allHostiles.length > 0 || creep.hits < creep.hitsMax) {
-                     
-                        const intent: MiliIntent = {
-                            action: ACTION_HEAL,
-                            target: creep.name,
-                            targetType: "creep"
-                        };
+            _.forEach(creeps, (creep: Creep) => {
 
-                        MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
-                        return;
-                    }
-                });
+                if (roomData[instance.targetRoom].hostiles.allHostiles.length > 0 || creep.hits < creep.hitsMax) {
+
+                    const intent: MiliIntent = {
+                        action: ACTION_HEAL,
+                        target: creep.name,
+                        targetType: "creep"
+                    };
+
+                    MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
+                    return;
+                }
+            });
 
             return;
         }

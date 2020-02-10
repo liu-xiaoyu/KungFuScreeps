@@ -71,4 +71,30 @@ export class MilitaryMovment_Api {
                 }
         });
     }
+
+    /**
+     * Gets the domestic defender cost matrix for finding a path
+     * Prefers ramparts and doesn't allow non-rampart movement if flag passed
+     * @param roomName the room we are in
+     * @param allowNonRamparts boolean asking if we want to allow creeps to walk off ramparts
+     * @param rampartsInRoom the ramparts in the room
+     */
+    public static getDomesticDefenderCostMatrix(roomName: string, allowNonRamparts: boolean, rampartsInRoom: StructureRampart[]): FindPathOpts {
+        const DEFAULT_OPTS: FindPathOpts = {
+            heuristicWeight: 1.5,
+            range: 0,
+            ignoreCreeps: true,
+            maxRooms: 1,
+            costCallback(roomName: string, costMatrix: CostMatrix) {
+                if (!allowNonRamparts) {
+                    rampartsInRoom.forEach((rampart: StructureRampart) => {
+                        costMatrix.set(rampart.pos.x, rampart.pos.y, 1);
+                    });
+                }
+                return costMatrix;
+            }
+        };
+
+        return DEFAULT_OPTS;
+    }
 }

@@ -249,6 +249,15 @@ interface MiliIntent {
     targetType: string;
 }
 
+interface MilitaryDataAll {
+    [key: string]: MilitaryDataRoom;
+}
+
+interface MilitaryDataRoom {
+    openRamparts?: StructureRampart[];
+    hostiles?: { allHostiles: Creep[]; attack: Creep[]; rangedAttack: Creep[]; heal: Creep[] };
+}
+
 // Role Interfaces to be implemented  -------------
 interface ICivCreepRoleManager {
     name: RoleConstant;

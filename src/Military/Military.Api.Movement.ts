@@ -79,7 +79,10 @@ export class MilitaryMovment_Api {
      * @param allowNonRamparts boolean asking if we want to allow creeps to walk off ramparts
      * @param roomData the data for the room
      */
-    public static getDomesticDefenderCostMatrix(roomName: string, allowNonRamparts: boolean, roomData: StringMap): FindPathOpts {
+    public static getDomesticDefenderCostMatrix(roomName: string, allowNonRamparts: boolean, roomData: MilitaryDataAll): FindPathOpts {
+        if (!roomData[roomName]?.openRamparts) {
+            allowNonRamparts = true;
+        }
         const DEFAULT_OPTS: FindPathOpts = {
             heuristicWeight: 1.5,
             range: 0,
@@ -87,7 +90,7 @@ export class MilitaryMovment_Api {
             maxRooms: 1,
             costCallback(roomName: string, costMatrix: CostMatrix) {
                 if (!allowNonRamparts) {
-                    roomData.openRamparts.forEach((rampart: StructureRampart) => {
+                    roomData[roomName].openRamparts!.forEach((rampart: StructureRampart) => {
                         costMatrix.set(rampart.pos.x, rampart.pos.y, 1);
                     });
                 }

@@ -89,6 +89,7 @@ export class MilitaryMovment_Api {
                 if (!allowNonRamparts) {
                     rampartsInRoom.forEach((rampart: StructureRampart) => {
                         costMatrix.set(rampart.pos.x, rampart.pos.y, 1);
+                        new RoomVisual(roomName).circle(rampart.pos.x, rampart.pos.y);
                     });
                 }
                 return costMatrix;

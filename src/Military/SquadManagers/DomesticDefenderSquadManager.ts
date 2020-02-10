@@ -217,10 +217,12 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             // get every creep onto the nearest rampart to the enemy closest to the center of bunker?
             const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
 
-            const hostileTarget = militaryDataHelper.getHostileClosestToBunkerCenter(
-                roomData[instance.targetRoom].hostiles.allHostiles,
-                instance.targetRoom
-            );
+            const hostileTarget = roomData[instance.targetRoom].hostiles ?
+                militaryDataHelper.getHostileClosestToBunkerCenter(
+                    roomData[instance.targetRoom].hostiles.allHostiles,
+                    instance.targetRoom
+                ) :
+                null;
 
             if (hostileTarget === null) {
                 return;

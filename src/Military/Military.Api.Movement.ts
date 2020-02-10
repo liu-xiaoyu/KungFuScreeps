@@ -100,4 +100,31 @@ export class MilitaryMovment_Api {
 
         return DEFAULT_OPTS;
     }
+
+    /**
+     * Get the direction we need to move off the exit tile
+     * @param creep the creep we're checking for
+     * @returns direction we need to move to get off exit
+     */
+    public static getDirectionOffExitTile(creep: Creep): DirectionConstant | undefined {
+        const x: number = creep.pos.x;
+        const y: number = creep.pos.y;
+
+        if (x === 0) {
+            return RIGHT;
+        }
+        if (y === 0) {
+            return BOTTOM;
+        }
+        if (x === 49) {
+            creep.move(LEFT);
+            return LEFT;
+        }
+        if (y === 49) {
+            return TOP;
+        }
+
+        return undefined
+    }
+
 }

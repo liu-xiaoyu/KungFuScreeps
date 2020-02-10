@@ -60,7 +60,7 @@ export class militaryDataHelper {
     public static getHostileCreeps(
         roomName: string
     ): { allHostiles: Creep[]; attack: Creep[]; rangedAttack: Creep[]; heal: Creep[] } {
-        const allHostiles = MemoryApi_Creep.getHostileCreeps(roomName);
+        const allHostiles: Creep[] = MemoryApi_Creep.getHostileCreeps(roomName);
         const attackCreeps: Creep[] = [];
         const rangedAttackCreeps: Creep[] = [];
         const healCreeps: Creep[] = [];
@@ -478,5 +478,15 @@ export class militaryDataHelper {
         });
 
         return totalAdjustedHealth;
+    }
+
+    /**
+     * Gets the average distance from the array of objects to a target
+     * @param fromPoints An array of objects that have a pos property
+     * @param target An object with a pos property
+     */
+    public static getAverageDistanceToTarget(fromPoints: _HasRoomPosition[], target: _HasRoomPosition) {
+        const totalDistance = _.sum(fromPoints, (point: _HasRoomPosition) => point.pos.getRangeTo(target.pos));
+        return totalDistance / fromPoints.length;
     }
 }

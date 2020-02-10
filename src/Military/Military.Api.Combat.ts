@@ -167,4 +167,41 @@ export class MilitaryCombat_Api {
         return;
     }
 
+    /**
+     * Get the ideal target for a remote defender
+     * TODO
+     * @param hostiles the hostiles in the room
+     * @param creepsInSquad the creeps in the squad
+     * @returns creep that we want to target
+     */
+    public static getRemoteDefenderAttackTarget(hostiles: Creep[] | undefined, creepsInSquad: Creep[]): Creep | undefined {
+        return undefined;
+    }
+
+    /**
+     * check if the creep is in range to attack the target
+     * @param creep the creep we are checking for
+     * @param target the room position for the target in question
+     * @param isMelee if the creep can only melee
+     */
+    public static isInAttackRange(creep: Creep, target: RoomPosition, isMelee: boolean): boolean {
+        if (isMelee) {
+            return creep.pos.isNearTo(target);
+        }
+        return creep.pos.inRangeTo(target, 3);
+    }
+
+    /**
+     * moves the creep away from the target
+     */
+    public static getKitingDirection(creep: Creep, hostileCreep: Creep): DirectionConstant | undefined {
+        let path: PathFinderPath;
+        const pathFinderOptions: PathFinderOpts = { flee: true };
+        const goal: { pos: RoomPosition; range: number } = { pos: hostileCreep.pos, range: 4 };
+        path = PathFinder.search(creep.pos, goal, pathFinderOptions);
+        if (path.path.length > 0) {
+            return creep.pos.findPathTo(hostileCreep)[0].direction;
+        }
+        return undefined;
+    }
 }

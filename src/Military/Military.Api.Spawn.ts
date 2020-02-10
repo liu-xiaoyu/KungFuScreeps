@@ -5,7 +5,9 @@ import {
     EmpireHelper,
     MemoryApi_Room,
     MemoryApi_Military,
-    OP_STRATEGY_NONE
+    OP_STRATEGY_NONE,
+    DOMESTIC_DEFENDER_MAN,
+    SpawnApi
 } from "Utils/Imports/internals";
 
 export class Military_Spawn_Api {
@@ -91,5 +93,52 @@ export class Military_Spawn_Api {
             };
             Memory.rooms[dependentRoom].creepLimit!.militaryQueue.push(queue);
         }
+    }
+
+    /**
+     * Create a military instance to defend our owned rooms
+     * @param roomName the room we are checking
+     */
+    public static requestDomesticDefenders(roomName: string): void {
+        const defcon: number = Memory.rooms[roomName]?.defcon;
+        if (!defcon || defcon < 4) {
+            return;
+        }
+
+        // If we already have an operation defending the room, don't create another one
+        const existingOperation: MilitaryOperation | undefined = this.getOperationTargetingRoom(roomName);
+        if (existingOperation) {
+            return;
+        }
+
+        // 1 defender for a light seige, 3 for a heavy seige (can adjust these as needed)
+        const operationUUID: string = SpawnApi.generateSquadUUID(roomName);
+        if (defcon === 4) {
+            Military_Spawn_Api.createSquadInstance(DOMESTIC_DEFENDER_MAN, roomName, operationUUID);
+        }
+        else if (defcon === 5) {
+            Military_Spawn_Api.createSquadInstance(DOMESTIC_DEFENDER_MAN, roomName, operationUUID);
+            Military_Spawn_Api.createSquadInstance(DOMESTIC_DEFENDER_MAN, roomName, operationUUID);
+            Military_Spawn_Api.createSquadInstance(DOMESTIC_DEFENDER_MAN, roomName, operationUUID);
+        }
+
+    }
+
+    /**
+     * Get an operation that has a squad targeting the requested room
+     * @param roomName
+     * @returns operation targeting that room
+     */
+    public static getOperationTargetingRoom(roomName: string): MilitaryOperation | undefined {
+        for (const i in Memory.empire.militaryOperations) {
+            const operation: MilitaryOperation = Memory.empire.militaryOperations[i];
+            for (const j in operation.squads) {
+                const squad: ISquadManager = operation.squads[j];
+                if (squad.targetRoom === roomName) {
+                    return operation;
+                }
+            }
+        }
+        return undefined;
     }
 }

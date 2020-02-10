@@ -1,4 +1,4 @@
-import { ERROR_ERROR, UserException, SpawnHelper, SpawnApi, MemoryApi_Empire } from "Utils/Imports/internals";
+import { ERROR_ERROR, UserException, SpawnHelper, SpawnApi, MemoryApi_Empire, Military_Spawn_Api } from "Utils/Imports/internals";
 
 // handles spawning for every room
 export class SpawnManager {
@@ -28,6 +28,7 @@ export class SpawnManager {
 
         // If we have a spawn, generate creep limits for the room
         SpawnApi.setCreepLimits(room);
+        Military_Spawn_Api.requestDomesticDefenders(room.name);
 
         // If we are spawning a creep this tick, continue from here
         const nextCreepToSpawn: RoleConstant | MilitaryQueue | null = SpawnApi.getNextCreep(room, openSpawn);

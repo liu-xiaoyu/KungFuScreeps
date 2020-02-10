@@ -165,8 +165,8 @@ export class RoomApi_State {
             return;
         }
 
-        // level 4 -- 150+ body parts OR any boosted body parts
-        if (boostedHostileBodyParts > 0 || hostileBodyParts >= 150) {
+        // level 4 -- 150+ body parts OR over 10 boosted body parts (to prevent spawning on the easy invader)
+        if (boostedHostileBodyParts > 10 || hostileBodyParts >= 150) {
             room.memory.defcon = 4;
             return;
         }

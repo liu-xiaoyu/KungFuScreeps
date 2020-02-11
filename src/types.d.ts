@@ -253,9 +253,14 @@ interface MilitaryDataAll {
     [key: string]: MilitaryDataRoom;
 }
 
+// Update these together, as the params decide which data to get
 interface MilitaryDataRoom {
     openRamparts?: StructureRampart[];
     hostiles?: { allHostiles: Creep[]; attack: Creep[]; rangedAttack: Creep[]; heal: Creep[] };
+}
+interface MilitaryDataParams {
+    openRamparts?: boolean;
+    hostiles?: boolean;
 }
 
 // Role Interfaces to be implemented  -------------

@@ -24,6 +24,8 @@ import {
     ACTION_HEAL
 } from "Utils/Imports/internals";
 import { join } from "path";
+import { MilitaryIntents_Api } from "Military/Military.Api.Intents";
+import { MilitaryStatus_Helper } from "Military/Military.Status.Helper";
 
 export class DomesticDefenderSquadManager implements ISquadManager {
     public name: SquadManagerConstant = DOMESTIC_DEFENDER_MAN;
@@ -150,17 +152,19 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             // find squad implementation
             const singleton: ISquadManager = MemoryApi_Military.getSingletonSquadManager(instance.name);
             const status: SquadStatusConstant = singleton.checkStatus(instance);
-            const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
-
-            // Anything else besides OK and we idle
-            if (status === SQUAD_STATUS_DEAD) {
-                delete Memory.empire.militaryOperations[instance.operationUUID].squads[instance.squadUUID];
+            if (MilitaryStatus_Helper.handleSquadDeadStatus(status, instance)) {
                 return;
             }
+            MilitaryStatus_Helper.handleNotOKStatus
 
-            const roomData: MilitaryDataAll = this.getRoomData(creeps);
+            const dataNeeded: MilitaryDataParams = {
+                hostiles: true,
+                openRamparts: true
+            };
+            const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
+            const roomData: MilitaryDataAll = militaryDataHelper.getRoomData(creeps, dataNeeded);
 
-            this.resetSquadIntents(instance, status, roomData);
+            MilitaryIntents_Api.resetSquadIntents(instance);
             this.decideMoveIntents(instance, status, roomData);
             this.decideRangedAttackIntents(instance, status, roomData);
             this.decideHealIntents(instance, status, roomData);
@@ -169,37 +173,6 @@ export class DomesticDefenderSquadManager implements ISquadManager {
                 const creep: Creep = creeps[i];
                 MilitaryCombat_Api.runIntents(instance, creep, roomData);
             }
-        },
-
-        getRoomData(creeps: Creep[]): MilitaryDataAll {
-            const roomData: MilitaryDataAll = {};
-
-            _.forEach(creeps, (creep: Creep) => {
-                const roomName = creep.room.name;
-
-                if (roomData[roomName] === undefined) {
-                    roomData[roomName] = {};
-                }
-
-                roomData[roomName].hostiles = militaryDataHelper.getHostileCreeps(roomName);
-                roomData[roomName].openRamparts = militaryDataHelper.getOpenRamparts(roomName);
-            });
-
-            return roomData;
-        },
-
-        resetSquadIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll): void {
-            const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
-
-            _.forEach(creeps, (creep: Creep) => {
-                const creepStack = MemoryApi_Military.findCreepInSquadByInstance(instance, creep.name);
-
-                if (creepStack === undefined) {
-                    return;
-                }
-
-                creepStack.intents = [];
-            });
         },
 
         decideMoveIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll): void {

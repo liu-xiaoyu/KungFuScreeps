@@ -2,6 +2,32 @@ import { UserException, MemoryApi_Creep, MemoryApi_Room, ALLY_LIST, Normalize } 
 import { close } from "inspector";
 
 export class militaryDataHelper {
+
+    /**
+     * Get the data for the room
+     * @param creeps the creeps we're getting data for
+     * @param dataNeeded the booleans representing the data we need
+     */
+    public static getRoomData(creeps: Creep[], dataNeeded: MilitaryDataParams): MilitaryDataAll {
+        const roomData: MilitaryDataAll = {};
+
+        _.forEach(creeps, (creep: Creep) => {
+            const roomName = creep.room.name;
+
+            if (roomData[roomName] === undefined) {
+                roomData[roomName] = {};
+            }
+
+            if (dataNeeded.hostiles) {
+                roomData[roomName].hostiles = this.getHostileCreeps(roomName);
+            }
+            if (dataNeeded.openRamparts) {
+                roomData[roomName].openRamparts = this.getOpenRamparts(roomName);
+            }
+        });
+
+        return roomData;
+    }
     /**
      * Finds the enemy closest to the center of the bunker, returns null if not found
      * @param enemies Array of enemies to check for

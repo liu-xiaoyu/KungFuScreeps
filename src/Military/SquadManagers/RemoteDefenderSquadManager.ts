@@ -18,6 +18,8 @@ import {
     SQUAD_STATUS_RALLY,
     SQUAD_STATUS_DONE
 } from "Utils/Imports/internals";
+import { MilitaryStatus_Helper } from "Military/Military.Status.Helper";
+import { MilitaryIntents_Api } from "Military/Military.Api.Intents";
 
 export class RemoteDefenderSquadManager implements ISquadManager {
     public name: SquadManagerConstant = REMOTE_DEFENDER_MAN;
@@ -142,20 +144,21 @@ export class RemoteDefenderSquadManager implements ISquadManager {
     public ffa = {
 
         runSquad(instance: ISquadManager): void {
-            // find squad implementation
+
             const singleton: ISquadManager = MemoryApi_Military.getSingletonSquadManager(instance.name);
             const status: SquadStatusConstant = singleton.checkStatus(instance);
-            const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
-
-            // Anything else besides OK and we idle
-            if (status === SQUAD_STATUS_DEAD) {
-                delete Memory.empire.militaryOperations[instance.operationUUID].squads[instance.squadUUID];
+            if (MilitaryStatus_Helper.handleSquadDeadStatus(status, instance)) {
                 return;
             }
+            MilitaryStatus_Helper.handleNotOKStatus(status);
 
-            const roomData: MilitaryDataAll = this.getRoomData(creeps);
+            const dataNeeded: MilitaryDataParams = {
+                hostiles: true
+            };
+            const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
+            const roomData: MilitaryDataAll = militaryDataHelper.getRoomData(creeps, dataNeeded);
 
-            this.resetSquadIntents(instance, status, roomData);
+            MilitaryIntents_Api.resetSquadIntents(instance);
             this.decideMoveIntents(instance, status, roomData);
             this.decideRangedAttackIntents(instance, status, roomData);
             this.decideHealIntents(instance, status, roomData);
@@ -166,109 +169,52 @@ export class RemoteDefenderSquadManager implements ISquadManager {
             }
         },
 
-        getRoomData(creeps: Creep[]): MilitaryDataAll {
-            const roomData: MilitaryDataAll = {};
-
-            _.forEach(creeps, (creep: Creep) => {
-                const roomName = creep.room.name;
-
-                if (roomData[roomName] === undefined) {
-                    roomData[roomName] = {};
-                }
-
-                roomData[roomName].hostiles = militaryDataHelper.getHostileCreeps(roomName);
-            });
-
-            return roomData;
-        },
-
-        resetSquadIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll): void {
-            const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
-
-            _.forEach(creeps, (creep: Creep) => {
-                const creepStack = MemoryApi_Military.findCreepInSquadByInstance(instance, creep.name);
-
-                if (creepStack === undefined) {
-                    return;
-                }
-
-                creepStack.intents = [];
-            });
-        },
-
         decideMoveIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll): void {
-            // If status === RALLY {   // code here }
-            if (status !== SQUAD_STATUS_OK) {
-                throw new UserException(
-                    "Unhandled status in DomesticDefenderSquadManager.FFA.decideMoveIntents",
-                    "Status: " + status + "\nCheck that this status is being handled appropriately.",
-                    ERROR_ERROR
-                );
-            }
 
             if (!roomData[instance.targetRoom]?.hostiles) {
                 return;
             }
 
             // Get objective
-            // if rcl < 4, objective is to seek and destroy
-            // get every creep onto the nearest rampart to the enemy closest to the center of bunker?
             const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
-            const hostiles: Creep[] | undefined = roomData[instance.targetRoom].hostiles?.allHostiles;
-            const targetHostile: Creep | undefined = MilitaryCombat_Api.getRemoteDefenderAttackTarget(hostiles, creeps, instance.targetRoom);
 
             _.forEach(creeps, (creep: Creep) => {
 
                 // Try to get off exit tile first, then get a move target based on what room we're in
-                let directionToTarget: DirectionConstant | undefined = MilitaryMovment_Api.getDirectionOffExitTile(creep);
-                if (!directionToTarget) {
-                    if (creep.room.name === instance.targetRoom) {  // in target room
-                        if (targetHostile) {
-                            if (MilitaryCombat_Api.isInAttackRange(creep, targetHostile.pos, false)) {
-                                directionToTarget = MilitaryCombat_Api.getKitingDirection(creep, targetHostile);
-                            }
-                            else {
-                                const closeEnemy: Creep | null = creep.pos.findClosestByPath(hostiles!);
-                                if (closeEnemy && MilitaryCombat_Api.isInAttackRange(creep, closeEnemy.pos, false)) {
-                                    directionToTarget = MilitaryCombat_Api.getKitingDirection(creep, closeEnemy);
-                                }
-                                else {
-                                    const path = creep.pos.findPathTo(targetHostile.pos, { range: 3 });
-                                    directionToTarget = path[0].direction;
-                                }
-                            }
-                        }
-                    }
+                if (MilitaryIntents_Api.queueIntentMoveOffExitTile(creep, instance)) {
+                    return;
+                }
+
+                if (creep.room.name === instance.targetRoom) {  // in target room
+                    this.decideMoveIntents_TARGET_ROOM(instance, status, roomData, creeps, creep);
                 }
                 else {                                          // not in target room
-                    const closeEnemy: Creep | null = creep.pos.findClosestByPath(creep.room.find(FIND_HOSTILE_CREEPS));
-                    if (closeEnemy && MilitaryCombat_Api.isInAttackRange(creep, closeEnemy.pos, false)) {
-                        directionToTarget = MilitaryCombat_Api.getKitingDirection(creep, closeEnemy);
-                    }
-                    else {
-                        const path = creep.pos.findPathTo(new RoomPosition(25, 25, instance.targetRoom), { range: 25 });
-                        directionToTarget = path[0].direction;
-                    }
+                    this.decideMoveIntents_NON_TARGET_ROOM(instance, status, roomData, creeps, creep);
                 }
-
-                if (!directionToTarget) {
-                    return;
-                }
-
-                const intent: MiliIntent = {
-                    action: ACTION_MOVE,
-                    target: directionToTarget,
-                    targetType: "direction"
-                };
-
-                const creepStack: SquadStack | undefined = MemoryApi_Military.findCreepInSquadByInstance(instance, creep.name);
-
-                if (creepStack === undefined) {
-                    return;
-                }
-
-                creepStack.intents.push(intent);
             });
+        },
+
+        decideMoveIntents_TARGET_ROOM(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll, creeps: Creep[], creep: Creep): void {
+            const hostiles: Creep[] | undefined = roomData[instance.targetRoom].hostiles?.allHostiles;
+            const targetHostile: Creep | undefined = MilitaryCombat_Api.getRemoteDefenderAttackTarget(hostiles, creeps, instance.targetRoom);
+
+            if (MilitaryIntents_Api.queueIntentMoveNearHostileKiting(creep, instance)) {
+                return;
+            }
+
+            if (MilitaryIntents_Api.queueIntentMoveTargetKiting(creep, targetHostile, instance)) {
+                return;
+            }
+        },
+
+        decideMoveIntents_NON_TARGET_ROOM(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll, creeps: Creep[], creep: Creep): void {
+            if (MilitaryIntents_Api.queueIntentMoveNearHostileKiting(creep, instance)) {
+                return;
+            }
+
+            if (MilitaryIntents_Api.queueIntentMoveToTargetRoom(creep, instance)) {
+                return;
+            }
         },
 
         decideRangedAttackIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll): void {

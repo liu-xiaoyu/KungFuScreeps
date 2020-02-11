@@ -198,20 +198,25 @@ export class RemoteDefenderSquadManager implements ISquadManager {
             const hostiles: Creep[] | undefined = roomData[instance.targetRoom].hostiles?.allHostiles;
             const targetHostile: Creep | undefined = MilitaryCombat_Api.getRemoteDefenderAttackTarget(hostiles, creeps, instance.targetRoom);
 
+            // Move away from a hostile that got too close
             if (MilitaryIntents_Api.queueIntentMoveNearHostileKiting(creep, instance)) {
                 return;
             }
 
+            // Move towards the enemy, kiting strategy
             if (MilitaryIntents_Api.queueIntentMoveTargetKiting(creep, targetHostile, instance)) {
                 return;
             }
         },
 
         decideMoveIntents_NON_TARGET_ROOM(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll, creeps: Creep[], creep: Creep): void {
+
+            // Get away from a creep in range while in transit
             if (MilitaryIntents_Api.queueIntentMoveNearHostileKiting(creep, instance)) {
                 return;
             }
 
+            // Move towards the target room
             if (MilitaryIntents_Api.queueIntentMoveToTargetRoom(creep, instance)) {
                 return;
             }
@@ -225,37 +230,16 @@ export class RemoteDefenderSquadManager implements ISquadManager {
 
             const creeps = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
             const hostiles: Creep[] | undefined = roomData[instance.targetRoom].hostiles?.allHostiles;
-            const bestTargetHostile: Creep | undefined = MilitaryCombat_Api.getRemoteDefenderAttackTarget(hostiles, creeps, instance.targetRoom);
-
-            if (!bestTargetHostile) {
-                return;
-            }
 
             _.forEach(creeps, (creep: Creep) => {
 
-                if (creep.pos.inRangeTo(bestTargetHostile.pos, 3)) {
-
-                    const intent: MiliIntent = {
-                        action: ACTION_RANGED_ATTACK,
-                        target: bestTargetHostile.id,
-                        targetType: "creep"
-                    };
-
-                    MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
+                // Try to ranged attack the ideal target
+                if (MilitaryIntents_Api.queueRangedAttackIntentBestTarget(creep, instance, hostiles, creeps)) {
                     return;
                 }
 
-                // Find any other attackable creep if we can't hit the best target
-                const closestHostileCreep: Creep | undefined = _.find(roomData[instance.targetRoom].hostiles!.allHostiles, (hostile: Creep) => hostile.pos.getRangeTo(creep.pos) <= 3);
-
-                if (closestHostileCreep !== undefined) {
-                    const intent: MiliIntent = {
-                        action: ACTION_RANGED_ATTACK,
-                        target: closestHostileCreep.id,
-                        targetType: "creep"
-                    };
-
-                    MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
+                // Ranged attack any other target in range
+                if (MilitaryIntents_Api.queueRangedAttackIntentAlternateClosestTarget(creep, instance, roomData)) {
                     return;
                 }
             });
@@ -271,17 +255,13 @@ export class RemoteDefenderSquadManager implements ISquadManager {
 
             _.forEach(creeps, (creep: Creep) => {
 
-                // Heal if we are below full, preheal if theres hostiles and we aren't under a rampart
-                const creepIsOnRampart: boolean = _.filter(creep.pos.lookFor(LOOK_STRUCTURES), (struct: Structure) => struct.structureType === STRUCTURE_RAMPART).length > 0;
-                if ((roomData[instance.targetRoom].hostiles!.allHostiles.length > 0 && !creepIsOnRampart) || creep.hits < creep.hitsMax) {
+                // Try to heal any creep in range that is below full health first
+                if (MilitaryIntents_Api.queueHealAllyCreep(creep, instance, roomData)) {
+                    return;
+                }
 
-                    const intent: MiliIntent = {
-                        action: ACTION_HEAL,
-                        target: creep.name,
-                        targetType: "creep"
-                    };
-
-                    MemoryApi_Military.pushIntentToCreepStack(instance, creep.name, intent);
+                // Try to heal ourselves
+                if (MilitaryIntents_Api.queueHealSelfIntent(creep, instance, roomData)) {
                     return;
                 }
             });

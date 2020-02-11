@@ -155,7 +155,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
             if (MilitaryStatus_Helper.handleSquadDeadStatus(status, instance)) {
                 return;
             }
-            MilitaryStatus_Helper.handleNotOKStatus
+            MilitaryStatus_Helper.handleNotOKStatus(status);
 
             const dataNeeded: MilitaryDataParams = {
                 hostiles: true,
@@ -176,15 +176,8 @@ export class DomesticDefenderSquadManager implements ISquadManager {
         },
 
         decideMoveIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll): void {
-            // If status === RALLY {   // code here }
-            if (status !== SQUAD_STATUS_OK) {
-                throw new UserException(
-                    "Unhandled status in DomesticDefenderSquadManager.FFA.decideMoveIntents",
-                    "Status: " + status + "\nCheck that this status is being handled appropriately.",
-                    ERROR_ERROR
-                );
-            }
 
+            // These should never be null, even if the hostiles and openRamparts don't exist. Will be empty arrays
             if (!roomData[instance.targetRoom]?.hostiles || !roomData[instance.targetRoom]?.openRamparts) {
                 return;
             }

@@ -213,10 +213,10 @@ export class MilitaryCombat_Api {
     public static getKitingDirection(creep: Creep, hostileCreep: Creep): DirectionConstant | undefined {
         let path: PathFinderPath;
         const pathFinderOptions: PathFinderOpts = { flee: true };
-        const goal: { pos: RoomPosition; range: number } = { pos: hostileCreep.pos, range: 4 };
+        const goal: { pos: RoomPosition; range: number } = { pos: hostileCreep.pos, range: 3 };
         path = PathFinder.search(creep.pos, goal, pathFinderOptions);
         if (path.path.length > 0) {
-            return creep.pos.findPathTo(hostileCreep)[0].direction;
+            return creep.pos.getDirectionTo(path.path[0]);
         }
         return undefined;
     }

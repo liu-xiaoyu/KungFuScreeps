@@ -156,7 +156,7 @@ export class RemoteDefenderSquadManager implements ISquadManager {
                 hostiles: true
             };
             const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
-            const roomData: MilitaryDataAll = militaryDataHelper.getRoomData(creeps, dataNeeded);
+            const roomData: MilitaryDataAll = militaryDataHelper.getRoomData(creeps, dataNeeded, instance);
 
             MilitaryIntents_Api.resetSquadIntents(instance);
             this.decideMoveIntents(instance, status, roomData);
@@ -170,7 +170,6 @@ export class RemoteDefenderSquadManager implements ISquadManager {
         },
 
         decideMoveIntents(instance: ISquadManager, status: SquadStatusConstant, roomData: MilitaryDataAll): void {
-
             if (!roomData[instance.targetRoom]?.hostiles) {
                 return;
             }

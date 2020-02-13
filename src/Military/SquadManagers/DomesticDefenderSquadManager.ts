@@ -162,7 +162,7 @@ export class DomesticDefenderSquadManager implements ISquadManager {
                 openRamparts: true
             };
             const creeps: Creep[] = MemoryApi_Military.getLivingCreepsInSquadByInstance(instance);
-            const roomData: MilitaryDataAll = militaryDataHelper.getRoomData(creeps, dataNeeded);
+            const roomData: MilitaryDataAll = militaryDataHelper.getRoomData(creeps, dataNeeded, instance);
 
             MilitaryIntents_Api.resetSquadIntents(instance);
             this.decideMoveIntents(instance, status, roomData);

@@ -8,8 +8,10 @@ export class militaryDataHelper {
      * @param creeps the creeps we're getting data for
      * @param dataNeeded the booleans representing the data we need
      */
-    public static getRoomData(creeps: Creep[], dataNeeded: MilitaryDataParams): MilitaryDataAll {
+    public static getRoomData(creeps: Creep[], dataNeeded: MilitaryDataParams, instance: ISquadManager): MilitaryDataAll {
         const roomData: MilitaryDataAll = {};
+        roomData[instance.targetRoom] = this.getDefaultRoomDataForRoom(instance.targetRoom);
+
 
         _.forEach(creeps, (creep: Creep) => {
             const roomName = creep.room.name;
@@ -39,6 +41,18 @@ export class militaryDataHelper {
         const closestHostile = bunkerCenter.findClosestByRange(enemies);
 
         return closestHostile;
+    }
+
+    /**
+     * Fill room data with default empty values so it will be defined in the squad mannagers
+     * @param roomName the room we're trying to put default info in for
+     * @returns military room data all object
+     */
+    public static getDefaultRoomDataForRoom(roomName: string): MilitaryDataRoom {
+        return {
+            hostiles: { allHostiles: [], heal: [], attack: [], rangedAttack: [] },
+            openRamparts: [],
+        }
     }
 
     /**
@@ -86,7 +100,10 @@ export class militaryDataHelper {
     public static getHostileCreeps(
         roomName: string
     ): { allHostiles: Creep[]; attack: Creep[]; rangedAttack: Creep[]; heal: Creep[] } {
-        const allHostiles: Creep[] = MemoryApi_Creep.getHostileCreeps(roomName);
+        if (!Game.rooms[roomName]) {
+            return { allHostiles: [], attack: [], rangedAttack: [], heal: [] };
+        }
+        const allHostiles: Creep[] = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
         const attackCreeps: Creep[] = [];
         const rangedAttackCreeps: Creep[] = [];
         const healCreeps: Creep[] = [];

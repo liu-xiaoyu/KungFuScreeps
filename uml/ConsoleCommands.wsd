@@ -1,0 +1,12 @@
+@startuml ConsoleCommands.png
+
+title ConsoleCommands
+class ConsoleCommands {
+    init()
+    removeConstructionSites()
+    removeFlags()
+    displayRoomStatus()
+    killAllCreeps()
+}
+
+@enduml

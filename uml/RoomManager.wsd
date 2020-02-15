@@ -1,0 +1,17 @@
+@startuml RoomManager.png
+title RoomManager
+class RoomManager(){
+    runSingleRoom()
+    runSingleDependentRoom()
+}
+RoomApi_State.setDefconLevel -> RoomApi_State.setRoomState
+RoomApi_State.setRoomState -> RoomApi_State.setSafeMode
+RoomApi_Structure.runTowersEmergencyRampartRepair
+RoomApi_Structure.runTowerDefense
+RoomApi_Structure.runTowerRepair
+RoomApi_State -down-> RoomApi_Structure
+RoomApi_Structure.runLabs
+RoomApi_Structure.runLinks
+RoomApi_Structure.runTerminal
+RoomApi_Structure.simulateReserveTTL
+@enduml

@@ -1,0 +1,43 @@
+@startuml ManagerManager.png
+
+title ManagerManager:runManagerManager()
+
+class MemoryManager(){
+    initMainMemory()
+    MemoryApi_All.garbageCollaction()
+    MemoryApi_Room.initRoomMemory()
+    MemoryApi_Room.cleanDependentRoomMemory()
+}
+class RoomManager(){
+    runSingleRoom()
+    runSingleDependentRoom()
+}
+
+class SpawnManager(){
+
+}
+class CreepManager(){
+
+}
+class RoomVisualManager(){
+
+}
+
+class EmpireManager(){
+
+}
+
+class Operations(){
+
+}
+
+ConsoleCommands.init -> clean_up_memory
+clean_up_memory -> run_rooms
+run_rooms -> run_spawning
+run_spawning -> run_creeps
+run_creeps -> display_room_visual
+display_room_visual -> run_empire
+run_empire -> run_military
+
+
+@enduml
